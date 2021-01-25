@@ -1,18 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
-
-
-<!-- Mirrored from frenify.com/envato/marketify/html/arlo/1/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 17 Aug 2019 06:21:45 GMT -->
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
 <meta name="description" content="Name of your web site">
 <meta name="author" content="Marketify">
-
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
  
 <title> Saad Hasan | Portfolio </title>
@@ -21,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/plugins.css" />
+<link rel="stylesheet" href="css/custom.css">
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <!--[if lt IE 9]> <script type="text/javascript" src="js/modernizr.custom.js"></script> <![endif]-->
 <!-- /STYLES -->
@@ -78,39 +70,7 @@
 	 
     <!-- CONTENT -->
 	<div class="arlo_tm_content">
-		
-		<!-- LEFTPART 
-		<div class="arlo_tm_leftpart_wrap">
-			<div class="leftpart_inner">
-				<div class="logo_wrap">
-					<a href="#"><img src="img/logo/desktop-logo.png" alt="" /></a>
-				</div>
-				<div class="menu_list_wrap">
-					<ul class="anchor_nav">
-						<li><a href="#home">Home</a></li>
-						<li><a href="#about">About</a></li>
-						<li><a href="#services">Services</a></li>
-						<li><a href="#portfolio">Portfolio</a></li>
-						<li><a href="#news">News</a></li>
-						<li><a href="#contact">Contact</a></li>
-					</ul>
-				</div>
-				<div class="leftpart_bottom">
-					<div class="social_wrap">
-						<ul>
-							<li><a href="#"><i class="xcon-facebook"></i></a></li>
-							<li><a href="#"><i class="xcon-twitter"></i></a></li>
-							<li><a href="#"><i class="xcon-linkedin"></i></a></li>
-							<li><a href="#"><i class="xcon-instagram"></i></a></li>
-							<li><a href="#"><i class="xcon-behance"></i></a></li>
-						</ul>
-					</div>
-				</div>
-				<a class="arlo_tm_resize" href="#"><i class="xcon-angle-left"></i></a>
-			</div>
-		</div>
-		 /LEFTPART -->
-		
+				
 		<!-- RIGHTPART -->
 		<div class="arlo_tm_rightpart">
 			<div class="rightpart_inner">
@@ -128,6 +88,23 @@
 									</div>
 									<div class="name_holder">
 										<h3>Saad <span>Hasan</span></h3>
+									</div>
+									<div class="socialIcons">
+										<a href="https://facebook.com/saadh393" target="_blank">
+											<img src="./img/icons/facebook.svg" alt="Facebook Logo">
+										</a>
+
+										<a href="https://github.com/saadh393" target="_blank">
+											<img src="./img/icons/github.svg" alt="Github Logo">
+										</a>
+
+										<a href="https://www.linkedin.com/in/saadh393/" target="_blank">
+											<img src="./img/icons/linkedin.svg" alt="Linkedin Logo">
+										</a>
+
+										<a href="https://medium.com/saadh393" target="_blank">
+											<img src="./img/icons/medium.svg" alt="Medium Logo">
+										</a>
 									</div>
 									<div class="text_typing">
 										<p>I'm a <span class="arlo_tm_animation_text_word"></span></p>
@@ -303,16 +280,27 @@
 									<li><a href="#" data-filter=".photography">Photography</a></li>
 									<li><a href="#" data-filter=".development">Development</a></li>
 								</ul>
-								<ul class="arlo_tm_portfolio_list gallery_zoom">
+								<ul class="arlo_tm_portfolio_list gallery_zoom" id="allProjectsList">
 									<li class="design">
 										<div class="entry arlo_tm_portfolio_animation_wrap" data-title="Notify Me" data-category="Android App">
 											<a target="_blank" href="https://play.google.com/store/apps/details?id=com.weblywork.notifyme">
+												<div class="overlay">
+													<h2>Notify Me</h2>
+													<div class="technologies">
+														<ul>
+															<li>Android</li>
+															<li>Java</li>
+															<li>Sqlite</li>
+														</ul>
+													</div>
+													<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet perferendis labore sunt quasi reiciendis voluptatum.</p>
+												</div>
 												<img src="img/portfolio/600x600.jpg" alt="" />
 												<div class="arlo_tm_portfolio_image_main" data-img-url="img/portfolio/1.jpg"></div>
 											</a>
 										</div>
 									</li>
-									<li class="photography">
+									<!-- <li class="photography">
 										<div class="entry arlo_tm_portfolio_animation_wrap" data-title="Love Bites" data-category="Android App">
 											<a target="_blank" href="https://play.google.com/store/apps/details?id=com.weblyworkgroup.lovebites">
 												<img src="img/portfolio/600x600.jpg" alt="" />
@@ -351,7 +339,7 @@
 												<div class="arlo_tm_portfolio_image_main" data-img-url="img/portfolio/6.jpg"></div>
 											</a>
 										</div>
-									</li>
+									</li> -->
 								</ul>
 							</div>
 						</div>
@@ -636,6 +624,7 @@
 <!--[if lt IE 10]> <script type="text/javascript" src="js/ie8.js"></script> <![endif]-->	
 <script src="js/plugins.js"></script>
 <script src="js/init.js"></script>
+<script src="js/custom.js"></script>
 <!-- /SCRIPTS -->
 
 </body>

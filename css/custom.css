@@ -1,0 +1,76 @@
+.socialIcons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 1rem 0;
+}
+
+.socialIcons img {
+  width: 34px;
+  opacity: 0.9;
+  transform: scale(0.9);
+  transition: transform 0.1s ease-in;
+}
+
+.socialIcons img:hover {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.overlay {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 17, 24, 0.9363095580028886) 0%, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: -20px;
+  z-index: 99;
+  display: flex;
+  opacity: 0;
+  justify-content: flex-end;
+  flex-direction: column;
+  padding: 0.8rem;
+  border-bottom: 3px solid tomato;
+  transition: bottom 0.5s ease, opacity 0.5s ease;
+}
+
+.overlay .overlayLogo {
+  min-width: 0;
+  width: 10%;
+}
+.overlay h2 {
+  color: #fff;
+  line-height: 1.3;
+}
+
+.overlay p {
+  line-height: 1.2;
+  color: #fff;
+  text-align: justify;
+  margin-top: 0.7rem;
+}
+
+.entry:hover .overlay {
+  display: flex;
+  bottom: 0;
+  opacity: 1;
+}
+
+.technologies ul {
+  list-style: none;
+  display: flex;
+  gap: 2px;
+}
+
+.technologies ul li {
+  height: 26px;
+  color: #fff;
+  background: linear-gradient(45deg, #ff193f, #ff35b4);
+  padding: 0.09rem 0.5rem;
+  border-radius: 16px;
+}
+
+.entry {
+  border-radius: 10px;
+}
