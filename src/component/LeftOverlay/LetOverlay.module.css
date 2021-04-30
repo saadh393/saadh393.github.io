@@ -1,0 +1,35 @@
+.LeftOverlay{
+    position: absolute;
+    width: fit-content;
+    left: 30px;
+    height: 100vh;    
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+.line{
+    height: 100%;
+    width: 1px;
+    background-color: rgb(129, 129, 129);
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.socialIcons{
+    display: flex;
+    flex-direction: column;
+    gap : 20px;
+     cursor: pointer;
+   
+}
+.socialIcons object{
+    width: 28px;
+    height: 28px;
+     cursor: pointer;
+}
+
+.socialIcons .github:hover{filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}
+.socialIcons .linkedin:hover {filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}
+.socialIcons .facebook:hover {filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}

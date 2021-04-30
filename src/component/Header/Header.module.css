@@ -1,0 +1,33 @@
+header{
+    height: 100vh;
+    background-color: black;
+    background-image: url('../../image/banner.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 100% ;
+}
+
+.introText{
+    width:580px;
+    position: absolute;
+    top : 60%;
+    left: 35%;
+    transform: translateY(-50%) translateX(-50%);
+}
+.introText .introDescription{
+    text-align: right;
+    margin-right: 4rem;
+    margin-top: 0;
+    color : #c9c9c9
+}
+
+.introText .introTopText{
+    margin-bottom: -10px;
+    text-transform: uppercase;
+}
+
+header .introText h1{
+    font-size: 5rem;
+    text-transform: uppercase;
+    margin: 0;
+}
