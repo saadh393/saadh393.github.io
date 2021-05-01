@@ -11,6 +11,7 @@ import { animated } from "@react-spring/web";
 import { useContext } from "react";
 import { Col, Row } from "react-bootstrap";
 import { visibility } from "../../App";
+import fadeTransition from "../Animation/fadeTransition";
 import "./Experience.css";
 import GreatExperience from "./GreatExperience";
 import YearsExperience from "./YearsExperience";
@@ -22,20 +23,9 @@ const Experience = () => {
       <section>
         <div className="grid grid-2-2" className="experience-root">
           <div className="col experience-card">
-            <Transition
-              native
-              items={status === -1}
-              from={{ opacity: 0 }}
-              enter={{ opacity: 1 }}
-              leave={{ opacity: 0 }}
-              delay={4000}
-            >
-              {(props) => (
-                <animated.div style={props}>
-                  <YearsExperience />
-                </animated.div>
-              )}
-            </Transition>
+            <fadeTransition animate={status === -1}>
+              <YearsExperience />
+            </fadeTransition>
           </div>
           <div className="col">
             <Transition

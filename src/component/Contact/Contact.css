@@ -1,0 +1,26 @@
+.contact-wrapper {
+  width: 35%;
+  text-align: center;
+}
+
+.contact-wrapper h1 {
+  font-weight: 700;
+  font-size: 3.5rem;
+}
+
+.contact-wrapper p {
+  font-size: 20px;
+  line-height: 26px;
+  color: #8892b0;
+  margin: 1rem auto;
+}
+
+/* .contact-wrapper button {
+  outline: none;
+  border: none;
+  padding: 1rem 2.4rem;
+  margin-top: 1rem;
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+} */
