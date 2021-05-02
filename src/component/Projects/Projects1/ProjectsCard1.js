@@ -11,8 +11,9 @@ import { animated } from "@react-spring/web";
 import { useContext } from "react";
 import { visibility } from "../../../App";
 import github from "../../../image/svg/primary/github.svg";
+import web from "../../../image/svg/primary/web.svg";
+import playstore from "../../../image/svg/primary/playstore.svg";
 import style from "./Projects1.module.css";
-import image2 from "../../../image/blog/blog1.png";
 
 const ProjectsCard1 = ({ isReversed, data }) => {
   const { status } = useContext(visibility);
@@ -30,7 +31,7 @@ const ProjectsCard1 = ({ isReversed, data }) => {
         >
           {(props) => (
             <animated.div style={{ ...props }} className={style.Projectsthumb}>
-              <img src={image2} alt="" className={style.portfolioImage} />
+              <img src={image} alt="" className={style.portfolioImage} />
             </animated.div>
           )}
         </Transition>
@@ -48,8 +49,17 @@ const ProjectsCard1 = ({ isReversed, data }) => {
             ))}
           </ul>
           <div className={style.Projectslinks}>
-            <img src={github} alt="See in Github" />
-            <img src={github} alt="See the Projects" />
+            {links.map((link) => {
+              link = JSON.parse(link);
+              const icon = link.domain === "github" ? github : link.domain === "playstore" ? playstore : web;
+              return (
+                <>
+                  <a href={link.url}>
+                    <img src={icon} alt="See the Projects" />
+                  </a>
+                </>
+              );
+            })}
           </div>
         </div>
       </div>

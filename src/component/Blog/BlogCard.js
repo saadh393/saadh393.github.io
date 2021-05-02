@@ -21,10 +21,7 @@ const BlogCard = () => {
             MovieWall as a Wallpaper App, where users are able to see lots of Recent Movie Wallpapers. They can vote and
             bookmark their favorite wallpaper, share with friends as well as set the wallpapers on their mobile screen.
           </p>
-          <div className="Blog-links">
-            <img src={github} />
-            <img src={playstore} />
-          </div>
+
           <ul className="Blog-technologies">
             <li>Kotlin</li>
             <li>Retrofit</li>
