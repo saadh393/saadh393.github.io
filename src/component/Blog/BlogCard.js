@@ -10,22 +10,19 @@ import image from "../../image/portfolio/moviewall.png";
 import github from "../../image/svg/primary/github.svg";
 import playstore from "../../image/svg/primary/playstore.svg";
 
-const BlogCard = () => {
+const BlogCard = ({ data }) => {
   return (
     <>
       <div className="Blog-card">
-        <img src={image} />
+        <img src={data.image} />
         <div className="Blog-content">
-          <h3>Movie Wall</h3>
-          <p>
-            MovieWall as a Wallpaper App, where users are able to see lots of Recent Movie Wallpapers. They can vote and
-            bookmark their favorite wallpaper, share with friends as well as set the wallpapers on their mobile screen.
-          </p>
+          <h3>{data.title}</h3>
+          <p>{data.description.slice(0, 300) + "..."}</p>
 
           <ul className="Blog-technologies">
-            <li>Kotlin</li>
-            <li>Retrofit</li>
-            <li>Room Persistance Library</li>
+            {/* {data.topic.map((top) => (
+              <li>{top}</li>
+            ))} */}
           </ul>
         </div>
       </div>

@@ -38,6 +38,11 @@
   padding: 1rem;
 }
 
+.Blog-content h3,
+.Blog-content p {
+  font-family: "Hind Siliguri", sans-serif;
+}
+
 .Blog-links {
   width: 24px;
   display: flex;

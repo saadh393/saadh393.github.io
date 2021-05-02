@@ -13,13 +13,17 @@ export const visibility = createContext({});
 function App() {
   const [status, setStatus] = useState(0);
   const portData = JSON.parse(localStorage.getItem("portfolio")) || [];
+  const blogData = JSON.parse(localStorage.getItem("blogs")) || [];
   const [portfolio, setPortfolio] = useState(portData);
+  const [blog, setBlog] = useState(blogData);
+
   const API_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYxOTg5NTgwMSwiZXhwIjoxOTM1NDcxODAxfQ.cWy3o6eoT-s_xHeQsb-TEKuQFWm27l-hyEs0FzGKtyE";
 
   const BASE_URL = "https://yymklxbmdokoeuqykqtv.supabase.co/rest/v1/";
 
   useEffect(() => {
+    // Fetching Projects
     fetch(`${BASE_URL}Projects`, {
       headers: {
         apikey: API_KEY,
@@ -29,6 +33,18 @@ function App() {
       .then((data) => {
         setPortfolio(data);
         localStorage.setItem("portfolio", JSON.stringify(data));
+      });
+
+    // Fetching Blog Data
+    fetch(`${BASE_URL}Blogs`, {
+      headers: {
+        apikey: API_KEY,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setBlog(data);
+        localStorage.setItem("blogs", JSON.stringify(data));
       });
   }, []);
 
@@ -50,13 +66,13 @@ function App() {
 
   return (
     <>
-      <visibility.Provider value={{ status, portfolio }}>
+      <visibility.Provider value={{ status, blog }}>
         <LeftOverlay />
 
         {status === 0 && <Header />}
-        {status === -1 && <Experience />}
         {/* {status === -2 && <Education />} */}
-        {status === -2 && <Aboutus />}
+        {status === -1 && <Aboutus />}
+        {status === -2 && <Experience />}
         {status === -3 && <Projects1 data={portfolio[0]} />}
         {status === -4 && <Projects1 isReversed data={portfolio[1]} />}
         {status === -5 && <Projects1 data={portfolio[2]} />}
