@@ -1,26 +1,27 @@
 /* Projects Main Mage */
-.Projects-title {
+.Projectstitle {
   text-align: center;
   margin-bottom: 4rem;
 }
 
-.Projects-title h1 {
+.Projectstitle h1 {
   font-weight: 600;
   font-size: 2rem;
 }
 
 /* Projects Card Style */
 .singleProjects {
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   position: relative;
+  display: flex;
 }
-.Projects-thumb {
-  width: 100%;
+.Projectsthumb {
+  width: 65%;
   margin-left: 3rem;
 }
 
-.Projects-info {
+.Projectsinfo {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -31,25 +32,25 @@
   margin-right: 4rem;
 }
 
-.Projects-info h1 {
+.Projectsinfo h1 {
   font-weight: 600;
   font-size: 2rem;
   cursor: pointer;
   transition: color 0.1s ease-in-out;
 }
 
-.Projects-info h1:hover {
+.Projectsinfo h1:hover {
   color: var(--primary);
 }
 
-.Projects-info .Projects-description {
+.Projectsinfo .Projectsdescription {
   background-image: linear-gradient(to left, var(--lightest-navy), hsla(219, 41%, 23%, 0.925));
   width: 50%;
   padding: 0.8rem 1rem;
   border-radius: 3px;
 }
 
-.Projects-info .Projects-description p {
+.Projectsinfo .Projectsdescription p {
   margin: 0;
   color: rgb(168, 178, 209);
   font-size: 17px;
@@ -57,21 +58,21 @@
   text-align: justify;
 }
 
-.Projects-technologies {
+.Projectstechnologies {
   list-style: none;
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
 }
 
-.Projects-technologies li {
+.Projectstechnologies li {
   font-size: 0.8rem;
   letter-spacing: 1px;
   color: #8892b0;
   position: relative;
 }
 
-.Projects-technologies li::after {
+.Projectstechnologies li::after {
   content: "";
   width: 6px;
   height: 6px;
@@ -84,13 +85,13 @@
   transform: translateY(-50%);
 }
 
-.Projects-technologies li:nth-last-child(1)::after {
+.Projectstechnologies li:nth-last-child(1)::after {
   content: "";
   width: 0;
   height: 0;
   position: absolute;
 }
-.Projects-links img {
+.Projectslinks img {
   width: 24px;
   margin-left: 10px;
   cursor: pointer;

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-duplicate-props */
 /*  
 💥 Title : Experience
 📃 Description : Experience List
@@ -6,13 +7,11 @@
 */
 
 /*  🔥 React Dependencies 🔥 */
-import { Spring, Transition } from "@react-spring/core";
+import "./Experience.css";
+import { Transition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 import { useContext } from "react";
-import { Col, Row } from "react-bootstrap";
 import { visibility } from "../../App";
-import fadeTransition from "../Animation/fadeTransition";
-import "./Experience.css";
 import GreatExperience from "./GreatExperience";
 import YearsExperience from "./YearsExperience";
 
@@ -23,17 +22,28 @@ const Experience = () => {
       <section>
         <div className="grid grid-2-2" className="experience-root">
           <div className="col experience-card">
-            <fadeTransition animate={status === -1}>
-              <YearsExperience />
-            </fadeTransition>
+            <Transition
+              native
+              items={status === -1}
+              from={{ opacity: 0, marginBottom: -50 }}
+              enter={{ opacity: 1, marginBottom: 0 }}
+              leave={{ opacity: 0, marginTop: 100 }}
+              delay={4000}
+            >
+              {(props) => (
+                <animated.div style={props}>
+                  <YearsExperience />
+                </animated.div>
+              )}
+            </Transition>
           </div>
           <div className="col">
             <Transition
               native
               items={status === -1}
-              from={{ opacity: 0, marginTop: -100 }}
+              from={{ opacity: 0, marginTop: -50 }}
               enter={{ opacity: 1, marginTop: 0 }}
-              leave={{ opacity: 0, marginTop: 100 }}
+              leave={{ opacity: 0, marginTop: 50 }}
               delay={4000}
             >
               {(props) => (

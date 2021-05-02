@@ -6,7 +6,7 @@
 */
 
 /*  🔥 React Dependencies 🔥 */
-import { Spring, Transition } from "@react-spring/core";
+import { Transition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 
 const fadeTransition = ({ children, animate }) => {
