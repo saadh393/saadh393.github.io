@@ -40,7 +40,16 @@ const Aboutus = () => {
                       and React Native.
                     </p>
 
-                    <button>Get My Resume</button>
+                    <a
+                      href="#"
+                      onClick={() => {
+                        window.open(
+                          "https://raw.githubusercontent.com/saadh393/saadh393.github.io/5657a1e7701ed91de194138367a27f3bdbaf0367/src/Saad%20Hasan%20-%20Resume.pdf"
+                        );
+                      }}
+                    >
+                      <button>Get My Resume</button>
+                    </a>
                   </div>
                 </animated.div>
               )}
