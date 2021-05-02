@@ -56,7 +56,10 @@ function App() {
         setStatus(status + 1);
       }
     } else {
-      setStatus(status - 1);
+      if (status < -6) {
+      } else {
+        setStatus(status - 1);
+      }
     }
 
     console.log(status);
