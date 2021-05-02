@@ -10,6 +10,13 @@
 }
 
 /* Projects Card Style */
+
+.portfolioImage {
+  /* width: 760px;
+  height: 451px; */
+  width: 100%;
+}
+
 .singleProjects {
   width: 90%;
   margin: 0 auto;
@@ -17,7 +24,8 @@
   display: flex;
 }
 .Projectsthumb {
-  width: 65%;
+  width: 60%;
+
   margin-left: 3rem;
 }
 
