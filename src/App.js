@@ -7,6 +7,7 @@ import Header from "./component/Header/Header";
 import LeftOverlay from "./component/LeftOverlay/LeftOverlay";
 import Projects1 from "./component/Projects/Projects1/Projects1";
 import "./styles/global.css";
+import { loadImage } from "./util/util";
 
 export const visibility = createContext({});
 
@@ -46,6 +47,14 @@ function App() {
         setBlog(data);
         localStorage.setItem("blogs", JSON.stringify(data));
       });
+
+    Promise.all(portfolio.map((project) => loadImage(project.image)))
+      .then(() => console.log("Image loaded"))
+      .catch((error) => console.log(error));
+
+    Promise.all(blog.map((project) => loadImage(project.image)))
+      .then(() => console.log("Image loaded"))
+      .catch((error) => console.log(error));
   }, []);
 
   window.onwheel = (e) => {
@@ -55,17 +64,14 @@ function App() {
       if (status < 0) {
         setStatus(status + 1);
       }
+    } else if (status < -6) {
+      console.log();
     } else {
-      if (status < -6) {
-      } else {
-        setStatus(status - 1);
-      }
+      setStatus(status - 1);
     }
 
     console.log(status);
   };
-
-  const inBetween = (max, min) => !!(min <= status && status <= max);
 
   return (
     <>
