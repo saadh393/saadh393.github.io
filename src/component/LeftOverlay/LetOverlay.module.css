@@ -1,35 +1,40 @@
-.LeftOverlay{
-    position: absolute;
-    width: fit-content;
-    left: 30px;
-    height: 100vh;    
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    align-items: center;
+.LeftOverlay {
+  position: absolute;
+  width: fit-content;
+  left: 30px;
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
 }
 
-.line{
-    height: 100%;
-    width: 1px;
-    background-color: rgb(129, 129, 129);
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 20px;
+.line {
+  height: 100%;
+  width: 1px;
+  background-color: rgb(129, 129, 129);
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-.socialIcons{
-    display: flex;
-    flex-direction: column;
-    gap : 20px;
-     cursor: pointer;
-   
+.socialIcons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  cursor: pointer;
 }
-.socialIcons object{
-    width: 28px;
-    height: 28px;
-     cursor: pointer;
+.socialIcons img {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
 }
 
-.socialIcons .github:hover{filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}
-.socialIcons .linkedin:hover {filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}
-.socialIcons .facebook:hover {filter: invert(0.4) sepia(1) saturate(15.9) hue-rotate(180deg) brightness(0.8);}
+.socialIcons .github:hover {
+  filter: invert(61%) sepia(84%) saturate(2355%) hue-rotate(136deg) brightness(95%) contrast(101%);
+}
+.socialIcons .linkedin:hover {
+  filter: invert(61%) sepia(84%) saturate(2355%) hue-rotate(136deg) brightness(95%) contrast(101%);
+}
+.socialIcons .facebook:hover {
+  filter: invert(61%) sepia(84%) saturate(2355%) hue-rotate(136deg) brightness(95%) contrast(101%);
+}
