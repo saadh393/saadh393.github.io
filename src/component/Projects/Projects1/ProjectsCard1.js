@@ -31,7 +31,7 @@ const ProjectsCard1 = ({ isReversed, data }) => {
         >
           {(props) => (
             <animated.div style={{ ...props }} className={style.Projectsthumb}>
-              <img src={image} loading="lazy" alt="" className={style.portfolioImage} />
+              <img src={image} alt="" className={style.portfolioImage} />
             </animated.div>
           )}
         </Transition>

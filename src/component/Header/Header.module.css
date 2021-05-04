@@ -30,3 +30,31 @@ header .introText h1 {
   text-transform: uppercase;
   margin: 0;
 }
+
+/* Responsiveness */
+@media only screen and (max-width: 500px) {
+  header {
+    background-position: center;
+    background-position-x: 70%;
+  }
+  .introText {
+    width: 100%;
+    left: 0;
+    transform: translateY(0%) translateX(0%);
+    text-align: center;
+    bottom: 40%;
+  }
+
+  .introText .introTopText {
+    font-size: 1.4rem;
+  }
+
+  header .introText h1 {
+    font-size: 3rem;
+  }
+  header .introText .introDescription {
+    text-align: center;
+    margin: 0;
+    padding: 0.5rem 1rem;
+  }
+}

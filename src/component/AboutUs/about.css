@@ -95,3 +95,9 @@
  background: rgba(0, 0, 0, 0.15); 
   clip-path: circle(100% at 0% 0%);
 } */
+
+@media only screen and (max-width: 600px) {
+  .about-row {
+    grid-template-columns: 1fr !important;
+  }
+}

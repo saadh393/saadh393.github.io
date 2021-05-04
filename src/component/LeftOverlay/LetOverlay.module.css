@@ -38,3 +38,24 @@
 .socialIcons .facebook:hover {
   filter: invert(61%) sepia(84%) saturate(2355%) hue-rotate(136deg) brightness(95%) contrast(101%);
 }
+
+@media only screen and (max-width: 600px) {
+  .LeftOverlay {
+    width: 100%;
+    height: fit-content;
+    left: 0;
+    bottom: 15px;
+  }
+
+  .line {
+    height: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .socialIcons {
+    flex-direction: row;
+    gap: 40px;
+  }
+}

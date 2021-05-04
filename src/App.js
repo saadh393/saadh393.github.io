@@ -5,6 +5,7 @@ import Contact from "./component/Contact/Contact";
 import Experience from "./component/Experience/Experience";
 import Header from "./component/Header/Header";
 import LeftOverlay from "./component/LeftOverlay/LeftOverlay";
+import Preloader from "./component/Preloader/Preloader";
 import Projects1 from "./component/Projects/Projects1/Projects1";
 import "./styles/global.css";
 import { loadImage } from "./util/util";
@@ -17,6 +18,8 @@ function App() {
   const blogData = JSON.parse(localStorage.getItem("blogs")) || [];
   const [portfolio, setPortfolio] = useState(portData);
   const [blog, setBlog] = useState(blogData);
+  const [isloaded, setIfLoaded] = useState(false);
+  const [isTime, setTime] = useState(false);
 
   const API_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYxOTg5NTgwMSwiZXhwIjoxOTM1NDcxODAxfQ.cWy3o6eoT-s_xHeQsb-TEKuQFWm27l-hyEs0FzGKtyE";
@@ -24,6 +27,10 @@ function App() {
   const BASE_URL = "https://yymklxbmdokoeuqykqtv.supabase.co/rest/v1/";
 
   useEffect(() => {
+    setTimeout(() => {
+      setTime(true);
+    }, 5000);
+
     // Fetching Projects
     fetch(`${BASE_URL}Projects`, {
       headers: {
@@ -53,8 +60,14 @@ function App() {
       .catch((error) => console.log(error));
 
     Promise.all(blog.map((project) => loadImage(project.image)))
-      .then(() => console.log("Image loaded"))
-      .catch((error) => console.log(error));
+      .then(() => {
+        console.log("Image loaded");
+        setIfLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIfLoaded(true);
+      });
   }, []);
 
   window.onwheel = (e) => {
@@ -75,19 +88,23 @@ function App() {
 
   return (
     <>
-      <visibility.Provider value={{ status, blog }}>
-        <LeftOverlay />
+      {isloaded && isTime ? (
+        <visibility.Provider value={{ status, blog }}>
+          <LeftOverlay />
 
-        {status === 0 && <Header />}
-        {/* {status === -2 && <Education />} */}
-        {status === -1 && <Aboutus />}
-        {status === -2 && <Experience />}
-        {status === -3 && <Projects1 data={portfolio[0]} />}
-        {status === -4 && <Projects1 isReversed data={portfolio[1]} />}
-        {status === -5 && <Projects1 data={portfolio[2]} />}
-        {status === -6 && <Blog />}
-        {status === -7 && <Contact />}
-      </visibility.Provider>
+          {status === 0 && <Header />}
+          {/* {status === -2 && <Education />} */}
+          {status === -1 && <Aboutus />}
+          {status === -2 && <Experience />}
+          {status === -3 && <Projects1 data={portfolio[0]} />}
+          {status === -4 && <Projects1 isReversed data={portfolio[1]} />}
+          {status === -5 && <Projects1 data={portfolio[2]} />}
+          {status === -6 && <Blog />}
+          {status === -7 && <Contact />}
+        </visibility.Provider>
+      ) : (
+        <Preloader />
+      )}
     </>
   );
 }
