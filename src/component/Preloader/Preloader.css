@@ -1,5 +1,6 @@
 .preloader {
   flex-direction: column;
+  overflow: hidden;
   gap: 20px;
   transition: opacity 0.2s, visibility 0.2s, margin-top 0s 0.2s;
 }

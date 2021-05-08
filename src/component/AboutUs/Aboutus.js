@@ -9,12 +9,14 @@
 import saad from "../../image/Saad.jpg";
 import { Transition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { visibility } from "../../App";
 import "./about.css";
+import ProfilePicLoader from "../loaders/ProfilePicLoader";
 
 const Aboutus = () => {
   const { status } = useContext(visibility);
+  const [isLoading, setItLoading] = useState(true);
   return (
     <>
       <section className="flex alignCenter justifyCenter">
@@ -55,6 +57,7 @@ const Aboutus = () => {
               )}
             </Transition>
             <div className="about-image">
+              {isLoading && <ProfilePicLoader />}
               <Transition
                 native
                 items={status === -1}
@@ -65,7 +68,7 @@ const Aboutus = () => {
               >
                 {(props) => (
                   <animated.div style={props}>
-                    <img src={saad} alt="Saad Hasan" />
+                    <img src={saad} alt="Saad Hasan" onLoad={() => setItLoading(false)} />
                     <div className="imageBorder"></div>
                   </animated.div>
                 )}

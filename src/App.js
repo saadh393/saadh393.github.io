@@ -56,7 +56,7 @@ function App() {
       });
 
     Promise.all(portfolio.map((project) => loadImage(project.image)))
-      .then(() => console.log("Image loaded"))
+      .then((data) => console.log(data))
       .catch((error) => console.log(error));
 
     Promise.all(blog.map((project) => loadImage(project.image)))
@@ -71,6 +71,10 @@ function App() {
   }, []);
 
   window.onwheel = (e) => {
+    if (!isloaded || !isTime) {
+      return;
+    }
+
     const wheel = e.wheelDeltaY;
 
     if (wheel > 0) {

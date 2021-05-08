@@ -8,19 +8,22 @@
 /*  🔥 React Dependencies 🔥 */
 import { Transition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { visibility } from "../../../App";
 import github from "../../../image/svg/primary/github.svg";
 import web from "../../../image/svg/primary/web.svg";
 import playstore from "../../../image/svg/primary/playstore.svg";
 import style from "./Projects1.module.css";
+import Loader from "../../loaders/Loader";
 
 const ProjectsCard1 = ({ isReversed, data }) => {
   const { status } = useContext(visibility);
   const { title, description, image, links, technologies } = data;
+  const [isLoading, setIsLoading] = useState(true);
   return (
     <>
       <div className={`${style.singleProjects}`} style={isReversed && { justifyContent: "flex-end" }}>
+        {isLoading && <Loader />}
         <Transition
           native
           items={status === -1}
@@ -31,7 +34,7 @@ const ProjectsCard1 = ({ isReversed, data }) => {
         >
           {(props) => (
             <animated.div style={{ ...props }} className={style.Projectsthumb}>
-              <img src={image} alt="" className={style.portfolioImage} />
+              <img src={image} alt="" className={style.portfolioImage} onLoad={() => setIsLoading(false)} />
             </animated.div>
           )}
         </Transition>

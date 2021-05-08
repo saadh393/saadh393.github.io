@@ -56,3 +56,42 @@
   width: 70%;
   line-height: 1.7;
 }
+
+@media only screen and (max-width: 600px) {
+  .experience-root {
+    width: 100%;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto;
+    align-content: flex-start;
+  }
+  .experience-card {
+    /* display: none; */
+    padding: 1rem;
+  }
+  .years-card {
+    height: auto;
+    width: auto;
+    flex-direction: row;
+    border: none;
+    padding: 0;
+    margin: 0 auto;
+  }
+  .years-card h1 {
+    font-size: 4rem;
+  }
+  .years-p {
+    margin-left: 20px;
+  }
+  .years-card p {
+    text-align: left;
+  }
+  .experience-root .col {
+    width: 100%;
+  }
+
+  .great-experience-wrapper {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0rem 0.5rem;
+  }
+}

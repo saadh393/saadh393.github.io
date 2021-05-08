@@ -98,6 +98,46 @@
 
 @media only screen and (max-width: 600px) {
   .about-row {
+    width: 85%;
+    padding: 0px;
     grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "photo"
+      "text";
+  }
+  .aboutme-section {
+    padding: 0;
+  }
+  .about-info {
+    padding: 0;
+    grid-area: text;
+    text-align-last: center;
+  }
+  .about-info h1 {
+    margin-top: 10px;
+  }
+
+  .about-info p {
+    margin-top: 5px;
+    line-height: 1.4;
+    font-size: 17px;
+  }
+
+  .about-image {
+    margin: 0;
+    grid-area: photo;
+    /* padding-left: 3.5rem; */
+    place-self: center;
+  }
+
+  .about-image img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .about-image .imageBorder {
+    width: 200px;
+    height: 200px;
+    top: 15px;
   }
 }

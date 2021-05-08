@@ -12,6 +12,7 @@
   width: 100%;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  transition: all 0.4s ease-in-out;
 }
 
 .Blog-card h3 {
@@ -85,4 +86,22 @@
   width: 0;
   height: 0;
   position: absolute;
+}
+
+@media only screen and (max-width: 600px) {
+  .Blog-wrapper {
+    padding: 1rem;
+  }
+  .Blog-wrapper h1 {
+    font-size: 1.4rem;
+  }
+  .Blog-card {
+    width: 250px;
+  }
+  .Blog-content h3 {
+    font-size: 1rem;
+  }
+  .Blog-content p {
+    font-size: 14px;
+  }
 }

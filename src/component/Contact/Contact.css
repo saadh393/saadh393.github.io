@@ -24,3 +24,10 @@
   border: 1px solid var(--primary);
   color: var(--primary);
 } */
+
+@media only screen and (max-width: 600px) {
+  .contact-wrapper {
+    width: 100%;
+    padding: 0 1rem;
+  }
+}
