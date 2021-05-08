@@ -30,7 +30,7 @@ const Header = () => {
                 <h1>
                   Saad Hasan <span>.</span>
                 </h1>
-                <p className={style.introTopText}>Web Developer</p>
+                {/* <p className={style.introTopText}>Web Developer</p> */}
                 <p className={style.introDescription}>
                   Working with Client and community. We deliver master plans that create vibrant new Places and Spaces
                   attact people and encourage investment thought
