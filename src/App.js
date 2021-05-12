@@ -7,8 +7,9 @@ import Header from "./component/Header/Header";
 import LeftOverlay from "./component/LeftOverlay/LeftOverlay";
 import Preloader from "./component/Preloader/Preloader";
 import Projects1 from "./component/Projects/Projects1/Projects1";
+import ProjectSlider from "./component/ProjectSlider/ProjectSlider";
 import "./styles/global.css";
-import { loadImage } from "./util/util";
+import { loadImage, API_KEY, BASE_URL } from "./util/util";
 
 export const visibility = createContext({});
 
@@ -21,15 +22,12 @@ function App() {
   const [isloaded, setIfLoaded] = useState(false);
   const [isTime, setTime] = useState(false);
 
-  const API_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYxOTg5NTgwMSwiZXhwIjoxOTM1NDcxODAxfQ.cWy3o6eoT-s_xHeQsb-TEKuQFWm27l-hyEs0FzGKtyE";
-
-  const BASE_URL = "https://yymklxbmdokoeuqykqtv.supabase.co/rest/v1/";
+  console.log("Portfolio", portfolio);
 
   useEffect(() => {
     setTimeout(() => {
       setTime(true);
-    }, 5000);
+    }, 1000);
 
     // Fetching Projects
     fetch(`${BASE_URL}Projects`, {
@@ -92,7 +90,7 @@ function App() {
 
   return (
     <>
-      {isloaded && isTime ? (
+      {isloaded && isTime && portfolio.length ? (
         <visibility.Provider value={{ status, blog }}>
           <LeftOverlay />
 
@@ -100,11 +98,9 @@ function App() {
           {/* {status === -2 && <Education />} */}
           {status === -1 && <Aboutus />}
           {status === -2 && <Experience />}
-          {status === -3 && <Projects1 data={portfolio[0]} />}
-          {status === -4 && <Projects1 isReversed data={portfolio[1]} />}
-          {status === -5 && <Projects1 data={portfolio[2]} />}
-          {status === -6 && <Blog />}
-          {status === -7 && <Contact />}
+          {status === -3 && <ProjectSlider data={portfolio} />}
+          {status === -4 && <Blog />}
+          {status === -5 && <Contact />}
         </visibility.Provider>
       ) : (
         <Preloader />

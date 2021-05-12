@@ -23,6 +23,14 @@ p {
   padding: 0;
 }
 
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary);
+}
+
 span {
   color: var(--primary);
 }
@@ -49,6 +57,10 @@ span {
 }
 .alignCenter {
   align-items: center;
+}
+
+.flexColumn {
+  flex-direction: column;
 }
 
 /* Margins and Paddings */
@@ -142,6 +154,10 @@ button:hover:after {
 
 .subtitle {
   color: #233554;
+}
+
+.subtitlePrimary {
+  color: var(--primary);
 }
 
 /* Straight */

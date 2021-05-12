@@ -1,12 +1,13 @@
 /* Projects Main Mage */
 .Projectstitle {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .Projectstitle h1 {
   font-weight: 600;
   font-size: 2rem;
+  margin: 0;
 }
 
 .Projectswrapper {
@@ -29,7 +30,6 @@
 }
 .Projectsthumb {
   width: 60%;
-
   margin-left: 3rem;
 }
 
@@ -46,14 +46,13 @@
 
 .Projectsinfo h1 {
   font-weight: 600;
-  font-size: 2rem;
   cursor: pointer;
   transition: color 0.1s ease-in-out;
 }
 
-.Projectsinfo h1:hover {
+/* .Projectsinfo h1:hover {
   color: var(--primary);
-}
+} */
 
 .Projectsinfo .Projectsdescription {
   background-image: linear-gradient(to left, var(--lightest-navy), hsla(219, 41%, 23%, 0.925));
