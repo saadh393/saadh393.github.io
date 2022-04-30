@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saad Hasan | Web Developer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;500;600;700;800;900&family=Rubik:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="bg-background flex justify-between wrapper border-b border-b-[#ffffff0d]">
+      <a href="/" class="logo">
+        <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="" />
+      </a>
+      <ul class="text-white flex items-center space-x-2">
+        <a class="px-3 py-2 bg-slate-800 hidden" href="#"> <li>Home</li> </a>
+        <a class="px-3 py-2 bg-slate-800 hidden" href="#"> <li>What I do</li> </a>
+        <a class="px-3 py-2 bg-slate-800 hidden" href="#"> <li>Projects</li> </a>
+        <a class="px-3 py-2 bg-slate-800 hidden" href="#"> <li>My Stack</li> </a>
+        <a class="px-3 py-2 bg-slate-800 hidden" href="#"> <li>Contact Me</li> </a>
+        <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm" href="#">
+          <li><i class="fa-regular fa-gem pr-2"></i>Resume</li>
+        </a>
+      </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-background py-5 md:flex md:flex-nowrap md:flex-row-reverse wrapper md:py-32">
+      <!-- Hero Image -->
+      <div class="h-full flex-1">
+        <img class="h-full" src="./images/hero-image.png" alt="Saad Hasan | Web Developer Hero Image" />
+      </div>
+
+      <!-- Hero Content -->
+      <div class="my-5 px-4 md:flex md:flex-col md:items-start md:justify-center space-y-5 flex-1">
+        <h4 class="font-rubik text-white font-extrabold text-4xl uppercase text-center">Hello, I am</h4>
+        <h1
+          class="font-rubik text-transparent bg-gradient-to-br from-[#cc3dfe] to-[#1380ff] bg-clip-text font-extrabold text-4xl md:text-6xl uppercase text-center"
+        >
+          Saad Hasan
+        </h1>
+        <p class="lg:pr-10 md:text-left my-2">
+          I always try to focus on the users and on the key business indicators as well, which allows me to make a
+          really useful design for the users and business.
+        </p>
+        <a class="gradient-primary text-white block text-center py-3 md:px-10 rounded-md my-5" href="#portfolio"
+          >My Portfolio</a
+        >
+      </div>
+    </section>
+
+    <!-- What I Do -->
+    <section class="whatIdo wrapper">
+      <h1 class="section-header">What <span>I do</span></h1>
+      <p class="whatIdo-paragraph">
+        There are three types of service I provide. At first, read the details of my services carefully then pick your
+        need-able service for your project or business.
+      </p>
+
+      <div class="whatIdo-grid">
+        <div class="whatIdo-grid--card">
+          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
+          <h3 class="whatIdo--card-title">Web Development</h3>
+          <p class="whatIdo--card-paragraph">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
+          </p>
+        </div>
+
+        <div class="whatIdo-grid--card">
+          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
+          <h3 class="whatIdo--card-title">Web Development</h3>
+          <p class="whatIdo--card-paragraph">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
+          </p>
+        </div>
+
+        <div class="whatIdo-grid--card">
+          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
+          <h3 class="whatIdo--card-title">Web Development</h3>
+          <p class="whatIdo--card-paragraph">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects wrapper bg-background">
+      <h3 class="uppercase text-portfolio-text text-center tracking-widest">selected project</h3>
+      <h1 class="section-header text-white">Awesome <span>Projects</span></h1>
+      <p>
+        I try to work with clients in a friendly way and focus specifically on what they want. Below is what my clients
+        told about my service at the end of project.
+      </p>
+
+      <div class="projects-grid space-y-8">
+        <div class="project-card bg-white p-4 md:p-5 rounded-lg md:flex">
+          <img class="rounded-md md:flex-1 md:w-0 object-cover" src="./images/portfolio.webp" alt="" />
+          <div class="md:flex-1 md:px-12 md:self-center">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4">Logofolio 2022</h1>
+            <p class="text-left">
+              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
+              through the search option, patients will be able to take treatment by booking a specific doctor.
+            </p>
+            <!-- stacks -->
+            <div class="flex flex-wrap my-4 space-x-4 font-medium text-gray-800">
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/html.svg" alt="" />
+                <h4>HTML</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/javascript.svg" alt="" />
+                <h4>JavaScript</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/laravel.svg" alt="" />
+                <h4>Laravel</h4>
+              </div>
+            </div>
+
+            <!-- buttons -->
+            <div class="flex mt-8 space-x-2">
+              <button class="bg-portfolio-blue w-full py-3 rounded-lg text-white shadow-md">Github</button>
+              <button class="bg-portfolio-red w-full py-3 rounded-lg text-white shadow-md">Live View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card bg-white p-4 md:p-5 rounded-lg md:flex">
+          <img class="rounded-md md:flex-1 md:w-0 object-cover" src="./images/portfolio.webp" alt="" />
+          <div class="md:flex-1 md:px-12 md:self-center">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4">Logofolio 2022</h1>
+            <p class="text-left">
+              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
+              through the search option, patients will be able to take treatment by booking a specific doctor.
+            </p>
+            <!-- stacks -->
+            <div class="flex flex-wrap my-4 space-x-4 font-medium text-gray-800">
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/html.svg" alt="" />
+                <h4>HTML</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/javascript.svg" alt="" />
+                <h4>JavaScript</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/laravel.svg" alt="" />
+                <h4>Laravel</h4>
+              </div>
+            </div>
+
+            <!-- buttons -->
+            <div class="flex mt-8 space-x-2">
+              <button class="bg-portfolio-blue w-full py-3 rounded-lg text-white shadow-md">Github</button>
+              <button class="bg-portfolio-red w-full py-3 rounded-lg text-white shadow-md">Live View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card bg-white p-4 md:p-5 rounded-lg md:flex">
+          <img class="rounded-md md:flex-1 md:w-0 object-cover" src="./images/portfolio.webp" alt="" />
+          <div class="md:flex-1 md:px-12 md:self-center">
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4">Logofolio 2022</h1>
+            <p class="text-left">
+              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
+              through the search option, patients will be able to take treatment by booking a specific doctor.
+            </p>
+            <!-- stacks -->
+            <div class="flex flex-wrap my-4 space-x-4 font-medium text-gray-800">
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/html.svg" alt="" />
+                <h4>HTML</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/javascript.svg" alt="" />
+                <h4>JavaScript</h4>
+              </div>
+              <div class="flex items-center space-x-1">
+                <img class="w-5 h-5" src="./images/laravel.svg" alt="" />
+                <h4>Laravel</h4>
+              </div>
+            </div>
+
+            <!-- buttons -->
+            <div class="flex mt-8 space-x-2">
+              <button class="bg-portfolio-blue w-full py-3 rounded-lg text-white shadow-md">Github</button>
+              <button class="bg-portfolio-red w-full py-3 rounded-lg text-white shadow-md">Live View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

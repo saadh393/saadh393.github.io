@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  * {
+    font-family: "Inter", sans-serif;
+    /* font-family: "Rubik", sans-serif; */
+  }
+
+  span {
+    @apply text-portfolio-blue;
+  }
+
+  p {
+    @apply font-normal text-portfolio-text lg:text-lg text-center leading-6;
+    font-family: "Roboto";
+  }
+
+  .wrapper {
+    @apply w-full px-4 md:px-8 2xl:px-80 py-16;
+  }
+
+  .section-header {
+    @apply text-4xl text-center font-extrabold py-2 pb-4;
+  }
+
+  .gradient-primary {
+    background-image: linear-gradient(160deg, #923dfe 0%, #4f3dfe 60%);
+  }
+  .font-rubik {
+    font-family: "Rubik", sans-serif !important;
+  }
+
+  /* What I Do section */
+  .whatIdo {
+    background-image: linear-gradient(320deg, #ffefef 0%, #f7ffe4 100%);
+  }
+
+  .whatIdo-header {
+    @apply text-4xl text-center font-extrabold;
+  }
+
+  .whatIdo-grid {
+    @apply justify-center place-items-center my-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:px-40 2xl:px-20;
+  }
+
+  .whatIdo-grid--card {
+    /* @apply bg-white mx-auto text-center py-8 px-5 rounded-lg shadow-sm; */
+    @apply py-8 px-5 text-center bg-white rounded-lg shadow-sm max-w-xs md:max-w-none lg:w-[320px];
+  }
+
+  .whatIdo--card-img {
+    @apply w-20 lg:w-28 aspect-square mx-auto my-3;
+  }
+
+  .whatIdo--card-title {
+    @apply text-xl font-extrabold py-3;
+  }
+
+  .whatIdo--card-paragraph {
+    @apply text-base;
+  }
+}
