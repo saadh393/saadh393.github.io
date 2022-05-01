@@ -5,6 +5,7 @@
 @layer components {
   * {
     font-family: "Inter", sans-serif;
+    transition: all 0.2s ease-in-out;
     /* font-family: "Rubik", sans-serif; */
   }
 
@@ -60,5 +61,16 @@
 
   .whatIdo--card-paragraph {
     @apply text-base;
+  }
+
+  /* My Stack Section */
+  .stackContainer {
+    background-image: linear-gradient(100deg, #fff9df 0%, #ecfff0 75%);
+  }
+
+  /* Footer */
+  footer ul li,
+  footer ul a {
+    @apply text-gray-400 text-sm md:text-base my-2;
   }
 }
