@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer components {
+  /* Utilities */
   * {
     font-family: "Inter", sans-serif;
     transition: all 0.2s ease-in-out;
@@ -18,6 +19,14 @@
     font-family: "Roboto";
   }
 
+  .btn {
+    @apply block text-center py-3 md:px-10 rounded-md my-5 hover:translate-y-1 active:opacity-90 active:scale-95 active:ring-2 active:ring-[#3D96FE] shadow-sm active:shadow-md;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-br from-[#3D96FE] to-[#4f3dfe] text-white;
+  }
+
   .wrapper {
     @apply w-full px-4 md:px-8 2xl:px-80 py-16;
   }
@@ -27,11 +36,90 @@
   }
 
   .gradient-primary {
-    background-image: linear-gradient(160deg, #923dfe 0%, #4f3dfe 60%);
+    @apply bg-gradient-to-br from-[#3D96FE] to-[#4f3dfe]
+    /* background-image: linear-gradient(160deg, #923dfe 0%, #4f3dfe 60%); */;
   }
   .font-rubik {
     font-family: "Rubik", sans-serif !important;
   }
+
+  /* Utilities End */
+
+  /* Hero Section Start*/
+  nav ul a {
+    @apply px-3 py-2 text-sm text-gray-400 hover:text-gray-500 transition hidden md:block;
+  }
+
+  .hero {
+    @apply bg-background py-5 md:flex md:flex-nowrap md:flex-row-reverse wrapper md:py-32;
+  }
+
+  .hero-content {
+    @apply my-5 px-4 md:flex md:flex-col md:items-start md:justify-center space-y-5 flex-1;
+  }
+
+  .hero-content h4 {
+    @apply font-rubik text-white font-extrabold text-4xl uppercase text-center;
+  }
+  .hero-content h1 {
+    @apply font-rubik text-transparent bg-gradient-to-br from-[#cc3dfe] to-[#1380ff] bg-clip-text font-extrabold text-5xl md:text-5xl lg:text-6xl uppercase text-center;
+  }
+
+  .hero-content p {
+    @apply lg:pr-10 md:text-left my-2;
+  }
+
+  /* Hero Section End*/
+
+  /* Project Section Start */
+  .projects {
+    @apply wrapper bg-background;
+  }
+
+  .projects h3 {
+    @apply uppercase text-portfolio-text text-center tracking-widest;
+  }
+
+  .projects > h1 {
+    @apply section-header text-white;
+  }
+
+  .projects-grid {
+    @apply space-y-8;
+  }
+
+  .projects-grid .project-card {
+    @apply bg-white p-4 md:p-5 rounded-lg md:flex;
+  }
+
+  .projects-grid .project-card .card-img {
+    @apply rounded-md md:flex-1 md:w-0 object-cover;
+  }
+
+  .projects-grid .project-card h1 {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4;
+  }
+
+  .projects-grid .project-card p {
+    @apply text-left;
+  }
+
+  .projects-grid .project-card .stacks {
+    @apply flex flex-wrap my-4 space-x-4 font-medium text-gray-800;
+  }
+
+  .projects-grid .project-card .stacks .item {
+    @apply flex items-center space-x-1;
+  }
+
+  .projects-grid .project-card .stacks .item img {
+    @apply w-5 h-5;
+  }
+
+  .projects-grid .project-card .buttons {
+    @apply flex mt-8 space-x-2;
+  }
+  /* Project Section end */
 
   /* What I Do section */
   .whatIdo {
