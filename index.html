@@ -23,9 +23,10 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <script defer src="https://unpkg.com/alpinejs@latest/dist/cdn.min.js"></script>
   </head>
   <body>
-    <nav class="bg-background flex justify-between wrapper py-3 border-b border-b-[#ffffff0d]">
+    <nav class="flex justify-between wrapper py-3 border-b border-b-[#ffffff0d]">
       <a href="/" class="logo">
         <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="" />
       </a>
@@ -35,8 +36,8 @@
         <a href="#projects"> <li>Projects</li> </a>
         <a href="#"> <li>My Stack</li> </a>
         <a href="#"> <li>Contact Me</li> </a>
-        <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm" href="#">
-          <li><i class="fa-regular fa-gem pr-2"></i>Resume</li>
+        <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm " href="#">
+          <li class="!text-slate-100"><i class="fa-regular fa-gem pr-2"></i>Resume</li>
         </a>
       </ul>
     </nav>
@@ -45,7 +46,7 @@
     <section class="hero">
       <!-- Hero Image -->
       <div class="h-full flex-1">
-        <img class="h-full" src="./images/hero-image.png" alt="Saad Hasan | Web Developer Hero Image" />
+        <img class="h-full" src="./images/Cover.webp" alt="Saad Hasan | Web Developer Hero Image" />
       </div>
 
       <!-- Hero Content -->
@@ -62,145 +63,74 @@
     </section>
 
     <!-- What I Do -->
-    <section class="whatIdo wrapper">
+    <section class="whatIdo wrapper" x-data ="{skills : ['Frontend', 'Backend', 'Android', 'UI Design']}">
       <h1 class="section-header">What <span>I do</span></h1>
-      <p class="whatIdo-paragraph">
+      <p class="whatIdo-paragraph w-1/2 mx-auto">
         There are three types of service I provide. At first, read the details of my services carefully then pick your
         need-able service for your project or business.
       </p>
 
       <div class="whatIdo-grid">
-        <div class="whatIdo-grid--card">
-          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
-          <h3 class="whatIdo--card-title">Web Development</h3>
-          <p class="whatIdo--card-paragraph">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
-          </p>
-        </div>
-
-        <div class="whatIdo-grid--card">
-          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
-          <h3 class="whatIdo--card-title">Web Development</h3>
-          <p class="whatIdo--card-paragraph">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
-          </p>
-        </div>
-
-        <div class="whatIdo-grid--card">
-          <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
-          <h3 class="whatIdo--card-title">Web Development</h3>
-          <p class="whatIdo--card-paragraph">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
-          </p>
-        </div>
+        <template x-for="skill in skills" >
+            <div class="whatIdo-grid--card">
+              <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
+              <h3 class="whatIdo--card-title" x-text="skill"></h3>
+              <p class="whatIdo--card-paragraph">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
+              </p>
+            </div>
+        </template>
+      </div>
+      
       </div>
     </section>
 
     <!-- Projects -->
-    <section class="projects">
-      <h3>selected project</h3>
-      <h1>Awesome <span>Projects</span></h1>
-      <p>
-        I try to work with clients in a friendly way and focus specifically on what they want. Below is what my clients
-        told about my service at the end of project.
-      </p>
+    <section class="projects space-y-12">
+      <div>
+        <h3>selected project</h3>
+        <h1>Awesome <span>Projects</span></h1>
+        <p class="mx-auto w-1/2">
+          I try to work with clients in a friendly way and focus specifically on what they want. Below is what my clients
+          told about my service at the end of project.
+        </p>
+      </div>
 
-      <div class="projects-grid ">
-        <div class="project-card ">
-          <img class="card-img" src="./images/portfolio.webp" alt="" />
-          <div class="md:flex-1 md:px-12 md:self-center">
-            <h1>Logofolio 2022</h1>
-            <p>
-              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
-              through the search option, patients will be able to take treatment by booking a specific doctor.
-            </p>
-            <!-- stacks -->
-            <div class="stacks">
-              <div class="item">
-                <img class="" src="./images/html.svg" alt="" />
-                <h4>HTML</h4>
-              </div>
-              <div class="item">
-                <img src="./images/javascript.svg" alt="" />
-                <h4>JavaScript</h4>
-              </div>
-              <div class="item">
-                <img src="./images/laravel.svg" alt="" />
-                <h4>Laravel</h4>
-              </div>
+      <div class="projects-grid " x-data="{ projects  : [1,2,3,4,5]}">
+        <template x-for="project in projects">
+          <div class="project-card ">
+            <div class="card-img" >
+              <img class="w-full" src="./images/portfolio.webp" alt="" />
             </div>
-
-            <!-- buttons -->
-            <div class="buttons">
-              <button class="bg-portfolio-blue btn text-white">Github</button>
-              <button class="bg-portfolio-red btn text-white">Live View</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="project-card bg-white p-4 md:p-5 rounded-lg md:flex">
-          <img class="rounded-md md:flex-1 md:w-0 object-cover" src="./images/portfolio.webp" alt="" />
-          <div class="md:flex-1 md:px-12 md:self-center">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4">Logofolio 2022</h1>
-            <p class="text-left">
-              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
-              through the search option, patients will be able to take treatment by booking a specific doctor.
-            </p>
-            <!-- stacks -->
-            <div class="flex flex-wrap my-4 space-x-4 font-medium text-gray-800">
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/html.svg" alt="" />
-                <h4>HTML</h4>
+            <div class="content">
+              <h1>Logofolio 2022</h1>
+              <p>
+                Medivar is a medical website. Where the patient can easily know about medical and their doctors.
+              </p>
+              <!-- stacks -->
+              <div class="stacks">
+                <div class="item">
+                  <img src="./images/html.svg" alt="" />
+                  <h4>HTML</h4>
+                </div>
+                <div class="item">
+                  <img src="./images/javascript.svg" alt="" />
+                  <h4>JavaScript</h4>
+                </div>
+                <div class="item">
+                  <img src="./images/laravel.svg" alt="" />
+                  <h4>Laravel</h4>
+                </div>
               </div>
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/javascript.svg" alt="" />
-                <h4>JavaScript</h4>
+  
+              <!-- buttons -->
+              <div class="buttons">
+                <button class="btn bg-portfolio-blue">Github</button>
+                <button class="btn bg-portfolio-red">Live View</button>
               </div>
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/laravel.svg" alt="" />
-                <h4>Laravel</h4>
-              </div>
-            </div>
-
-            <!-- buttons -->
-            <div class="flex mt-8 space-x-2">
-              <button class="bg-portfolio-blue w-full py-3 rounded-lg text-white shadow-md">Github</button>
-              <button class="bg-portfolio-red w-full py-3 rounded-lg text-white shadow-md">Live View</button>
             </div>
           </div>
-        </div>
-
-        <div class="project-card bg-white p-4 md:p-5 rounded-lg md:flex">
-          <img class="rounded-md md:flex-1 md:w-0 object-cover" src="./images/portfolio.webp" alt="" />
-          <div class="md:flex-1 md:px-12 md:self-center">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4">Logofolio 2022</h1>
-            <p class="text-left">
-              Medivar is a medical website. Where the patient can easily know about medical and their doctors. Moreover,
-              through the search option, patients will be able to take treatment by booking a specific doctor.
-            </p>
-            <!-- stacks -->
-            <div class="flex flex-wrap my-4 space-x-4 font-medium text-gray-800">
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/html.svg" alt="" />
-                <h4>HTML</h4>
-              </div>
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/javascript.svg" alt="" />
-                <h4>JavaScript</h4>
-              </div>
-              <div class="flex items-center space-x-1">
-                <img class="w-5 h-5" src="./images/laravel.svg" alt="" />
-                <h4>Laravel</h4>
-              </div>
-            </div>
-
-            <!-- buttons -->
-            <div class="flex mt-8 space-x-2">
-              <button class="bg-portfolio-blue w-full py-3 rounded-lg text-white shadow-md">Github</button>
-              <button class="bg-portfolio-red w-full py-3 rounded-lg text-white shadow-md">Live View</button>
-            </div>
-          </div>
-        </div>
+        </template>        
       </div>
     </section>
 

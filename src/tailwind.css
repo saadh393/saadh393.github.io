@@ -7,7 +7,6 @@
   * {
     font-family: "Inter", sans-serif;
     transition: all 0.2s ease-in-out;
-    /* font-family: "Rubik", sans-serif; */
   }
 
   span {
@@ -28,7 +27,8 @@
   }
 
   .wrapper {
-    @apply w-full px-4 md:px-8 2xl:px-80 py-16;
+    @apply bg-slate-900;
+    @apply w-full px-4 md:px-8 2xl:px-48 py-16 bg-slate-900;
   }
 
   .section-header {
@@ -51,7 +51,7 @@
   }
 
   .hero {
-    @apply bg-background py-5 md:flex md:flex-nowrap md:flex-row-reverse wrapper md:py-32;
+    @apply bg-slate-900 py-5 md:flex md:flex-nowrap md:flex-row-reverse wrapper md:py-14;
   }
 
   .hero-content {
@@ -80,12 +80,12 @@
     @apply uppercase text-portfolio-text text-center tracking-widest;
   }
 
-  .projects > h1 {
+  .projects > div > h1 {
     @apply section-header text-white;
   }
 
   .projects-grid {
-    @apply space-y-8;
+    @apply space-y-12;
   }
 
   .projects-grid .project-card {
@@ -93,15 +93,19 @@
   }
 
   .projects-grid .project-card .card-img {
-    @apply rounded-md md:flex-1 md:w-0 object-cover;
+    @apply rounded-md md:w-full object-cover;
+  }
+
+  .projects-grid .project-card .content {
+    @apply lg:w-full px-4;
   }
 
   .projects-grid .project-card h1 {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold py-4;
+    @apply text-2xl lg:text-3xl font-bold py-4 text-slate-800;
   }
 
   .projects-grid .project-card p {
-    @apply text-left;
+    @apply text-left text-base;
   }
 
   .projects-grid .project-card .stacks {
@@ -119,6 +123,10 @@
   .projects-grid .project-card .buttons {
     @apply flex mt-8 space-x-2;
   }
+
+  .projects-grid .project-card .buttons button {
+    @apply !py-3 rounded-lg text-white shadow-md !my-2;
+  }
   /* Project Section end */
 
   /* What I Do section */
@@ -131,24 +139,23 @@
   }
 
   .whatIdo-grid {
-    @apply justify-center place-items-center my-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:px-40 2xl:px-20;
+    @apply justify-center place-items-center my-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4;
   }
 
   .whatIdo-grid--card {
-    /* @apply bg-white mx-auto text-center py-8 px-5 rounded-lg shadow-sm; */
-    @apply py-8 px-5 text-center bg-white rounded-lg shadow-sm max-w-xs md:max-w-none lg:w-[320px];
+    @apply py-8 px-4 text-center bg-white rounded-lg shadow-sm max-w-xs lg:w-full;
   }
 
   .whatIdo--card-img {
-    @apply w-20 lg:w-28 aspect-square mx-auto my-3;
+    @apply w-20 lg:w-20 aspect-square mx-auto my-3;
   }
 
   .whatIdo--card-title {
-    @apply text-xl font-extrabold py-3;
+    @apply text-xl text-slate-800 font-bold;
   }
 
   .whatIdo--card-paragraph {
-    @apply text-base;
+    @apply mt-2 text-sm text-slate-600;
   }
 
   /* My Stack Section */
