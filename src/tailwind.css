@@ -2,11 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
+@layer utilities {
   /* Utilities */
   * {
     font-family: "Inter", sans-serif;
     transition: all 0.2s ease-in-out;
+    @apply scroll-smooth snap-mandatory;
   }
 
   span {
@@ -14,10 +15,12 @@
   }
 
   p {
-    @apply font-normal text-portfolio-text lg:text-lg text-center leading-6;
+    @apply font-normal text-portfolio-text lg:text-base text-center leading-6;
     font-family: "Roboto";
   }
-
+  nav {
+    @apply w-full bg-slate-900 border-b border-b-[#ffffff0d];
+  }
   .btn {
     @apply block text-center py-3 md:px-10 rounded-md my-5 hover:translate-y-1 active:opacity-90 active:scale-95 active:ring-2 active:ring-[#3D96FE] shadow-sm active:shadow-md;
   }
@@ -27,12 +30,16 @@
   }
 
   .wrapper {
-    @apply bg-slate-900;
-    @apply w-full px-4 md:px-8 2xl:px-48 py-16 bg-slate-900;
+    @apply w-full bg-slate-900 py-20;
+    /* @apply w-full px-4 md:px-8 2xl:px-48 py-16 bg-slate-900; */
+  }
+
+  .container {
+    @apply sm:max-w-4xl xl:max-w-7xl mx-auto space-y-14 px-4 md:px-0;
   }
 
   .section-header {
-    @apply text-4xl text-center font-extrabold py-2 pb-4;
+    @apply text-4xl text-center font-bold py-2 pb-4 text-slate-800;
   }
 
   .gradient-primary {
@@ -51,7 +58,7 @@
   }
 
   .hero {
-    @apply bg-slate-900 py-5 md:flex md:flex-nowrap md:flex-row-reverse wrapper md:py-14;
+    @apply md:flex md:flex-nowrap md:flex-row-reverse;
   }
 
   .hero-content {
@@ -72,48 +79,45 @@
   /* Hero Section End*/
 
   /* Project Section Start */
-  .projects {
-    @apply wrapper bg-background;
-  }
 
   .projects h3 {
-    @apply uppercase text-portfolio-text text-center tracking-widest;
+    @apply uppercase text-slate-500 text-center tracking-widest;
   }
 
   .projects > div > h1 {
-    @apply section-header text-white;
+    @apply section-header !text-slate-100;
   }
 
   .projects-grid {
-    @apply space-y-12;
+    @apply flex flex-wrap gap-10 items-start justify-center;
   }
 
   .projects-grid .project-card {
-    @apply bg-white p-4 md:p-5 rounded-lg md:flex;
+    @apply p-2 md:p-5 rounded-lg bg-slate-800 max-w-[400px] self-stretch;
   }
 
   .projects-grid .project-card .card-img {
-    @apply rounded-md md:w-full object-cover;
+    @apply rounded-md md:w-full object-cover  shadow-md;
   }
 
   .projects-grid .project-card .content {
-    @apply lg:w-full px-4;
+    @apply lg:w-full self-center;
   }
 
   .projects-grid .project-card h1 {
-    @apply text-2xl lg:text-3xl font-bold py-4 text-slate-800;
+    @apply text-2xl font-bold py-4 text-slate-50;
   }
 
   .projects-grid .project-card p {
-    @apply text-left text-base;
+    @apply text-left text-base text-slate-200 line-clamp-3;
   }
 
   .projects-grid .project-card .stacks {
-    @apply flex flex-wrap my-4 space-x-4 font-medium text-gray-800;
+    @apply flex flex-wrap my-4 font-medium text-gray-800;
   }
 
   .projects-grid .project-card .stacks .item {
-    @apply flex items-center space-x-1;
+    @apply flex items-center space-x-1 bg-slate-700 px-4 py-1 rounded-full text-slate-100 shadow-md mr-2;
   }
 
   .projects-grid .project-card .stacks .item img {
@@ -125,8 +129,12 @@
   }
 
   .projects-grid .project-card .buttons button {
-    @apply !py-3 rounded-lg text-white shadow-md !my-2;
+    @apply w-full rounded-lg text-white shadow-md !my-2;
   }
+  .projects-grid .project-card .buttons button:last-child {
+    @apply bg-portfolio-red;
+  }
+
   /* Project Section end */
 
   /* What I Do section */
@@ -139,11 +147,11 @@
   }
 
   .whatIdo-grid {
-    @apply justify-center place-items-center my-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4;
+    @apply justify-center my-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4;
   }
 
   .whatIdo-grid--card {
-    @apply py-8 px-4 text-center bg-white rounded-lg shadow-sm max-w-xs lg:w-full;
+    @apply py-8 px-4 text-center bg-white rounded-lg shadow-sm max-w-xs lg:w-full hover:scale-105 transition-transform cursor-pointer hover:shadow-sm;
   }
 
   .whatIdo--card-img {
@@ -166,6 +174,6 @@
   /* Footer */
   footer ul li,
   footer ul a {
-    @apply text-gray-400 text-sm md:text-base my-2;
+    @apply text-slate-400 text-sm my-2;
   }
 }

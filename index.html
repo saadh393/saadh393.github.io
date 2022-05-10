@@ -26,235 +26,484 @@
     <script defer src="https://unpkg.com/alpinejs@latest/dist/cdn.min.js"></script>
   </head>
   <body>
-    <nav class="flex justify-between wrapper py-3 border-b border-b-[#ffffff0d]">
-      <a href="/" class="logo">
-        <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="" />
-      </a>
-      <ul class="text-white flex items-center space-x-2">
-        <a href="#"> <li>Home</li> </a>
-        <a href="#services"> <li>What I do</li> </a>
-        <a href="#projects"> <li>Projects</li> </a>
-        <a href="#"> <li>My Stack</li> </a>
-        <a href="#"> <li>Contact Me</li> </a>
-        <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm " href="#">
-          <li class="!text-slate-100"><i class="fa-regular fa-gem pr-2"></i>Resume</li>
+    <nav class="py-2">
+      <div class="container !space-y-0 flex justify-between items-center">
+        <a href="/" class="logo">
+          <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="" />
         </a>
-      </ul>
+        <ul class="hidden text-white lg:flex items-center space-x-2">
+          <a href="/"> <li>Home</li> </a>
+          <a href="#services"> <li>What I do</li> </a>
+          <a href="#projects"> <li>Projects</li> </a>
+          <a href="#stacks"> <li>My Stack</li> </a>
+          <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm" href="#">
+            <li class="!text-slate-100"><i class="fa-regular fa-gem pr-2"></i>Resume</li>
+          </a>
+        </ul>
+
+        <a
+          class="lg:hidden h-fit px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm text-slate-100"
+          href="#"
+        >
+          <i class="fa-regular fa-gem pr-2"></i> Resume
+        </a>
+      </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-      <!-- Hero Image -->
-      <div class="h-full flex-1">
-        <img class="h-full" src="./images/Cover.webp" alt="Saad Hasan | Web Developer Hero Image" />
-      </div>
+    <section class="wrapper">
+      <div class="container hero">
+        <div class="h-full flex-1">
+          <img class="h-full" src="./images/Cover.webp" alt="Saad Hasan | Web Developer Hero Image" />
+        </div>
 
-      <!-- Hero Content -->
-      <div class="hero-content">
-        <h4>Hello, I am</h4>
-        <h1>Saad Hasan</h1>
-        <p>
-          I always try to focus on the users and on the key business indicators as well, which allows me to make a
-          really useful design for the users and business.
-        </p>
-        <a class="btn btn-primary" href="#portfolio">My Portfolio</a
-        >
+        <div class="hero-content">
+          <h4>Hello, I am</h4>
+          <h1>Saad Hasan</h1>
+          <p>
+            I always try to focus on the users and on the key business indicators as well, which allows me to make a
+            really useful design for the users and business.
+          </p>
+          <a class="btn btn-primary" href="#portfolio">My Portfolio</a>
+        </div>
       </div>
     </section>
 
     <!-- What I Do -->
-    <section class="whatIdo wrapper" x-data ="{skills : ['Frontend', 'Backend', 'Android', 'UI Design']}">
-      <h1 class="section-header">What <span>I do</span></h1>
-      <p class="whatIdo-paragraph w-1/2 mx-auto">
-        There are three types of service I provide. At first, read the details of my services carefully then pick your
-        need-able service for your project or business.
-      </p>
+    <section id="services" class="whatIdo wrapper" x-data="skills">
+      <div class="container">
+        <div>
+          <h1 class="section-header">What <span>I do</span></h1>
+          <p class="whatIdo-paragraph w-2/3 mx-auto">
+            There are three types of service I provide. At first, read the details of my services carefully then pick
+            your need-able service for your project or business.
+          </p>
+        </div>
 
-      <div class="whatIdo-grid">
-        <template x-for="skill in skills" >
+        <div class="whatIdo-grid">
+          <template x-for="skill in skills">
             <div class="whatIdo-grid--card">
-              <img class="whatIdo--card-img" src="./images/what-i-do.webp" alt="" />
-              <h3 class="whatIdo--card-title" x-text="skill"></h3>
-              <p class="whatIdo--card-paragraph">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, voluptatibus?
-              </p>
+              <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" alt="" />
+              <h3 class="whatIdo--card-title" x-text="skill.title"></h3>
+              <p class="whatIdo--card-paragraph" x-text="skill.description"></p>
             </div>
-        </template>
-      </div>
-      
+          </template>
+        </div>
       </div>
     </section>
 
     <!-- Projects -->
-    <section class="projects space-y-12">
-      <div>
-        <h3>selected project</h3>
-        <h1>Awesome <span>Projects</span></h1>
-        <p class="mx-auto w-1/2">
-          I try to work with clients in a friendly way and focus specifically on what they want. Below is what my clients
-          told about my service at the end of project.
-        </p>
-      </div>
-
-      <div class="projects-grid " x-data="{ projects  : [1,2,3,4,5]}">
-        <template x-for="project in projects">
-          <div class="project-card ">
-            <div class="card-img" >
-              <img class="w-full" src="./images/portfolio.webp" alt="" />
-            </div>
-            <div class="content">
-              <h1>Logofolio 2022</h1>
-              <p>
-                Medivar is a medical website. Where the patient can easily know about medical and their doctors.
-              </p>
-              <!-- stacks -->
-              <div class="stacks">
-                <div class="item">
-                  <img src="./images/html.svg" alt="" />
-                  <h4>HTML</h4>
+    <section class="wrapper">
+      <div class="container projects">
+        <div>
+          <h3>selected project</h3>
+          <h1>Awesome <span>Projects</span></h1>
+          <p class="mx-auto w-2/3 text-slate-400">
+            I try to work with clients in a friendly way and focus specifically on what they want. Below is what my
+            clients told about my service at the end of project.
+          </p>
+        </div>
+        <div class="projects-grid" id="projects" x-data="{projects}">
+          <template x-for="project in projects">
+            <div class="project-card">
+              <div class="card-img">
+                <img
+                  class="w-full"
+                  x-bind:src="'./images/projects/' + project.thumbnail.original"
+                  x-bind:srcset="./images/projects/' + project.thumbnail.w435 480w"
+                  sizes="(max-width : 480px) 100vw, 360px"
+                  x-alt="project.title"
+                />
+              </div>
+              <div class="content">
+                <h1 x-text="project.title"></h1>
+                <p x-text="project.description"></p>
+                <!-- stacks -->
+                <div class="stacks" x-data="{project.technology}">
+                  <template x-for="stack in project.technology">
+                    <h4 class="item" x-text="stack"></h4>
+                  </template>
                 </div>
-                <div class="item">
-                  <img src="./images/javascript.svg" alt="" />
-                  <h4>JavaScript</h4>
-                </div>
-                <div class="item">
-                  <img src="./images/laravel.svg" alt="" />
-                  <h4>Laravel</h4>
+                <!-- buttons bg-portfolio-red-->
+                <div class="buttons" x-data="{project.actions}">
+                  <template x-for="(action) in project.actions">
+                    <button class="bg-portfolio-blue btn" x-text="action.title" x-bind:href="action.url"></button>
+                  </template>
                 </div>
               </div>
-  
-              <!-- buttons -->
-              <div class="buttons">
-                <button class="btn bg-portfolio-blue">Github</button>
-                <button class="btn bg-portfolio-red">Live View</button>
-              </div>
             </div>
-          </div>
-        </template>        
+          </template>
+        </div>
       </div>
     </section>
 
     <!-- My Stacks -->
     <section class="wrapper stackContainer">
-      <h1 class="section-header">My <span>Tools</span></h1>
-      <p class="w-6/12 font-medium mx-auto">
-        These are the preferred tools that I have been working on to streamline my creative process for design.
-      </p>
+      <div class="container">
+        <div>
+          <h1 class="section-header"><span>Tools & Languages</span> I Prefer</h1>
+          <p class="w-2/3 mx-auto">
+            These are the preferred tools that I have been working on to streamline my creative process for design.
+          </p>
+        </div>
 
-      <!-- stackGrid -->
-      <div
-        class="stackGrid grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 lg:gap-0 lg:gap-y-10 place-items-center my-10 md:max-w-[700px] lg:max-w-[800px] mx-auto"
-      >
-        <img class="max-w-[100px] rounded-lg" src="./images/html.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/javascript.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/react.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/redux.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/nodejs.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/mongodb.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/mysql.svg" alt="" />
-        <img class="max-w-[100px] rounded-lg" src="./images/laravel.svg" alt="" />
+        <!-- stackGrid -->
+        <div class="stackGrid flex flex-wrap justify-center gap-12" x-data="tools">
+          <template x-for="tool in tools">
+            <img
+              class="w-[80px] lg:w-[100px] rounded-lg transition-transform ease-in-out duration-300 transtion hover:scale-105 hover:drop-shadow-xl"
+              x-bind:src="'./images/tools/' + tool.src"
+              x-bind:alt="tool.name"
+            />
+          </template>
+        </div>
       </div>
     </section>
 
     <!-- My Working Experience -->
     <section class="projects wrapper bg-background">
-      <h1 class="section-header text-white">My <span>Experience</span></h1>
-      <p class="w-6/12 font-medium mx-auto">
-        Many projects have been done since the beginning of my freelancing career. Now I have worked in several
-        agencies.
-      </p>
-
-      <div class="my-10">
-        <div class="my-5 p-5 lg:py-7 bg-white rounded-lg grid grid-cols-2 lg:grid-cols-3 gap-2 gap-y-4">
-          <div class="w-full lg:flex lg:flex-col lg:justify-center">
-            <img class="object-contain w-full lg:w-8/12" src="./images/experience/analyzen-logo.png" alt="" />
-          </div>
-          <div class="self-center w-full h-full lg:flex lg:flex-col lg:justify-center">
-            <p class="text-left text-sm">October 2022 - current</p>
-            <h1 class="font-bold text-gray-700 text-lg md:text-2xl transition-all">Frontend Develoeper</h1>
-          </div>
-          <p class="text-left text-sm md:text-base col-span-2 lg:col-auto h-full lg:flex lg:justify-center">
-            We bring our clients real-world experience in product branding, storefront and product listing management,
-            logistics, and marketing.
+      <div class="container">
+        <div>
+          <h1 class="section-header !text-slate-100">My <span>Experience</span></h1>
+          <p class="mx-auto w-2/3 text-slate-400">
+            Many projects have been done since the beginning of my freelancing career. Now I have worked in several
+            agencies.
           </p>
         </div>
 
-        <div class="my-5 p-5 lg:py-7 bg-white rounded-lg grid grid-cols-2 lg:grid-cols-3 gap-2 gap-y-4">
-          <div class="w-full lg:flex lg:flex-col lg:justify-center">
-            <img class="object-contain w-full lg:w-8/12" src="./images/experience/analyzen-logo.png" alt="" />
-          </div>
-          <div class="self-center w-full h-full lg:flex lg:flex-col lg:justify-center">
-            <p class="text-left text-sm">October 2022 - current</p>
-            <h1 class="font-bold text-gray-700 text-lg md:text-2xl transition-all">Frontend Develoeper</h1>
-          </div>
-          <p class="text-left text-sm md:text-base col-span-2 lg:col-auto h-full lg:flex lg:justify-center">
-            We bring our clients real-world experience in product branding, storefront and product listing management,
-            logistics, and marketing.
-          </p>
-        </div>
+        <div class="my-10 gap-5" x-data="Experiences">
+          <template x-for="experience in Experiences">
+            <div class="bg-white rounded-md grid grid-cols-2 lg:grid-cols-3 gap-2 gap-y-4 p-4 my-4">
+              <div class="w-full lg:flex lg:flex-col lg:justify-center">
+                <img
+                  class="object-contain w-full lg:w-8/12 h-[76px]"
+                  x-bind:src="'./images/experience/' + experience.companyLogo"
+                  x-bind:alt="experience.companyName"
+                />
+              </div>
 
-        <div class="my-5 p-5 lg:py-7 bg-white rounded-lg grid grid-cols-2 lg:grid-cols-3 gap-2 gap-y-4">
-          <div class="w-full lg:flex lg:flex-col lg:justify-center">
-            <img class="object-contain w-full lg:w-8/12" src="./images/experience/analyzen-logo.png" alt="" />
-          </div>
-          <div class="self-center w-full h-full lg:flex lg:flex-col lg:justify-center">
-            <p class="text-left text-sm">October 2022 - current</p>
-            <h1 class="font-bold text-gray-700 text-lg md:text-2xl transition-all">Frontend Develoeper</h1>
-          </div>
-          <p class="text-left text-sm md:text-base col-span-2 lg:col-auto h-full lg:flex lg:justify-center">
-            We bring our clients real-world experience in product branding, storefront and product listing management,
-            logistics, and marketing.
-          </p>
+              <div class="self-center w-full h-full lg:flex lg:flex-col lg:justify-center gap-y-2">
+                <h1
+                  class="font-bold text-slate-800 text-lg md:text-2xl transition-all"
+                  x-text="experience.companyName"
+                ></h1>
+                <h1 class="font-semibold text-slate-700 text-base" x-text="experience.designation"></h1>
+                <p class="text-left text-sm" x-text="experience.workingDuration"></p>
+              </div>
+
+              <p
+                class="text-left text-sm col-span-2 items-center lg:col-auto h-full lg:flex lg:justify-center line-clamp-3"
+                x-text="experience.description"
+              ></p>
+            </div>
+          </template>
         </div>
       </div>
     </section>
 
-    <footer class="bg-background wrapper grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-      <div class="col-span-2 md:col-auto">
-        <img class="h-[100px] mx-auto md:mx-0 object-contain" src="./images/nav-icon.png" alt="" />
-        <p class="md:text-left">
-          I solve clients’ problems. I always try to focus on the users and on the key business indicators as well,
-          which allows me to make a really useful design for the users and business.
-        </p>
-      </div>
+    <footer class="wrapper bg-background">
+      <div class="container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div class="col-span-2 md:col-auto">
+          <img class="h-[100px] mx-auto md:mx-0 object-contain" src="./images/nav-icon.png" alt="" />
+          <p class="md:text-left">
+            I solve clients’ problems. I always try to focus on the users and on the key business indicators as well,
+            which allows me to make a really useful design for the users and business.
+          </p>
+        </div>
 
-      <div class="pl-4 place-self-center">
-        <h3 class="text-white font-medium text-lg">Explore</h3>
-        <ul class="text-whtie">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Service</a></li>
-          <li><a href="#">Projects</a></li>
-          <li><a href="#">Experience</a></li>
-          <li><a href="#">Tools</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+        <div class="pl-4 place-self-center">
+          <h3 class="text-white font-medium text-lg">Explore</h3>
+          <ul class="text-whtie">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Service</a></li>
+            <li><a href="#">Projects</a></li>
+            <li><a href="#">Experience</a></li>
+            <li><a href="#">Tools</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
 
-      <div class="pl-4  place-self-center">
-        <h3 class="text-white font-medium text-lg">All Services</h3>
-        <ul class="text-whtie">
-          <li>Home</li>
-          <li>Service</li>
-          <li>Projects</li>
-          <li>Experience</li>
-          <li>Tools</li>
-          <li>Contact</li>
-        </ul>
-      </div>
+        <div class="pl-4 place-self-center">
+          <h3 class="text-white font-medium text-lg">All Services</h3>
+          <ul class="text-whtie">
+            <li>Home</li>
+            <li>Service</li>
+            <li>Projects</li>
+            <li>Experience</li>
+            <li>Tools</li>
+            <li>Contact</li>
+          </ul>
+        </div>
 
-      <div class="text-center col-span-2 md:col-span-3 lg:col-auto ">
-        <h3 class="text-white font-medium text-lg">Contact me</h3>
-        <div class="flex space-x-3 my-3 justify-center">
-          <div class="bg-portfolio-yellow w-8 h-8 rounded-full grid place-items-center"><i class="fa-regular fa-envelope"></i></div>
-          <div class="bg-indigo-600 w-8 h-8 rounded-full grid place-items-center text-white"><i class="fa-brands fa-linkedin"></i></div>
-          <div class="bg-gray-800 w-8 h-8 rounded-full grid place-items-center text-white"><i class="fa-brands fa-github"></i></i></div>
+        <div class="text-center col-span-2 md:col-span-3 lg:col-auto">
+          <h3 class="text-white font-medium text-lg">Contact me</h3>
+          <div class="flex space-x-3 my-3 justify-center">
+            <div class="bg-portfolio-yellow w-8 h-8 rounded-full grid place-items-center">
+              <i class="fa-regular fa-envelope"></i>
+            </div>
+            <div class="bg-indigo-600 w-8 h-8 rounded-full grid place-items-center text-white">
+              <i class="fa-brands fa-linkedin"></i>
+            </div>
+            <div class="bg-gray-800 w-8 h-8 rounded-full grid place-items-center text-white">
+              <i class="fa-brands fa-github"></i>
+            </div>
 
-          <div class="bg-blue-700 w-8 h-8 rounded-full grid place-items-center text-white"><i class="fa-brands fa-facebook"></i></i></i></div>
+            <div class="bg-blue-700 w-8 h-8 rounded-full grid place-items-center text-white">
+              <i class="fa-brands fa-facebook"></i>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
-    <section class="w-full bg-portfolio-blue py-2">
-      <p class="text-white text-base">UI designed by <a class="underline" href="https://www.behance.net/tanviro">Tanvir Hasan 💖</a></p>
+    <section class="w-full bg-slate-800 py-2">
+      <p class="text-slate-400 text-base">
+        UI designed by <a class="underline" href="https://www.behance.net/tanviro">Tanvir Hasan 💖</a>
+      </p>
     </section>
   </body>
+
+  <script>
+    const tools = [
+      {
+        name: "Android App Development",
+        src: "android.svg",
+      },
+      {
+        name: "CSS",
+        src: "css3.svg",
+      },
+      {
+        name: "Figma",
+        src: "figma.svg",
+      },
+      {
+        name: "Git",
+        src: "git.svg",
+      },
+      {
+        name: "Github",
+        src: "github.svg",
+      },
+      {
+        name: "html",
+        src: "html.svg",
+      },
+      {
+        name: "JavaScript",
+        src: "javascript.svg",
+      },
+      {
+        name: "Laravel",
+        src: "laravel.svg",
+      },
+      {
+        name: "MongoDB",
+        src: "mongodb.svg",
+      },
+      {
+        name: "Mysql",
+        src: "mysql.svg",
+      },
+      {
+        name: "Node.js",
+        src: "nodejs.svg",
+      },
+      {
+        name: "NPM",
+        src: "npm.svg",
+      },
+      {
+        name: "Php",
+        src: "php (1).svg",
+      },
+      {
+        name: "React.js",
+        src: "react.svg",
+      },
+      {
+        name: "Redux",
+        src: "redux.svg",
+      },
+      {
+        name: "TailwindCss",
+        src: "tailwind-css-2.svg",
+      },
+      {
+        name: "VS Code",
+        src: "visual-studio-code.svg",
+      },
+    ];
+
+    const Experiences = [
+      {
+        companyLogo: "analyzen-logo.png",
+        companyName: "Analyzen",
+        designation: "Frontend Developer",
+        workingDuration: "August, 2021 - Present",
+        description:
+          "In the last 12 years, Analyzen evolved from a local digital-first marketing company to offering an integrated mix of strategy, analytics, creativity, technology, media and experience to drive meaningful innovation in communication through multi-country presence.",
+      },
+      {
+        companyLogo: "lws-logo-dark.svg",
+        companyName: "Learn with Sumit",
+        designation: "Product Manager",
+        workingDuration: "January, 2022 - Present",
+        description:
+          "Learn with Sumit - LWS is all about teaching web development skills and techniques in an efficient and practical manner.",
+      },
+
+      {
+        companyLogo: "weblywork.png",
+        companyName: "Weblywork",
+        designation: "Full Stack Developer",
+        workingDuration: "August, 2015 - 2020",
+        description:
+          "The Place of All Web Based Workings. I worked their as Full Stack Web Developer. I developed several web applications, backend API, mobile application and so on.",
+      },
+    ];
+
+    const skills = [
+      {
+        title: "Frontend Developer",
+        image: "frontend.png",
+        description: "Award-wining Content marketing agency specialises in creating and sharing engacing content",
+      },
+      {
+        title: "Backend Developer",
+        image: "backend.png",
+        description: "Websites don't have to be static, I love making pages come to life.",
+      },
+      {
+        title: "Mobile App Developer",
+        image: "mobile.png",
+        description: "Bring your awesome ideas into your hand",
+      },
+      {
+        title: "UI Designer",
+        image: "ui.png",
+        description: "Strong preference for easy to use, intuitive UX/UI.",
+      },
+    ];
+
+    const projects = [
+      {
+        title: "Unilever Frontline Academy",
+        description:
+          "This Project is build with Laravel. This is an office project and first it was designed with Tailwind CSS then  adopted with Laravel.",
+        technology: ["JavaScript", "Tailwind", "Laravel"],
+        thumbnail: {
+          original: "Uniliver.webp",
+          w435: "w435/Uniliver.webp",
+          w580: "w580/Uniliver.webp",
+        },
+        actions: [
+          {
+            title: "Github",
+            url: "https://github.com/saadh393/uniliver-online-course",
+          },
+          {
+            title: "Live View",
+            url: "https://saadh393.github.io/uniliver-online-course/",
+          },
+        ],
+      },
+      {
+        title: "Justicia",
+        description:
+          "Women's right advocate. This web site is still under development.  In preliminary stage , the frontend is developed with tailwind and now I am developing the backend with Laravel sximo framework",
+        technology: ["JavaScript", "Tailwind", "Laravel"],
+        thumbnail: {
+          original: "Justicia.webp",
+          w435: "w435/Justicia.webp",
+          w580: "w580/Justicia.webp",
+        },
+        actions: [
+          {
+            title: "Github",
+            url: "https://github.com/saadh393/Justicia",
+          },
+          {
+            title: "Live View",
+            url: "https://saadh393.github.io/Justicia/",
+          },
+        ],
+      },
+      {
+        title: "Bengal Meats",
+        description:
+          "This is Full website design with Figma. This design is prepared publish in the Envato market. Soon I will make the Mobile app & Web App of it",
+        technology: ["Figma"],
+        thumbnail: {
+          original: "BengalMeats.webp",
+          w435: "w435/BengalMeats.webp",
+          w580: "w580/BengalMeats.webp",
+        },
+        actions: [
+          {
+            title: "Figma Preview",
+            url: "https://github.com/saadh393/Justicia",
+          },
+        ],
+      },
+      {
+        title: "MovieWall",
+        description:
+          "MovieWall - Movie Wallpapers is based on the upcoming latest movies, so that can find here the following movies, those will be releasing soon.",
+        technology: ["Android", "Kotlin", "Firebase"],
+        thumbnail: {
+          original: "MovieWall.webp",
+          w435: "w435/MovieWall.webp",
+          w580: "w580/MovieWall.webp",
+        },
+        actions: [
+          {
+            title: "Github",
+            url: "https://github.com/saadh393/MovieWall",
+          },
+          {
+            title: "Playstore",
+            url: "https://play.google.com/store/apps/details?id=com.wwinc.MovieWall",
+          },
+        ],
+      },
+      {
+        title: "Interactive Quiz Application",
+        description:
+          "This quiz application is build with React js. Students can pick the topic of quiz and attend the interactive quiz. This is optimized application",
+        technology: ["Tailwind", "JavaScript", "React"],
+        thumbnail: {
+          original: "Quiz Application.webp",
+          w435: "w435/Quiz Application.webp",
+          w580: "w580/Quiz Application.webp",
+        },
+        actions: [
+          {
+            title: "Github",
+            url: "https://github.com/saadh393/quiz",
+          },
+        ],
+      },
+      {
+        title: "Portfolio Website",
+        description: "Professional landing page for freelance marketing strategist & community builder",
+        technology: ["Figma"],
+        thumbnail: {
+          original: "Portfolio.webp",
+          w435: "w435/Portfolio.webp",
+          w580: "w580/Portfolio.webp",
+        },
+        actions: [
+          {
+            title: "Figma Preview",
+            url: "#",
+          },
+        ],
+      },
+    ];
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("tools", tools);
+      Alpine.data("Experiences", Experiences);
+      Alpine.data("skills", skills);
+    });
+  </script>
 </html>
