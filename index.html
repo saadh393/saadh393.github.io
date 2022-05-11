@@ -45,13 +45,18 @@
           <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="Saad Hasan | Web Developer" />
         </a>
         <ul class="hidden text-white lg:flex items-center space-x-2">
-          <a href="/"> <li>Home</li> </a>
-          <a href="#services"> <li>What I do</li> </a>
-          <a href="#projects"> <li>Projects</li> </a>
-          <a href="#stacks"> <li>My Stack</li> </a>
-          <a class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm" href="#">
-            <li class="!text-slate-100"><i class="fa-regular fa-gem pr-2"></i>Resume</li>
-          </a>
+          <li><a href="/">Home</a></li>
+          <li><a href="#services">What I do</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#stacks">My Stack </a></li>
+          <li class="!text-slate-100">
+            <a
+              class="px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm text-slate-200"
+              href="#"
+            >
+              <i class="fa-regular fa-gem pr-2"></i>Resume
+            </a>
+          </li>
         </ul>
 
         <a
@@ -95,8 +100,8 @@
 
         <div class="whatIdo-grid">
           <template x-for="skill in skills">
+            <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" x-bind:alt="skill.title" />
             <div class="whatIdo-grid--card">
-              <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" x-bind:alt="skill.title" />
               <h3 class="whatIdo--card-title" x-text="skill.title"></h3>
               <p class="whatIdo--card-paragraph" x-text="skill.description"></p>
             </div>
@@ -124,8 +129,8 @@
                   class="w-full"
                   x-bind:src="'./images/projects/' + project.thumbnail.original"
                   x-bind:srcset="./images/projects/' + project.thumbnail.w435 480w"
+                  x-bind:alt="project.title"
                   sizes="(max-width : 480px) 100vw, 360px"
-                  x-alt="project.title"
                   loading="lazy"
                 />
               </div>
@@ -166,8 +171,8 @@
           <template x-for="tool in tools">
             <img
               class="w-[80px] lg:w-[100px] rounded-lg transition-transform ease-in-out duration-300 transtion hover:scale-105 hover:drop-shadow-xl"
-              x-bind:src="'./images/tools/' + tool.src"
               x-bind:alt="tool.name"
+              x-bind:src="'./images/tools/' + tool.src"
             />
           </template>
         </div>
@@ -191,8 +196,8 @@
               <div class="w-full lg:flex lg:flex-col lg:justify-center">
                 <img
                   class="object-contain w-full lg:w-8/12 h-[76px]"
-                  x-bind:src="'./images/experience/' + experience.companyLogo"
                   x-bind:alt="experience.companyName"
+                  x-bind:src="'./images/experience/' + experience.companyLogo"
                 />
               </div>
 
