@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "watch": "npx tailwindcss -i ./src/tailwind.css -o ./styles.css --watch"
+    "watch": "npx tailwindcss -i ./src/tailwind.css -o ./styles.css --watch",
+    "build": "npx tailwindcss -o ./src/build.css --minify"
   },
   "repository": {
     "type": "git",
