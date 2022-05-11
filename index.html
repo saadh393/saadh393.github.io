@@ -100,8 +100,8 @@
 
         <div class="whatIdo-grid">
           <template x-for="skill in skills">
-            <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" x-bind:alt="skill.title" />
             <div class="whatIdo-grid--card">
+              <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" x-bind:alt="skill.title" />
               <h3 class="whatIdo--card-title" x-text="skill.title"></h3>
               <p class="whatIdo--card-paragraph" x-text="skill.description"></p>
             </div>

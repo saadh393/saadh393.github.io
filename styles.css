@@ -782,14 +782,24 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(241 245 249 / var(--tw-text-opacity)) !important;
 }
 
+.text-slate-200 {
+  --tw-text-opacity: 1;
+  color: rgb(226 232 240 / var(--tw-text-opacity));
+}
+
 .text-slate-100 {
   --tw-text-opacity: 1;
   color: rgb(241 245 249 / var(--tw-text-opacity));
 }
 
-.text-slate-400 {
+.text-slate-300 {
   --tw-text-opacity: 1;
-  color: rgb(148 163 184 / var(--tw-text-opacity));
+  color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+
+.text-portfolio-yellow {
+  --tw-text-opacity: 1;
+  color: rgb(249 184 19 / var(--tw-text-opacity));
 }
 
 .text-slate-800 {
@@ -802,19 +812,9 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(51 65 85 / var(--tw-text-opacity));
 }
 
-.text-slate-200 {
+.text-slate-400 {
   --tw-text-opacity: 1;
-  color: rgb(226 232 240 / var(--tw-text-opacity));
-}
-
-.text-slate-300 {
-  --tw-text-opacity: 1;
-  color: rgb(203 213 225 / var(--tw-text-opacity));
-}
-
-.text-portfolio-yellow {
-  --tw-text-opacity: 1;
-  color: rgb(249 184 19 / var(--tw-text-opacity));
+  color: rgb(148 163 184 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -1066,8 +1066,8 @@ nav ul a:hover {
 
 .hero-content h4 {
   text-align: center;
-  font-size: 2.25rem;
-  line-height: 2.5rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
   font-weight: 800;
   text-transform: uppercase;
   --tw-text-opacity: 1;
@@ -1083,8 +1083,8 @@ nav ul a:hover {
   -webkit-background-clip: text;
           background-clip: text;
   text-align: center;
-  font-size: 3rem;
-  line-height: 1;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
   font-weight: 800;
   text-transform: uppercase;
   color: transparent;

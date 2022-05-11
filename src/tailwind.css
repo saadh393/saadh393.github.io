@@ -66,10 +66,10 @@
   }
 
   .hero-content h4 {
-    @apply font-rubik text-white font-extrabold text-4xl uppercase text-center;
+    @apply font-rubik text-white font-extrabold text-3xl uppercase text-center;
   }
   .hero-content h1 {
-    @apply font-rubik text-transparent bg-gradient-to-br from-[#cc3dfe] to-[#1380ff] bg-clip-text font-extrabold text-5xl md:text-5xl lg:text-6xl uppercase text-center;
+    @apply font-rubik text-transparent bg-gradient-to-br from-[#cc3dfe] to-[#1380ff] bg-clip-text font-extrabold text-4xl md:text-5xl lg:text-6xl uppercase text-center;
   }
 
   .hero-content p {
