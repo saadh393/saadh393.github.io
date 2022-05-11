@@ -5,6 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Saad Hasan | Web Developer</title>
+    <meta name="theme-color" content="#00cf5d" />
+    <meta name="title" content="Saad Hasan | Web Developer" />
+    <meta
+      name="description"
+      content="Hello ! My name is Saad Hasan, I am a fast learner and passionate Web Developer, experienced in JavaScript, PHP, Python, Java, Kotlin Programming Languages"
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/saadh393/saadh393.github.io/gh-pages/metaimage.jpg"
+    />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:url" content="http://saadh393.github.io/" />
+    <link rel="manifest" href="./manifest.json" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
@@ -29,7 +42,7 @@
     <nav class="py-2">
       <div class="container !space-y-0 flex justify-between items-center">
         <a href="/" class="logo">
-          <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="" />
+          <img class="h-[60px] object-contain" src="./images/nav-icon.png" alt="Saad Hasan | Web Developer" />
         </a>
         <ul class="hidden text-white lg:flex items-center space-x-2">
           <a href="/"> <li>Home</li> </a>
@@ -60,7 +73,7 @@
         <div class="hero-content">
           <h4>Hello, I am</h4>
           <h1>Saad Hasan</h1>
-          <p>
+          <p class="text-slate-300">
             I always try to focus on the users and on the key business indicators as well, which allows me to make a
             really useful design for the users and business.
           </p>
@@ -83,7 +96,7 @@
         <div class="whatIdo-grid">
           <template x-for="skill in skills">
             <div class="whatIdo-grid--card">
-              <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" alt="" />
+              <img class="whatIdo--card-img" x-bind:src="'./images/services/' + skill.image" x-bind:alt="skill.title" />
               <h3 class="whatIdo--card-title" x-text="skill.title"></h3>
               <p class="whatIdo--card-paragraph" x-text="skill.description"></p>
             </div>
@@ -97,8 +110,8 @@
       <div class="container projects">
         <div>
           <h3>selected project</h3>
-          <h1>Awesome <span>Projects</span></h1>
-          <p class="mx-auto w-2/3 text-slate-400">
+          <h1>Awesome <span class="text-portfolio-yellow">Projects</span></h1>
+          <p class="mx-auto w-2/3 text-slate-300">
             I try to work with clients in a friendly way and focus specifically on what they want. Below is what my
             clients told about my service at the end of project.
           </p>
@@ -113,6 +126,7 @@
                   x-bind:srcset="./images/projects/' + project.thumbnail.w435 480w"
                   sizes="(max-width : 480px) 100vw, 360px"
                   x-alt="project.title"
+                  loading="lazy"
                 />
               </div>
               <div class="content">
@@ -164,8 +178,8 @@
     <section class="projects wrapper bg-background">
       <div class="container">
         <div>
-          <h1 class="section-header !text-slate-100">My <span>Experience</span></h1>
-          <p class="mx-auto w-2/3 text-slate-400">
+          <h1 class="section-header !text-slate-100">My <span class="text-portfolio-yellow">Experience</span></h1>
+          <p class="mx-auto w-2/3 text-slate-300">
             Many projects have been done since the beginning of my freelancing career. Now I have worked in several
             agencies.
           </p>
@@ -204,8 +218,12 @@
     <footer class="wrapper bg-background">
       <div class="container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         <div class="col-span-2 md:col-auto">
-          <img class="h-[100px] mx-auto md:mx-0 object-contain" src="./images/nav-icon.png" alt="" />
-          <p class="md:text-left">
+          <img
+            class="h-[100px] mx-auto md:mx-0 object-contain"
+            src="./images/nav-icon.png"
+            alt="Saad Hasan - Web Developer"
+          />
+          <p class="md:text-left text-slate-300">
             I solve clients’ problems. I always try to focus on the users and on the key business indicators as well,
             which allows me to make a really useful design for the users and business.
           </p>

@@ -1,0 +1,8 @@
+{
+  "short_name": "Saad Hasan Portfolio",
+  "name": "Saad Hasan Portfolio",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#00cf5d",
+  "background_color": "#0a192f"
+}

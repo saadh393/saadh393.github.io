@@ -552,16 +552,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 100%;
 }
 
+.h-\[76px\] {
+  height: 76px;
+}
+
 .h-\[100px\] {
   height: 100px;
 }
 
 .h-8 {
   height: 2rem;
-}
-
-.h-\[76px\] {
-  height: 76px;
 }
 
 .w-2\/3 {
@@ -800,6 +800,21 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-slate-700 {
   --tw-text-opacity: 1;
   color: rgb(51 65 85 / var(--tw-text-opacity));
+}
+
+.text-slate-200 {
+  --tw-text-opacity: 1;
+  color: rgb(226 232 240 / var(--tw-text-opacity));
+}
+
+.text-slate-300 {
+  --tw-text-opacity: 1;
+  color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+
+.text-portfolio-yellow {
+  --tw-text-opacity: 1;
+  color: rgb(249 184 19 / var(--tw-text-opacity));
 }
 
 .underline {
