@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Saad Hasan | Web Developer</title>
-    <meta name="theme-color" content="#00cf5d" />
+    <meta name="theme-color" content="#182544" />
     <meta name="title" content="Saad Hasan | Web Developer" />
     <meta
       name="description"
@@ -63,7 +63,8 @@
 
         <a
           class="lg:hidden h-fit px-3 py-2 bg-portfolio-blue rounded-md shadow-sm font-medium tracking-wide text-sm text-slate-100"
-          href="#"
+          target="_blank"
+          href="https://drive.google.com/file/d/1PyWcHQ4p5IN4DAok0bajbn7ZCFwDP2tD/view?usp=sharing"
         >
           <i class="fa-regular fa-gem pr-2"></i> Resume
         </a>
@@ -160,7 +161,7 @@
                 <!-- buttons bg-portfolio-red-->
                 <div class="buttons" x-data="{project.actions}">
                   <template x-for="(action) in project.actions">
-                    <button class="bg-portfolio-blue btn" x-text="action.title" x-bind:href="action.url"></button>
+                    <a class="bg-portfolio-blue btn" x-text="action.title" target="_blank" x-bind:href="action.url"></a>
                   </template>
                 </div>
               </div>
@@ -480,7 +481,7 @@
         actions: [
           {
             title: "Figma Preview",
-            url: "https://github.com/saadh393/Justicia",
+            url: "https://www.figma.com/proto/0QpVSlI77Yz1bbjdOq1WQ1/Bengal-Meat?page-id=0%3A1&node-id=35%3A3523&scaling=scale-down-width&starting-point-node-id=35%3A3523",
           },
         ],
       },
@@ -533,8 +534,12 @@
         },
         actions: [
           {
-            title: "Figma Preview",
-            url: "#",
+            title: "Web View",
+            url: "https://www.figma.com/proto/xXgpo4ekzu1rXwAJAGW1l7/Risalat-Siddique-%7C-Man-of-Steel?page-id=0%3A1&node-id=35%3A2&scaling=scale-down-width&starting-point-node-id=35%3A2&show-proto-sidebar=1",
+          },
+          {
+            title: "Phone View",
+            url: "https://www.figma.com/proto/xXgpo4ekzu1rXwAJAGW1l7/Risalat-Siddique-%7C-Man-of-Steel?page-id=0%3A1&node-id=63%3A86&scaling=scale-down-width&starting-point-node-id=63%3A86&show-proto-sidebar=1",
           },
         ],
       },

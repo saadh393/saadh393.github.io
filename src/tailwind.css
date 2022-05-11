@@ -128,10 +128,10 @@
     @apply flex mt-8 space-x-2;
   }
 
-  .projects-grid .project-card .buttons button {
+  .projects-grid .project-card .buttons a {
     @apply w-full rounded-lg text-white shadow-md !my-2;
   }
-  .projects-grid .project-card .buttons button:last-child {
+  .projects-grid .project-card .buttons a:last-child {
     @apply bg-portfolio-red;
   }
 
