@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "watch": "npx tailwindcss -i ./src/tailwind.css -o ./styles.css --watch",
-    "build": "npx tailwindcss -o ./src/build.css --minify"
+    "build": "npx tailwindcss build -i ./src/tailwind.css -o ./src/build.css --minify"
   },
   "repository": {
     "type": "git",
