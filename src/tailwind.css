@@ -11,7 +11,7 @@
   }
 
   span {
-    @apply text-portfolio-blue;
+    @apply text-portfolio-yellow;
   }
 
   p {
@@ -39,7 +39,7 @@
   }
 
   .section-header {
-    @apply text-4xl text-center font-bold py-2 pb-4 text-slate-800;
+    @apply text-4xl text-center font-bold py-2 pb-4 text-slate-200;
   }
 
   .gradient-primary {
@@ -139,7 +139,7 @@
 
   /* What I Do section */
   .whatIdo {
-    background-image: linear-gradient(320deg, #ffefef 0%, #f7ffe4 100%);
+    @apply bg-slate-800;
   }
 
   .whatIdo-header {
@@ -151,7 +151,7 @@
   }
 
   .whatIdo-grid--card {
-    @apply py-8 px-4 text-center bg-white rounded-lg shadow-sm max-w-xs lg:w-full hover:scale-105 transition-transform cursor-pointer hover:shadow-sm;
+    @apply py-8 px-4 text-center bg-slate-900 rounded-lg shadow-sm max-w-xs lg:w-full hover:scale-105 transition-transform cursor-pointer hover:shadow-sm;
   }
 
   .whatIdo--card-img {
@@ -159,16 +159,16 @@
   }
 
   .whatIdo--card-title {
-    @apply text-xl text-slate-800 font-bold;
+    @apply text-xl text-slate-200 font-bold;
   }
 
   .whatIdo--card-paragraph {
-    @apply mt-2 text-sm text-slate-600;
+    @apply mt-2 text-sm text-slate-400;
   }
 
   /* My Stack Section */
   .stackContainer {
-    background-image: linear-gradient(100deg, #fff9df 0%, #ecfff0 75%);
+    @apply bg-slate-800;
   }
 
   /* Footer */
