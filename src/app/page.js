@@ -1,3 +1,4 @@
+import Contact from "@/components/homePage/Contact/Contact";
 import HeroSection from "@/components/homePage/Hero/HeroSection";
 import Intro from "@/components/homePage/Intro/Intro";
 import Introduction from "@/components/homePage/Introduction/Introduction";
@@ -7,7 +8,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-10 space-y-10">
+    <main className="flex min-h-screen flex-col items-center justify-between p-2 lg:p-10 space-y-10 max-w-[1919px] mx-auto">
       <Wrapper>
         <HeroSection />
         <Intro />
@@ -15,6 +16,7 @@ export default function Home() {
 
       <Introduction />
       <Projects />
+      <Contact />
     </main>
   );
 }

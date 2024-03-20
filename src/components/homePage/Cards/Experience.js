@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Experience() {
   return (
-    <div className="slick-border h-full flex flex-col justify-between">
+    <div className="slick-border h-[500px] lg:h-full flex flex-col justify-between">
       <div className="text-left block mr-auto">
         <svg
           xmlns="http://www.w3.org/2000/svg"

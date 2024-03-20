@@ -6,7 +6,7 @@ import AvaterImage from "../Cards/AvaterImage";
 
 export default function Intro() {
   return (
-    <div className="lg:grid lg:grid-cols-4 gap-10">
+    <div className="lg:grid lg:grid-cols-4 gap-10 space-y-8 lg:space-y-0">
       <PopularSpace />
       <IntroCard />
       <Experience />

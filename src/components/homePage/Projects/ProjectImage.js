@@ -1,37 +1,25 @@
+import Projects from "@/data/Projects";
 import Image from "next/image";
 import React from "react";
 
-export default function ProjectImage() {
-  let index = 1;
+export default function ProjectImage({ state }) {
+  let index = 0;
   return (
     <div className="h-[540px] w-full overflow-hidden">
-      <div
-        className="relative w-full h-full overflow-hidden rounded-xl"
-        style={{ transform: `translateY(${index * 540}px)` }}
-      >
-        <Image src="/images/projects/1.webp" fill={true} alt="" objectFit="cover" />
-      </div>
-
-      <div
-        className="relative w-full h-full overflow-hidden rounded-xl"
-        style={{ transform: `translateY(${index * 540}px)` }}
-      >
-        <Image src="/images/projects/2.webp" fill={true} alt="" objectFit="cover" />
-      </div>
-
-      <div
-        className="relative w-full h-full overflow-hidden rounded-xl"
-        style={{ transform: `translateY(${index * 540}px)` }}
-      >
-        <Image src="/images/projects/1.webp" fill={true} alt="" objectFit="cover" />
-      </div>
-
-      <div
-        className="relative w-full h-full overflow-hidden rounded-xl"
-        style={{ transform: `translateY(${index * 540}px)` }}
-      >
-        <Image src="/images/projects/2.webp" fill={true} alt="" objectFit="cover" />
-      </div>
+      {Projects.map((item, i) => {
+        return (
+          <div
+            key={item.id}
+            className="relative w-full h-full overflow-hidden rounded-xl"
+            style={{ transform: `translateY(-${540 * (state - item.id)}px)` }}
+            data-state={state}
+            data-index={item.id}
+            data-diff={state - item.id}
+          >
+            <Image src={item.image} fill={true} alt="" objectFit="cover" />
+          </div>
+        );
+      })}
     </div>
   );
 }
