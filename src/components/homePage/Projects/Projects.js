@@ -11,7 +11,7 @@ export default function Projects() {
 
   return (
     <Wrapper>
-      <div className="lg:grid lg:grid-cols-3  gap-8 ">
+      <div className="lg:grid lg:grid-cols-3  gap-10 items-center lg:min-h-[600px]">
         <div>
           <Title>My Favourite Projects</Title>
 
