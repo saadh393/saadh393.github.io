@@ -5,18 +5,23 @@ import React from "react";
 
 export default function Introduction() {
   return (
-    <Wrapper>
+    <div className="slick-border h-full grid place-items-center">
       <div>
         <div className="my-8">
-          <Title>Hey there</Title>
-          <Title>I&apos;m Saad Hasan</Title>
+          <Title>
+            <span id="title">
+              Hey there
+              <br />
+              I&apos;m Saad Hasan
+            </span>
+          </Title>
         </div>
         <p className="text-[#969696] text-3xl">
           I have been working as a Professional Frontend Developer for the last 1 year, Though I started my Self-Taught
           Programming Journey In 2011.
         </p>
 
-        <div className="py-10 w-full space-y-4 my-8 lg:my-16 lg:px-72">
+        <div className="py-10 w-full space-y-4 my-8 lg:my-16">
           <div className="flex flex-col lg:flex-row gap-4 slick-border !p-2 !py-4 lg:!py-2 !min-h-min  !rounded-xl mx-auto w-full ">
             <div className="flex items-center gap-4">
               <Image src="/images/experience/analyzen.svg" alt="Saad Hasan" width={40} height={40} />
@@ -45,6 +50,6 @@ export default function Introduction() {
           </div>
         </div>
       </div>
-    </Wrapper>
+    </div>
   );
 }

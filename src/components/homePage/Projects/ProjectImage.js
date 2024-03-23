@@ -4,13 +4,13 @@ import React from "react";
 
 export default function ProjectImage({ state }) {
   return (
-    <div className="h-[540px] w-full overflow-hidden">
+    <div className="h-[540px] w-full overflow-hidden rounded-xl ">
       {Projects.map((item, i) => {
         const y = 540 * state;
         return (
           <div
             key={item.image}
-            className="relative w-full h-full overflow-hidden rounded-xl transition-transform duration-500 ease-in-out"
+            className="relative w-full h-full overflow-hidden transition-transform duration-500 ease-in-out"
             style={{ transform: `translateY(-${y}px)` }}
             data-calculations={y}
           >

@@ -2,17 +2,17 @@ const Projects = [
   {
     id: 0,
     title: "Unilever Frontline Academy",
-    image: "/images/projects/2.webp",
+    image: "/images/projects/uniliver.png",
   },
   {
     id: 1,
     title: "Justicia",
-    image: "/images/projects/1.webp",
+    image: "/images/projects/justicia.png",
   },
   {
     id: 2,
     title: "Bengal Meats",
-    image: "/images/projects/BengalMeats.webp",
+    image: "/images/projects/bengalmeats.png",
   },
   {
     id: 3,

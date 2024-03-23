@@ -16,14 +16,17 @@
   }
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cc5200 rgb(var(--background-start-rgb));
+  cursor: none;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  cursor: "none";
+  overflow-x: hidden;
 }
 
 @layer utilities {
@@ -31,7 +34,7 @@ body {
     text-wrap: balance;
   }
 
-  .slick-border{
+  .slick-border {
     @apply border border-[#171919] rounded-lg min-h-20 p-8;
   }
 }

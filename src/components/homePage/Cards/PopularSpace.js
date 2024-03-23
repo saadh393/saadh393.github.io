@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function PopularSpace() {
@@ -9,24 +10,32 @@ export default function PopularSpace() {
         <h3 className="text-[#969696] text-[21px]  tracking-wider">Popular Space</h3>
       </div>
 
-      <div className="space-y-4">
-        <ListItems data={{ title: "Github", content: "@saadh393", svg: "", link: "" }} />
-        <ListItems data={{ title: "LinkedIn", content: "@saadh393", svg: "", link: "" }} />
-        <ListItems data={{ title: "Medium", content: "@saadh393", svg: "", link: "" }} />
-        <ListItems data={{ title: "Hashnode", content: "@saadh393", svg: "", link: "" }} />
-        <ListItems data={{ title: "Figma", content: "@saadh393", svg: "", link: "" }} />
+      <div className="space-y-2">
+        <ListItems data={{ title: "Github", content: "@saadh393", svg: "", link: "https://github.com/saadh393/" }} />
+        <ListItems
+          data={{ title: "LinkedIn", content: "@saadh393", svg: "", link: "https://www.linkedin.com/in/saadh393/" }}
+        />
+        <ListItems data={{ title: "Medium", content: "@saadh393", svg: "", link: "https://medium.com/@saadh393" }} />
+        <ListItems
+          data={{ title: "Hashnode", content: "@saadh393", svg: "", link: "https://saadh393.hashnode.dev/" }}
+        />
+        <ListItems data={{ title: "Figma", content: "@saadh393", svg: "", link: "https://figma.com/@saadh393" }} />
       </div>
     </div>
   );
 }
 
 const ListItems = ({ data }) => {
-  const { title, content, svg } = data;
+  const { title, content, link } = data;
 
   return (
-    <div className="flex items-center gap-4">
+    <Link
+      href={link}
+      title={title + " of Saad Hasan"}
+      className="flex items-center gap-4 hover:bg-trinary/30 hover:scale-105 py-2 hover:border-trinary rounded-md transition-all"
+    >
       {/* Image */}
-      <div className="border border-gray-500/30 h-12 w-12 border-2 rounded-md grid place-items-center">
+      <div className="border-gray-500/30 h-12 w-12 border-2 rounded-md grid place-items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -48,6 +57,6 @@ const ListItems = ({ data }) => {
         <h3 className="text-primary font-medium">{title}</h3>
         <span className="text-gray-200/40">{content}</span>
       </div>
-    </div>
+    </Link>
   );
 };
