@@ -8,11 +8,11 @@ import Image from "next/image";
 
 export default function Intro() {
   return (
-    <div className="lg:grid lg:grid-cols-4 gap-10 space-y-8 lg:space-y-0">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 ">
       <PopularSpace />
       <IntroCard />
       <Experience />
-      <div className="bg-[#070707] p-8 my-8 slick-border rounded-lg max-w-3xl w-full">
+      <div className="bg-[#070707] p-8 slick-border rounded-lg max-w-3xl w-full">
         <p className="text-secondary text-xl">@saadh393</p>
 
         <ul className="flex items-center gap-8 text-primary  my-4">
