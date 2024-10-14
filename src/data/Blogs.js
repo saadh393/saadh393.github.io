@@ -1,5 +1,11 @@
 const blogs = [
   {
+    title: "JavaScript Execution Context",
+    date: "March 24, 2024",
+    description: "Understanding the foundation of JavaScript code execution",
+    link: "javascript-execution-context",
+  },
+  {
     title: "React useMemo Hook",
     date: "Sept 7, 2023",
     description: "Core fundamental of React useMemo hook | Understanding the necessity of using useMemo hook",
