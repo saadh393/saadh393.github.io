@@ -1,5 +1,6 @@
 import React from 'react';
 import BlogLayout from "@/components/blogPage/BlogLayout";
+import ExecutionContextVisualizer from '@/components/blogPage/ExecutionContextVisualizer';
 
 const JavaScriptExecutionContextBlog = () => {
   return (
@@ -53,29 +54,7 @@ const JavaScriptExecutionContextBlog = () => {
           </ul>
           <h2 >Advanced Example: Execution Context in Action</h2>
           <p>Let&#39;s delve into a more complex example that illustrates these concepts:</p>
-          <pre>
-            <code class="lang-javascript">
-              {`const obj = {
-  value: 42,
-  method() {
-    console.log(this.value); // 42
-
-    function innerFunction() {
-      console.log(this.value); // undefined or Error in strict mode
-    }
-
-    const innerArrowFunction = () => {
-      console.log(this.value); // 42
-    };
-
-    innerFunction();
-    innerArrowFunction();
-  },
-};
-
-obj.method();`}
-            </code>
-          </pre>
+          <ExecutionContextVisualizer />
           <p>
             <strong>Analysis:</strong>
           </p>
