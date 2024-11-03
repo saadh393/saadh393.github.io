@@ -38,3 +38,15 @@ body {
     @apply border border-[#171919] rounded-lg min-h-20 p-8;
   }
 }
+
+.prose-invert code{
+  @apply border border-white/10 px-2 py-1 rounded-md text-primary;
+}
+
+pre{
+  @apply border border-white/10 rounded-lg p-4 !bg-gray-950/50;
+}
+
+pre code{
+  @apply border-none !text-gray-200;
+}

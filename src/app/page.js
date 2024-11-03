@@ -12,7 +12,7 @@ export default function Home() {
   // Todo : Blog NewsLetter Email
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-2 lg:p-10 space-y-10 max-w-[1919px] mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 grid-rows-5 lg:grid-rows-2 w-full gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 grid-rows-1 lg:grid-rows-2 w-full gap-8">
         <div className="lg:col-span-4 lg:space-y-8 ">
           <HeroSection />
           <AvaterImage />

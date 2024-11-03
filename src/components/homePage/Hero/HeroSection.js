@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <div className="w-full slick-border h-full  hidden lg:grid place-items-center">
+    <div className="w-full slick-border h-full hidden lg:grid place-items-center">
       <Link
         target="_blank"
         title="Saad Hasan"
