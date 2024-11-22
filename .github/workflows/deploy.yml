@@ -34,10 +34,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Export the project for static deployment
-      - name: Export project
-        run: npm run export
-
       # Configure GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
