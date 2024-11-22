@@ -1,6 +1,6 @@
 
 const metaData = {
-  metadataBase: new URL("https://saadh393.github.io"),
+  metadataBase: new URL("https://saadh393.github.io/blogs/javascript-execution-context"),
   title: {
     default: "Saad Hasan - Software Engineer",
     template: "%s | Saad Hasan - Software Engineer", // Used for dynamic pages
@@ -24,7 +24,7 @@ const metaData = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://saadh393.github.io",
+    url: "https://saadh393.github.io/blogs/javascript-execution-context",
     title: "Understanding JavaScript's Execution Context",
     description: "Exploring the Foundation of JavaScript Code Execution",
     siteName: "Saad Hasan - Software Engineer",
@@ -38,12 +38,11 @@ const metaData = {
     ],
   },
   verification: {
-    google: "your-google-verification-code",
+    google: "BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY",
   },
   // Other optional metadata
   category: "Portfolio",
   
 };
-
 
 export default metaData
