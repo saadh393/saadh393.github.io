@@ -1,17 +1,20 @@
 import React from 'react';
 import BlogLayout from "@/components/blogPage/BlogLayout";
 import ExecutionContextVisualizer from '@/components/blogPage/ExecutionContextVisualizer';
+import metaData from './metaData';
+
+export const metadata = metaData
 
 const JavaScriptExecutionContextBlog = () => {
   return (
     <BlogLayout>
-      <article className="max-w-4xl mx-auto px-4">
-        <header className="mb-12">
+      <article className="mx-auto px-4">
+        <header className="max-w-[815px] mx-auto mb-12">
           <h1 className="text-4xl font-bold text-center mb-4">Understanding JavaScript&apos;s Execution Context</h1>
           <p className="text-center text-gray-600">Exploring the Foundation of JavaScript Code Execution</p>
         </header>
 
-        <section className="prose-invert prose-lg max-w-none prose-h2:text-primary">
+        <section className="prose mx-auto prose-invert prose-lg prose-h2:text-primary">
           <h2 id="types-of-execution-contexts">Types of Execution Contexts</h2>
           <p>JavaScript operates within several types of execution contexts, each with its own nuances:</p>
           <ol>
@@ -54,7 +57,13 @@ const JavaScriptExecutionContextBlog = () => {
           </ul>
           <h2 >Advanced Example: Execution Context in Action</h2>
           <p>Let&#39;s delve into a more complex example that illustrates these concepts:</p>
+        </section>
+
+
           <ExecutionContextVisualizer />
+
+
+          <section className="prose mx-auto prose-invert prose-lg prose-h2:text-primary">
           <p>
             <strong>Analysis:</strong>
           </p>

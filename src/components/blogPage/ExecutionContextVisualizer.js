@@ -161,7 +161,7 @@ obj.method();`.split('\n');
   };
 
   return (
-    <div className="my-8 p-6 bg-[#0D1117] rounded-lg">
+    <div className="my-8 p-6 bg-[#0D1117] rounded-lg grid md:grid-cols-3 gap-6 scale-90 max-w-7xl mx-auto">
 
       <div className="">
         <h3 className="text-xl font-bold mb-4 text-secondary">Code Execution</h3>
@@ -169,7 +169,7 @@ obj.method();`.split('\n');
           {code.map((line, index) => (
             <div
               key={index}
-              className={`${
+              className={`text-wrap ${
                 index === steps[currentStep].highlightedLine ? 'bg-[#159861]/20 -mx-4 px-4' : ''
               } ${line.trim().startsWith('//') ? 'text-[#525252]' : 'text-[#969696]'}`}
             >
@@ -216,7 +216,7 @@ obj.method();`.split('\n');
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 col-span-2">
         <div className="border border-[#F85E0B] rounded-lg p-6">
           <h3 className="text-2xl font-bold mb-4 text-[#F85E0B]">CALL STACK</h3>
           <div className="space-y-4">

@@ -24,7 +24,7 @@ export default function BlogLayout({ children }) {
       </nav>
 
       <main className="mt-4">
-        <div className="max-w-[815px] mx-auto py-6 px-4 prose lg:prose-xl dark:prose-invert">{children}</div>
+        <div className="mx-auto py-6 px-4  lg:prose-xl dark:prose-invert">{children}</div>
       </main>
     </>
   );
