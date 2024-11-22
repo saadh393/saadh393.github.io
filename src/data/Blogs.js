@@ -1,46 +1,40 @@
 const blogs = [
   {
-    title: "JavaScript Execution Context",
-    date: "March 24, 2024",
+    title: "Understanding JavaScript's Execution Context",
+    date: "August 24, 2024",
     description: "Understanding the foundation of JavaScript code execution",
     link: "javascript-execution-context",
   },
+
   {
     title: "React useMemo Hook",
-    date: "Sept 7, 2023",
+    date: "Sep 7, 2023",
     description: "Core fundamental of React useMemo hook | Understanding the necessity of using useMemo hook",
-    link: "react-use-memo-hook",
+    link: "https://saadh393.hashnode.dev/react-usememo-hook",
   },
+
   {
     title: "useLocalStorage Hook",
-    date: "July 3 2023",
+    date: "July 3, 2023",
     description: "Building React Custom Hooks from Scratch",
-    link: "use-local-storage-hook",
+    link: "https://saadh393.hashnode.dev/uselocalstorage-hook-building-react-custom-hooks-from-scratch",
   },
+
   {
     title: "Building React Custom Hooks from Scratch",
+    date: "July 2, 2023",
     description: "Supercharge Your React Components with Custom Hooks",
-    date: "July 2 2023",
-    link: "react-custom-hooks",
+    link: "https://saadh393.hashnode.dev/building-react-custom-hooks-from-scratch",
   },
+
   {
     title: "Getting Started with Prisma.js",
+    date: "June 24, 2023",
     description: "A high level overview of Prisma.js for Beginners",
-    date: "June 24 2023",
-    link: "prisma-js",
+    link: "https://saadh393.hashnode.dev/getting-started-with-prismajs",
   },
-  {
-    title: "Android Floating Widget",
-    description: "Introductory blog to show how to create a floating widget in Android",
-    date: "April 9 2020",
-    link: "android-floating-widget",
-  },
-  {
-    title: "JSON Parse | Android | Java",
-    description: "How to parse JSON in Android using Java",
-    date: "October 2019 2019",
-    link: "android-json-parse",
-  },
+
+
 ];
 
 const getBlogs = () => {

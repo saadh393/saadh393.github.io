@@ -15,7 +15,7 @@ export default function Blogs() {
           <div key={blog.title}>
             <span className="text-trinary text-xs">{blog.date}</span>
             <Link
-              href={`/blog/${blog.link}`}
+              href={blog.link.startsWith("https") ? blog.link :  `/blogs/${blog.link}`}
               className="text-secondary font-bold text-xl hover:text-primary cursor-pointer block"
             >
               {blog.title}
