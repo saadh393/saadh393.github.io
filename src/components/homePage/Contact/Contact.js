@@ -30,7 +30,7 @@ export default function Contact() {
           </Link>
 
           <div>
-            <Image className="mx-auto" src="/images/qr-code.png" alt="Saad Hasan" width={150} height={150} />
+            <Image className="mx-auto" src="https://saadh393.github.io/images/qr-code.png" alt="Saad Hasan" width={150} height={150} />
           </div>
         </div>
       </div>

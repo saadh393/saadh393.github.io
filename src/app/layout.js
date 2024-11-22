@@ -3,6 +3,7 @@ import helvaticaFont from "../fonts/helvaticaFont";
 import "./globals.css";
 import Grain from "@/components/Grain";
 import { GoogleAnalytics } from "@/components/utility/GoogleAnalytics";
+import Head from "next/head";
 
 export const metadata = {
   title: "Saad Hasan - Software Engineer",
@@ -38,7 +39,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <Head>
+      <meta name="google-site-verification" content="BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY" />
       <GoogleAnalytics />
+      </Head>
       <body className={`${helvaticaFont.className} bg-black`}>
         
         {children}
