@@ -5,10 +5,13 @@ export default function BlogLayout({ children }) {
   return (
     <>
       <nav>
-        <div className="max-w-[815px] mx-auto flex justify-between py-6 px-12">
+        <div className="max-w-[815px] mx-auto flex justify-between py-6 px-6 lg:px-12">
           <div className="flex gap-4">
-            <p className="text-secondary">Sat, 23 March 2024</p>
-            <Link className="cursor-pointer" href={"/blogs"}>
+            {/* <p className="text-secondary">Sat, 23 March 2024</p> */}
+            <Link className="text-secondary cursor-pointer" href={"/"}>
+              Home
+            </Link>
+            <Link className="text-secondary cursor-pointer" href={"/blogs"}>
               Blogs
             </Link>
           </div>
