@@ -6,6 +6,7 @@ import React from "react";
 export default function Introduction() {
   return (
     <div className="slick-border h-full grid place-items-center">
+      
       <div>
         <div className="my-8">
           <Title>
