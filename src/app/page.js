@@ -5,11 +5,10 @@ import HeroSection from "@/components/homePage/Hero/HeroSection";
 import Intro from "@/components/homePage/Intro/Intro";
 import Introduction from "@/components/homePage/Introduction/Introduction";
 import Projects from "@/components/homePage/Projects/Projects";
+import PracticeProjects from "@/components/homePage/Projects/PracticeProjects";
 import Wrapper from "@/components/utility/Wrapper";
-import Image from "next/image";
 
 export default function Home() {
-  // Todo : Blog NewsLetter Email
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-2 lg:p-10 space-y-10 max-w-[1919px] mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 grid-rows-1 lg:grid-rows-2 w-full gap-8">
@@ -22,8 +21,8 @@ export default function Home() {
         </div>
       </div>
       <Intro />
-
       <Projects />
+      <PracticeProjects />
       <Blogs />
       <Contact />
     </main>
