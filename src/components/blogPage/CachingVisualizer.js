@@ -56,7 +56,7 @@ const CachingVisualizer = () => {
       }, 2000);
     }
     return () => clearTimeout(animationRef.current);
-  }, [isPlaying, currentStep]);
+  }, [isPlaying, currentStep, steps.length]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -81,7 +81,7 @@ const CachingVisualizer = () => {
     };
 
     draw();
-  }, [currentStep]);
+  }, [currentStep, steps]);
 
   const drawClient = (ctx, position, colors) => {
     ctx.fillStyle = colors.primary;

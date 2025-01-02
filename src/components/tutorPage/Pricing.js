@@ -14,7 +14,7 @@ export default function Pricing() {
           </div>
           
           <div className="mt-8 space-y-4">
-            <h4 className="text-secondary text-xl">What's Included:</h4>
+            <h4 className="text-secondary text-xl">What&apos;s Included:</h4>
             <ul className="space-y-2 text-trinary">
               <li>• One-on-one personalized instruction</li>
               <li>• Project-based learning materials</li>

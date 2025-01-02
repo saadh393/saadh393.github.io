@@ -28,7 +28,7 @@ export default function Projects() {
   return (
     <Wrapper>
       <div className="py-16">
-        <Title>Projects You'll Build</Title>
+        <Title>Projects You&apos;ll Build</Title>
         <p className="text-trinary text-xl mt-4 mb-12 text-center">
           Learn by building real-world applications
         </p>

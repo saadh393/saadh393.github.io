@@ -139,7 +139,7 @@ obj.method();`.split('\n');
       }, 2000);
     }
     return () => clearTimeout(animationRef.current);
-  }, [isPlaying, currentStep]);
+  }, [isPlaying, currentStep, steps.length]);
 
   const handlePrevious = () => {
     setIsPlaying(false);

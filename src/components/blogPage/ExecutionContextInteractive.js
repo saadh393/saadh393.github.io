@@ -58,7 +58,7 @@ greet();`);
       }, 1000);
     }
     return () => clearTimeout(animationRef.current);
-  }, [isPlaying, currentPhase, currentStep]);
+  }, [isPlaying, currentPhase, currentStep, stepForward]);
 
   const renderPhaseContent = (phase, steps) => {
     return (

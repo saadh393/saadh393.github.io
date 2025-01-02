@@ -9,6 +9,7 @@ const BlogCard = ({ blog }) => {
       <Link
         href={blog.link}
         target={isExternalLink ? "_blank" : "_self"}
+        prefetch={!isExternalLink}
         className="text-secondary font-bold text-xl group-hover:text-primary cursor-pointer block mt-2"
       >
         {blog.title}

@@ -1,9 +1,9 @@
-import Cursor from "@/components/Cursor";
 import helvaticaFont from "../fonts/helvaticaFont";
 import "./globals.css";
+import Script from "next/script";
+import Cursor from "@/components/Cursor";
 import Grain from "@/components/Grain";
-import { GoogleAnalytics } from "@/components/utility/GoogleAnalytics";
-import Head from "next/head";
+import BfcacheHandler from "@/components/BfcacheHandler";
 
 export const metadata = {
   title: "Saad Hasan - Software Engineer",
@@ -23,7 +23,6 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     url: "https://saadh393.github.io",
-   
     siteName: "Saad Hasan - Software Engineer",
     images: [
       {
@@ -33,25 +32,45 @@ export const metadata = {
         alt: "Saad Hasan - Software Engineer",
       },
     ],
-  }
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Head>
-      <meta name="google-site-verification" content="BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY" />
-      <GoogleAnalytics />
-      </Head>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY"
+        />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js"
+          strategy="lazyOnload"
+        />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YOUR_MEASUREMENT_ID', {
+              send_page_view: false  // Disable automatic page views
+            });
+            
+            // Send initial page view
+            gtag('event', 'page_view', {
+              page_location: window.location.href,
+              page_title: document.title,
+              bfcache: false
+            });
+          `}
+        </Script>
+      </head>
       <body className={`${helvaticaFont.className} bg-black`}>
-        
+        <BfcacheHandler />
         {children}
-
         <Grain />
-        
         <Cursor />
       </body>
-      
     </html>
   );
 }

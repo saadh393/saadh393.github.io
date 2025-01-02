@@ -20,7 +20,7 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: #cc5200 rgb(var(--background-start-rgb));
-  /* cursor: none; */
+  cursor: none;
 }
 
 div::selection {

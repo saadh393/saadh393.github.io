@@ -42,7 +42,7 @@ export default function Cursor() {
     <div
       ref={cursor}
       id="cursor"
-      className="hidden bg-primary w-6 h-6 mix-blend-difference rounded-full absolute  transition-transform duration-[150ms]"
+      className=" bg-primary w-6 h-6 mix-blend-difference rounded-full absolute  transition-transform duration-[150ms]"
     ></div>
   );
 }
