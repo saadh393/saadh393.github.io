@@ -5,10 +5,16 @@ export default function Cursor() {
   const cursor = useRef(null);
   useEffect(() => {
     if (cursor.current) {
+      const contentArea = document?.querySelector("#editable-content");
       document.addEventListener("mousemove", (e) => {
         let shouldScale = false;
 
-        const titleRect = document?.getElementById("title")?.getBoundingClientRect() || null;
+        if (contentArea?.contains(e.target)) {
+          cursor.current.style.display = "none";
+        }
+
+        const titleRect =
+          document?.getElementById("title")?.getBoundingClientRect() || null;
         if (
           titleRect &&
           e.pageX > titleRect.left &&
@@ -21,7 +27,9 @@ export default function Cursor() {
 
         cursor?.current?.setAttribute(
           "style",
-          `top: ${e.pageY}px; left: ${e.pageX}px; transform : scale(${shouldScale ? 5 : 1})`
+          `top: ${e.pageY}px; left: ${e.pageX}px; transform : scale(${
+            shouldScale ? 5 : 1
+          })`
         );
       });
     }
@@ -34,7 +42,7 @@ export default function Cursor() {
     <div
       ref={cursor}
       id="cursor"
-      className="bg-primary w-6 h-6 mix-blend-difference rounded-full absolute  transition-transform duration-[150ms]"
+      className="hidden bg-primary w-6 h-6 mix-blend-difference rounded-full absolute  transition-transform duration-[150ms]"
     ></div>
   );
 }
