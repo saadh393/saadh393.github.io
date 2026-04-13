@@ -1,3 +1,46 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm run dev      # dev server at localhost:3000
+npm run build    # production build
+npm run lint     # eslint
+```
+
+No test suite configured.
+
+## Architecture
+
+**Next.js 16 App Router** — read `AGENTS.md` before writing any Next.js code. This version has breaking changes from training data. Check `node_modules/next/dist/docs/` for current APIs.
+
+**Key files:**
+- `app/page.tsx` — home page, assembles all section components in scroll order
+- `app/layout.tsx` — root layout, fonts, smooth scroll wrapper
+- `app/components/` — one file per home section (Hero, Navbar, About, Experience, Projects, Writing, Contact) + MDX renderers in `mdx/`
+- `app/globals.css` — Tailwind v4, CSS custom properties from `DESIGN_SYSTEM.md`
+- `lib/content.ts` — filesystem MDX reader used by blog/project routes
+- `app/api/og/` — dynamic Open Graph image generation route
+
+**Content system:**
+- MDX files live in `content/blog/` and `content/projects/`
+- `lib/content.ts` reads them with gray-matter, exposes `getSlugs()`, `getContentItem()`, `getAllContent()`
+- `app/blog/[slug]/` and `app/projects/[slug]/` render MDX via `next-mdx-remote`
+- Authoring conventions: `content/AUTHORING.md`
+- Frontmatter shape defined in `lib/content.ts` → `FrontMatter` interface
+
+**Styling:**
+- Tailwind CSS v4 (PostCSS plugin, not the v3 config file)
+- Design tokens in `DESIGN_SYSTEM.md` — always consult before adding colors/spacing
+- Light mode only. Single accent: `#0070f3`. Fonts: Geist + Geist Mono
+- Animations: `transform`/`opacity` only, always gated with `prefers-reduced-motion`
+
+**Interactive components** must be `"use client"`. Server components are the default.
+
+---
+
 # Portfolio Build Plan
 
 ## Goal

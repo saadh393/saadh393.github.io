@@ -103,7 +103,7 @@ export default async function BlogPostPage({
                 }}
             >
                 <Link
-                    href="/#writing"
+                    href="/blog"
                     style={{
                         fontSize: 13,
                         fontFamily: "var(--font-geist-mono), monospace",
@@ -273,7 +273,7 @@ export default async function BlogPostPage({
                 />
 
                 <CaseStudyFooter
-                    backHref="/#writing"
+                    backHref="/blog"
                     backLabel="← Back to writing"
                 />
             </article>
