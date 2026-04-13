@@ -1,0 +1,118 @@
+---
+title: "Distributed HLS Streaming Platform"
+date: "2025-03-01"
+description: "What actually happens when a user uploads a video and 500 people try to watch it simultaneously? I built a proof-of-concept to find out."
+tags: ["Node.js", "FFmpeg", "Architecture", "Docker"]
+status: "published"
+type: "case-study"
+---
+
+## The Problem
+
+Most tutorials show you how to upload a video. None of them show you what breaks when 500 people try to watch it at the same time — and your backend is a single Node.js process doing synchronous FFmpeg calls.
+
+I wanted to understand the failure modes before I hit them in production. So I built a system to stress-test them deliberately.
+
+<MetricStrip>
+  <Metric label="Concurrent viewers simulated" value="500+" />
+  <Metric label="Avg. transcode time (720p)" value="~12s" />
+  <Metric label="Queue overflow rate" value="0%" />
+  <Metric label="Services" value="5" />
+</MetricStrip>
+
+## Architecture Overview
+
+The system is split into five independent services, each with a single responsibility. No service knows about another's internals — they communicate only through the job queue or shared storage.
+
+<FlowMap
+  height={260}
+  nodes='[{"id":"client","label":"Client","x":0,"y":100,"type":"client"},{"id":"upload","label":"Upload Service","x":130,"y":100},{"id":"queue","label":"BullMQ / Redis","x":320,"y":100,"type":"store"},{"id":"worker","label":"FFmpeg Worker","x":510,"y":60},{"id":"minio","label":"MinIO Storage","x":510,"y":140,"type":"store"},{"id":"hls","label":"HLS Packager","x":700,"y":100}]'
+  edges='[{"from":"client","to":"upload"},{"from":"upload","to":"queue","label":"enqueue"},{"from":"queue","to":"worker","label":"dequeue"},{"from":"worker","to":"minio","label":"raw segments"},{"from":"minio","to":"hls"},{"from":"hls","to":"client","label":"manifest + chunks"}]'
+/>
+
+## What Happens When You Upload a Video
+
+Walk through the request lifecycle step by step. Each stage highlights which services are active.
+
+<StepThrough
+  title="Video Upload → Playback Pipeline"
+  nodes='[{"id":"client","label":"Browser","x":0,"y":100,"type":"client"},{"id":"upload","label":"Upload Service","x":160,"y":100},{"id":"queue","label":"BullMQ","x":360,"y":100,"type":"store"},{"id":"worker","label":"FFmpeg Worker","x":560,"y":40},{"id":"redis","label":"Redis","x":360,"y":200,"type":"store"},{"id":"minio","label":"MinIO","x":560,"y":160,"type":"store"},{"id":"hls","label":"HLS Server","x":760,"y":100}]'
+  edges='[{"from":"client","to":"upload"},{"from":"upload","to":"queue"},{"from":"queue","to":"redis"},{"from":"queue","to":"worker"},{"from":"worker","to":"minio"},{"from":"minio","to":"hls"},{"from":"hls","to":"client"}]'
+  steps='[{"label":"User selects a file","description":"Browser sends multipart/form-data to the Upload Service.","active":["client","upload"],"activeEdges":["client→upload"]},{"label":"Upload Service enqueues a job","description":"File written to temp directory. Job metadata pushed to BullMQ.","active":["upload","queue","redis"],"activeEdges":["upload→queue","queue→redis"]},{"label":"FFmpeg Worker picks up the job","description":"BullMQ dequeues, worker spawns an FFmpeg child process for transcoding.","active":["queue","worker"],"activeEdges":["queue→worker"]},{"label":"Transcoded segments written to MinIO","description":"FFmpeg outputs 2s HLS segments. Worker streams them to object storage.","active":["worker","minio"],"activeEdges":["worker→minio"]},{"label":"HLS Server builds the manifest","description":"Reads segments from MinIO, generates .m3u8 playlist, serves to client.","active":["minio","hls","client"],"activeEdges":["minio→hls","hls→client"]}]'
+/>
+
+## Key Design Decisions
+
+### Why BullMQ over a direct FFmpeg call?
+
+FFmpeg is synchronous and CPU-bound. If you call it inline in an Express handler, every upload blocks the event loop — request #2 waits for request #1's transcode to finish. With BullMQ:
+
+- Uploads return immediately with a job ID
+- Workers process concurrently up to `concurrency` limit
+- Failed jobs are automatically retried with backoff
+
+<Callout type="tradeoff">
+  FFmpeg is intentionally single-threaded per job. Horizontal scaling (more worker containers) is cheaper than vertical scaling (more CPU per worker), and simpler to reason about.
+</Callout>
+
+### Why MinIO over S3?
+
+Local dev. MinIO has an S3-compatible API — swapping to S3 in production is a one-line config change.
+
+### Segment duration: 2 seconds
+
+HLS segment duration is a trade-off between latency and buffering. 2s segments give low latency at the cost of more HTTP requests. For a video platform serving on-demand content (not live streams), this is the right call.
+
+<Callout type="insight">
+  Shorter segments = lower start latency but more manifest overhead. For live streaming, 1s is common. For VOD, 4-6s is fine. We optimized for perceived startup time.
+</Callout>
+
+## System Flow Diagram
+
+<Diagram>
+sequenceDiagram
+  participant C as Browser
+  participant U as Upload Service
+  participant Q as BullMQ
+  participant W as FFmpeg Worker
+  participant M as MinIO
+  participant H as HLS Server
+
+  C->>U: POST /upload (multipart)
+  U->>Q: enqueue({ filePath, jobId })
+  U-->>C: 202 Accepted { jobId }
+  Q->>W: dequeue job
+  W->>W: FFmpeg transcode to HLS segments
+  W->>M: PUT segments + .m3u8
+  W->>Q: complete job
+  C->>H: GET /stream/{jobId}/index.m3u8
+  H->>M: GET manifest
+  H-->>C: .m3u8 playlist
+  C->>H: GET /stream/{jobId}/seg001.ts
+  H->>M: GET segment
+  H-->>C: video chunk
+</Diagram>
+
+## What I Learned
+
+<Timeline>
+  <Event date="Week 1" label="Designed service boundaries" note="Drew the architecture before writing a line of code. Changed it twice." />
+  <Event date="Week 2" label="FFmpeg + BullMQ working end-to-end" note="First successful transcode at 3am. Segment duration was 10s by mistake." />
+  <Event date="Week 3" label="MinIO integration + Docker Compose" note="Hardest part: getting MinIO presigned URLs to work inside the Docker network." />
+  <Event date="Week 4" label="Load test: 500 concurrent simulated viewers" note="Zero queue overflow. Bottleneck was MinIO read IOPS, not the worker." />
+</Timeline>
+
+<Callout type="result">
+  The bottleneck under load was not FFmpeg, not BullMQ, and not the Node.js upload service. It was MinIO IOPS on the local Docker volume. In production, swap MinIO for S3 and this ceiling disappears.
+</Callout>
+
+## Stack
+
+- **Node.js + Express** — Upload service and HLS server
+- **BullMQ** — Distributed job queue
+- **Redis** — BullMQ backing store
+- **FFmpeg** — Video transcoding (spawned as child process)
+- **MinIO** — S3-compatible object storage
+- **Docker Compose** — Orchestration layer
+
+The full source is on [GitHub](https://github.com/saadh393/distributed-hls-streaming-platform).
