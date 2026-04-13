@@ -7,8 +7,11 @@ interface PipelineStep {
   detail?: string;
 }
 
-export function Pipeline({ steps }: { steps: PipelineStep[] }) {
+export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }) {
   const [hovered, setHovered] = useState<number | null>(null);
+
+  const steps: PipelineStep[] =
+    typeof stepsRaw === "string" ? JSON.parse(stepsRaw) : stepsRaw;
 
   return (
     <div

@@ -24,20 +24,24 @@ description: "One sentence shown under the title and in <meta> description."
 tags: ["Node.js", "Architecture", "Docker"]
 status: "published"   # set to "draft" to exclude from build entirely
 type: "case-study"    # or "blog"
+github: "https://github.com/you/repo"   # optional — shows button in footer
+live: "https://yourproject.com"          # optional — shows button in footer
 ---
 ```
+
+**`status: "draft"`** — the file is skipped at build time entirely. No route is generated.
 
 ---
 
 ## Custom Components
 
-These are globally available — no import needed in the MDX file.
+All components are globally available — no import needed in the MDX file.
 
 ---
 
 ### `<Callout>`
 
-Highlighted aside block. Use for insights, warnings, trade-offs, or results.
+Highlighted aside. Use for insights, warnings, trade-offs, or measured results.
 
 ```mdx
 <Callout type="insight">
@@ -45,13 +49,18 @@ Highlighted aside block. Use for insights, warnings, trade-offs, or results.
 </Callout>
 ```
 
-**Types:** `insight` (blue) · `warning` (amber) · `tradeoff` (purple) · `result` (green)
+| Type | Color | When to use |
+|---|---|---|
+| `insight` | Blue | Engineering observation or non-obvious finding |
+| `warning` | Amber | Known risk, footgun, or missing safeguard |
+| `tradeoff` | Purple | Decision with meaningful downsides |
+| `result` | Green | Measurable outcome — put this at the end |
 
 ---
 
 ### `<MetricStrip>` + `<Metric>`
 
-Proof numbers displayed in a horizontal strip. Use child composition — one `<Metric>` per number.
+Proof numbers in a horizontal strip. One `<Metric>` child per number. Max 4 display cleanly.
 
 ```mdx
 <MetricStrip>
@@ -62,13 +71,11 @@ Proof numbers displayed in a horizontal strip. Use child composition — one `<M
 </MetricStrip>
 ```
 
-Max 4 metrics display cleanly in one row.
-
 ---
 
 ### `<Figure>`
 
-Image with optional caption.
+Image with optional caption. Place images in `public/images/`.
 
 ```mdx
 <Figure
@@ -78,13 +85,11 @@ Image with optional caption.
 />
 ```
 
-Place images in `public/images/`.
-
 ---
 
 ### `<Timeline>` + `<Event>`
 
-Chronological list. Use for project history or decision log.
+Chronological list. Use for project history or decision log. `note` is optional.
 
 ```mdx
 <Timeline>
@@ -94,13 +99,11 @@ Chronological list. Use for project history or decision log.
 </Timeline>
 ```
 
-`note` is optional.
-
 ---
 
 ### `<Diagram>`
 
-Mermaid diagram. Write the Mermaid syntax as plain text children.
+Mermaid diagram. Write Mermaid syntax as plain text children. Renders full-width, responsive.
 
 ```mdx
 <Diagram>
@@ -112,15 +115,15 @@ sequenceDiagram
 </Diagram>
 ```
 
-Supported Mermaid types: `sequenceDiagram`, `flowchart`, `graph`, `classDiagram`, `erDiagram`, `gantt`, `pie`, etc.
+Supported types: `sequenceDiagram`, `flowchart`, `graph`, `classDiagram`, `erDiagram`, `gantt`, `pie`, and all standard Mermaid diagrams.
 
 ---
 
 ### `<FlowMap>`
 
-Static React Flow node diagram. Use for architecture overviews where you want a visual node graph.
+Static React Flow node graph. Pannable and zoomable. Use for architecture overviews.
 
-**Props must be JSON strings** (Turbopack RSC limitation — see note below).
+**`nodes` and `edges` must be JSON strings** — see the JSON String Rule below.
 
 ```mdx
 <FlowMap
@@ -137,20 +140,20 @@ Static React Flow node diagram. Use for architecture overviews where you want a 
 />
 ```
 
-**Node types:**
+**Node `type` options:**
 - `"service"` (default) — rounded rectangle
-- `"store"` — sharp rectangle (databases, queues)
-- `"client"` — pill shape (browsers, mobile)
+- `"store"` — sharp rectangle (databases, queues, object storage)
+- `"client"` — pill shape (browsers, mobile apps)
 
-`height` defaults to `280`.
+`height` defaults to `280`. Zoom controls appear bottom-left.
 
 ---
 
 ### `<StepThrough>`
 
-Interactive step-by-step walker with an animated React Flow diagram. Nodes and edges highlight per step as the reader clicks through.
+Interactive step-by-step walker. Nodes and edges in the diagram highlight per step as the reader clicks through or jumps via the dot nav.
 
-**All props must be JSON strings** (Turbopack RSC limitation — see note below).
+**All complex props must be JSON strings** — see the JSON String Rule below.
 
 ```mdx
 <StepThrough
@@ -183,97 +186,103 @@ Interactive step-by-step walker with an animated React Flow diagram. Nodes and e
 
 **Step fields:**
 - `label` — short title shown in the control bar (required)
-- `description` — longer explanation shown next to the label (optional)
-- `active` — array of node IDs to highlight blue in this step
-- `activeEdges` — array of `"from→to"` strings to animate in this step (optional)
-
----
-
----
-
-### `<VideoMath>`
-
-Interactive HLS file count calculator. No props — drag the slider to change video duration and watch the math update live.
-
-```mdx
-<VideoMath />
-```
-
----
-
-### `<RenditionTable>`
-
-Styled, hoverable table of FFmpeg renditions (360p → 1080p with bitrate bars). No props — data is hardcoded for the HLS case study. Extend the component data array for other projects.
-
-```mdx
-<RenditionTable />
-```
+- `description` — longer explanation next to the label (optional)
+- `active` — node IDs to highlight blue in this step
+- `activeEdges` — `"from→to"` strings to animate in this step (optional)
 
 ---
 
 ### `<Pipeline>`
 
-Horizontal flow of labeled steps with hover tooltips. Use for showing a request/process flow inline in prose.
+Horizontal flow of labeled pills with hover tooltips. Use for showing a request or process lifecycle inline in prose — cleaner than an ASCII diagram.
 
-**Prop is a JSON string** (Turbopack RSC limitation):
+**`steps` must be a JSON string** — see the JSON String Rule below.
 
 ```mdx
 <Pipeline steps='[
-  {"label":"Upload Service","detail":"Receives the file"},
-  {"label":"queue job","detail":"Pushes to BullMQ"},
-  {"label":"return 200","detail":"Responds immediately"}
+  {"label":"Upload Service","detail":"Receives chunked file, writes to disk"},
+  {"label":"queue job","detail":"Pushes job record to BullMQ on Redis"},
+  {"label":"return 200","detail":"HTTP response returned immediately"},
+  {"label":"Transcode Worker","detail":"Separate Node.js process"},
+  {"label":"ffmpeg × 4","detail":"Four sequential renditions"},
+  {"label":"push to MinIO","detail":"Streams all .ts segments and playlists"}
 ]' />
 ```
 
-`detail` is optional — shows as a tooltip on hover.
+`detail` is optional — shown as a tooltip on hover.
+
+---
+
+### `<VideoMath>`
+
+Interactive HLS file count calculator. No props needed. The reader drags a slider (1–60 min) and watches the calculation update step-by-step in real time.
+
+```mdx
+<VideoMath />
+```
+
+Currently specific to 4-second HLS segments and 4 renditions. To change those values, edit `app/components/mdx/VideoMath.tsx`.
+
+---
+
+### `<RenditionTable>`
+
+Hoverable FFmpeg renditions table — 360p through 1080p with animated bitrate bars, colour-coded by quality tier. No props.
+
+```mdx
+<RenditionTable />
+```
+
+Currently hardcoded for the HLS case study renditions. To use for a different project, extend or fork the component.
 
 ---
 
 ## The JSON String Rule
 
-`<FlowMap>` and `<StepThrough>` accept `nodes`, `edges`, and `steps` as **JSON strings**, not JavaScript object literals.
+`<FlowMap>`, `<StepThrough>`, and `<Pipeline>` accept their complex props as **JSON strings**, not JavaScript object literals.
 
-**Why:** Turbopack cannot serialize arrays of objects across the RSC boundary when written as inline JSX prop syntax. Passing a plain string avoids the boundary entirely — the component parses it with `JSON.parse` internally.
+**Why:** Turbopack cannot serialize arrays of objects across the RSC boundary when written as inline JSX prop syntax. Passing a plain string sidesteps the boundary — the component calls `JSON.parse` internally.
 
 **Write this:**
 ```mdx
 nodes='[{"id":"a","label":"A","x":0,"y":0}]'
 ```
 
-**Not this (will break the build):**
+**Not this — will break the build:**
 ```mdx
 nodes={[{ id: "a", label: "A", x: 0, y: 0 }]}
 ```
 
-All other components (`Callout`, `MetricStrip`, `Figure`, `Timeline`, `Diagram`) use normal MDX syntax.
+All other components (`Callout`, `MetricStrip`, `Figure`, `Timeline`, `Diagram`, `VideoMath`, `RenditionTable`) use normal MDX syntax.
 
 ---
 
 ## Code Blocks
 
-Standard fenced code blocks with language tags. Highlighted by Shiki (github-light theme).
+Standard fenced code blocks with language tags. Highlighted by Shiki (`github-light` theme).
 
 ````mdx
-```javascript
+```typescript
 const lenis = new Lenis({ duration: 1.2 });
 ```
 ````
 
-Supported: `javascript`, `typescript`, `bash`, `json`, `yaml`, `go`, `python`, `sql`, and all other Shiki languages.
+Supported languages: `javascript`, `typescript`, `bash`, `json`, `yaml`, `go`, `python`, `sql`, and all other Shiki languages.
 
 ---
 
 ## Prose
 
-Standard Markdown — headings, bold, italic, links, lists, blockquotes, horizontal rules — all styled to match the portfolio design system (Geist Sans, light mode, `#0070f3` accent).
+Standard Markdown — headings (`##`, `###`), bold, italic, links, ordered/unordered lists, blockquotes, horizontal rules — all styled to match the portfolio design system (Geist Sans, light mode, `#0070f3` accent).
 
 ---
 
 ## Publishing Checklist
 
-- [ ] Frontmatter `status` set to `"published"`
-- [ ] `date` is accurate (used for sorting)
-- [ ] `description` is one sentence — it appears in `<meta>` and under the title
-- [ ] Every metric in `<MetricStrip>` is a real number
-- [ ] `<Callout type="result">` at the end if there's a measurable outcome
-- [ ] Run `npm run build` locally and confirm the route appears in the output
+- [ ] Frontmatter `status` is `"published"`
+- [ ] `date` is accurate — used for sort order on listing pages
+- [ ] `description` is one sentence — appears in `<meta>` and as the subtitle
+- [ ] `github` and/or `live` URLs filled in if the project has them
+- [ ] Every `<Metric>` value is a real number, not a claim
+- [ ] `<Callout type="result">` present if there is a measurable outcome
+- [ ] Run `npm run build` locally and confirm the route appears in the build output
