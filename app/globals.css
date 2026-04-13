@@ -103,8 +103,8 @@ body {
 .hero-stats-centered {
   display: flex;
   justify-content: center;
+  flex-wrap: nowrap;
   gap: 0;
-  flex-wrap: wrap;
 }
 .hero-stat-centered {
   display: flex;
@@ -322,6 +322,18 @@ body {
 @media (max-width: 768px) {
   .hero-stats-row {
     gap: 24px;
+  }
+  .hero-stats-centered {
+    flex-wrap: wrap;
+    gap: 0;
+    row-gap: 24px;
+  }
+  .hero-stat-divider {
+    display: none;
+  }
+  .hero-stat-centered {
+    width: 50%;
+    justify-content: center;
   }
 }
 
