@@ -28,12 +28,12 @@ export const articles: Article[] = [
   },
   {
     title: "HTTP Caching in Node.js with Undici",
-    date: "Mar 24, 2024",
+    date: "Apr 14, 2026",
     readTime: "8 min",
     tag: "Node.js",
     description:
       "Most Node.js apps skip HTTP caching entirely. Here's how to do it properly with Undici v7.",
-    link: "https://saadh393.hashnode.dev/",
+    link: "/blog/http-caching-nodejs-undici",
   },
   {
     title: "React useMemo Hook",

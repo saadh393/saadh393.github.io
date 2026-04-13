@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
+import React from "react";
 import { Callout } from "./Callout";
 import { CodeBlock } from "./CodeBlock";
+import { ProseList, ProseListItem } from "./ProseList";
 import { MetricStrip, Metric } from "./MetricStrip";
 import { Figure } from "./Figure";
 import { Timeline, Event } from "./Timeline";
@@ -102,40 +104,26 @@ const prose: MDXComponents = {
   em: (props) => (
     <em style={{ fontStyle: "italic", color: "#555" }} {...props} />
   ),
-  ul: (props) => (
-    <ul
-      style={{
-        margin: "0 0 18px",
-        paddingLeft: 22,
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-      }}
-      {...props}
-    />
+  ul: ({ children }) => (
+    <ProseList ordered={false}>
+      {React.Children.map(children, (child, i) =>
+        React.isValidElement(child)
+          ? React.cloneElement(child as React.ReactElement<{ index: number }>, { index: i })
+          : child
+      )}
+    </ProseList>
   ),
-  ol: (props) => (
-    <ol
-      style={{
-        margin: "0 0 18px",
-        paddingLeft: 22,
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-      }}
-      {...props}
-    />
+  ol: ({ children }) => (
+    <ProseList ordered={true}>
+      {React.Children.map(children, (child, i) =>
+        React.isValidElement(child)
+          ? React.cloneElement(child as React.ReactElement<{ index: number }>, { index: i })
+          : child
+      )}
+    </ProseList>
   ),
-  li: (props) => (
-    <li
-      style={{
-        fontSize: 16,
-        lineHeight: 1.65,
-        color: "#444",
-        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-      }}
-      {...props}
-    />
+  li: ({ children, ...rest }) => (
+    <ProseListItem {...(rest as { index?: number })}>{children}</ProseListItem>
   ),
   // Block code: rehype-pretty-code adds data-language — let Shiki styles win
   // Inline code: no data-language — apply our inline style

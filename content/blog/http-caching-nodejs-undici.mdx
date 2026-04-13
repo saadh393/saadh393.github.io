@@ -1,0 +1,222 @@
+---
+title: "HTTP Caching in Node.js with Undici — What Your App Is Missing"
+date: "2026-04-14"
+description: "Most Node.js apps make the same HTTP request hundreds of times and throw every response away. Undici v7 finally fixes that — here's how the cache interceptor actually works."
+tags: ["Node.js", "Performance", "HTTP", "Undici"]
+status: "published"
+type: "blog"
+---
+
+Most Node.js services hit the same upstream endpoints repeatedly and discard every response the moment they're done with it. No caching. No reuse. The same DNS lookup, TCP handshake, TLS negotiation, and server processing — repeated on every single request. Browsers solved this problem 30 years ago. Node.js, until recently, left you to reinvent it yourself.
+
+**Undici v7** ships a standards-compliant HTTP cache interceptor that changes this. It respects `Cache-Control`, `ETag`, `Last-Modified`, `Vary` — all of it. You get browser-grade caching semantics inside your server-side HTTP client with about four lines of setup.
+
+<Callout type="insight">
+  Undici is the HTTP/1.1 client that powers Node.js's built-in `fetch()`. When you call `fetch()` in Node.js 18+, you're already using Undici under the hood. The cache interceptor plugs into the same dispatcher.
+</Callout>
+
+## The Problem: Why Node.js HTTP Caching Was Hard Before
+
+Browsers handle caching automatically. CDNs cache at the edge. But your Node.js service sitting between the two — calling third-party APIs, internal microservices, or even your own database-backed endpoints — gets nothing for free.
+
+The common workarounds:
+
+- Roll your own in-memory `Map` keyed by URL
+- Add Redis as a manual caching layer with hand-written TTL logic
+- Hope the upstream has a CDN and let it absorb the load
+
+All of these miss the `Cache-Control` semantics you actually want. A response with `max-age=60` should be cached for 60 seconds. A `304 Not Modified` should return the cached body without re-parsing. `Vary: Accept-Encoding` should cache different variants for different encodings. You're not going to implement all of that yourself.
+
+## How the Undici Cache Interceptor Works
+
+<Pipeline steps='[
+  {"label":"Request sent","detail":"Undici checks the cache store before opening a connection"},
+  {"label":"Cache hit?","detail":"If a fresh cached response exists, return it immediately — no network"},
+  {"label":"Stale response","detail":"If expired but has ETag/Last-Modified, send conditional GET"},
+  {"label":"304 Not Modified","detail":"Server confirms nothing changed — serve cached body, update headers"},
+  {"label":"200 response","detail":"New response stored in cache, returned to caller"}
+]' />
+
+The interceptor sits between your code and the network. Every outbound request passes through it. On the way back, every response is evaluated against RFC 9111 (the HTTP caching spec) and stored or skipped accordingly.
+
+## Setup: Four Lines
+
+```typescript
+import {
+  getGlobalDispatcher,
+  setGlobalDispatcher,
+  interceptors,
+  request,
+} from "undici";
+
+setGlobalDispatcher(
+  getGlobalDispatcher().compose(interceptors.cache())
+);
+```
+
+That's the entire setup for in-memory caching with default settings. Every subsequent `request()` or `fetch()` call in that process will now cache responses that include `Cache-Control: public, max-age=N` or similar headers.
+
+<Callout type="warning">
+  The cache is opt-in for a reason: it only makes sense for idempotent requests (GET, HEAD) against servers that send correct `Cache-Control` headers. Enabling it against an API that returns stale-unsafe responses and omits cache headers will do nothing — Undici won't cache what it can't safely cache.
+</Callout>
+
+## Cache Stores: Memory vs SQLite
+
+Undici ships two stores. The choice matters.
+
+<Tabs>
+  <Tab label="In-Memory (default)">
+
+```typescript
+import { interceptors } from "undici";
+
+// Default — no configuration needed
+const cacheInterceptor = interceptors.cache();
+```
+
+**Use when:** Cache should not survive process restarts. Good for short-lived workers, Lambda functions, or responses you want evicted when the process dies. Fast, zero I/O.
+
+  </Tab>
+  <Tab label="SQLite (persistent)">
+
+```typescript
+import { interceptors, cacheStores } from "undici";
+
+const cacheInterceptor = interceptors.cache({
+  store: new cacheStores.SqliteCacheStore({
+    location: "./cache.db",
+  }),
+});
+```
+
+**Use when:** The cache should survive restarts or be shared across a worker pool. The SQLite store uses Node.js's experimental built-in SQLite API — no external dependency.
+
+  </Tab>
+</Tabs>
+
+<Callout type="tradeoff">
+  SQLite store uses Node.js's built-in `node:sqlite` module, which is still experimental as of Node.js 22. It's fast enough for most workloads, but flag it in your deployment docs so no one is surprised if the API changes in a minor release.
+</Callout>
+
+## Configuration Reference
+
+The interceptor accepts an options object:
+
+```typescript
+interceptors.cache({
+  store: new cacheStores.MemoryCacheStore(),  // default
+  methods: ["GET", "HEAD"],                   // which methods to cache
+  cacheByDefault: 0,                          // TTL for responses with no cache header (0 = don't cache)
+  type: "shared",                             // "shared" (CDN behavior) or "private" (browser behavior)
+})
+```
+
+The `type` option is subtle but important:
+
+- `"shared"` — treats the cache as a shared proxy cache. Respects `Cache-Control: public` and `s-maxage`. This is what you want for a backend service calling upstream APIs.
+- `"private"` — treats the cache as a per-user browser cache. Caches `Cache-Control: private` responses. Use this if you're building a user-agent type client.
+
+## Testing It: Proof the Cache Works
+
+Here's a minimal server and client pair you can run locally to verify caching behavior:
+
+```typescript
+// server.ts — run with: node server.ts
+import { createServer } from "node:http";
+
+let requestCount = 0;
+
+const server = createServer((req, res) => {
+  requestCount++;
+  console.log(`Request #${requestCount} — ${req.method} ${req.url}`);
+
+  res.setHeader("Cache-Control", "public, max-age=30");
+  res.setHeader("Content-Type", "text/plain");
+  res.end(`Response at ${new Date().toISOString()}`);
+});
+
+server.listen(3000, () => console.log("Listening on :3000"));
+```
+
+```typescript
+// client.ts — run with: node client.ts
+import {
+  getGlobalDispatcher,
+  setGlobalDispatcher,
+  interceptors,
+  request,
+} from "undici";
+
+setGlobalDispatcher(
+  getGlobalDispatcher().compose(interceptors.cache())
+);
+
+// Make 3 requests to the same URL
+for (let i = 0; i < 3; i++) {
+  const { statusCode, headers } = await request("http://localhost:3000/data");
+  console.log(`Request ${i + 1}: status=${statusCode}, age=${headers["age"] ?? "fresh"}`);
+}
+```
+
+Run both. The server should log exactly **one** request. The client will log three responses — the second and third served from cache, with an `age` header showing how stale the cached response is.
+
+<Callout type="result">
+  Three client requests → one server hit. The `age` response header on cached responses tells you exactly how old the cached copy is in seconds.
+</Callout>
+
+## Conditional Requests: ETags and 304s
+
+When a cached response expires, Undici doesn't blindly discard it. If the original response included an `ETag` or `Last-Modified` header, Undici sends a **conditional GET**:
+
+```
+GET /data HTTP/1.1
+If-None-Match: "abc123"
+```
+
+If nothing changed, the server responds with `304 Not Modified` — no body, minimal bandwidth. Undici updates the cached response's expiry and returns the original body to your code.
+
+This is standard HTTP behavior that most hand-rolled caches skip entirely.
+
+<Quiz
+  question="What does Undici do when a cached response is stale but has an ETag header?"
+  options='[
+    "Discards the cache entry and makes a fresh full request",
+    "Returns the stale response anyway with a warning header",
+    "Sends a conditional GET with If-None-Match; returns cached body if server replies 304",
+    "Throws a cache validation error"
+  ]'
+  correct={2}
+  explanation="Conditional GETs let the server confirm nothing changed without sending the full response body again. Undici handles this automatically when the cached response includes ETag or Last-Modified headers."
+/>
+
+## When This Actually Helps
+
+This is not a silver bullet. It helps specifically when:
+
+1. **You're calling upstream APIs with slow or expensive responses** — weather APIs, payment processors, product catalogs. Anything with `max-age > 0` in the response.
+2. **You have high request volume to the same endpoints** — a service that fans out 100 requests to the same price API on every user action becomes 1 request per cache TTL.
+3. **You want 304 round-trips instead of full responses** — saves bandwidth on large payloads that rarely change.
+
+It does nothing for:
+- APIs that return `Cache-Control: no-store` or `no-cache`
+- POST/PUT/DELETE requests (intentionally excluded)
+- Responses without any cache directives (unless you set `cacheByDefault`)
+
+<Callout type="tradeoff">
+  If you're calling an API that omits `Cache-Control` headers entirely but you know responses are safe to cache, use `cacheByDefault: 60` to cache them for 60 seconds by default. You're taking responsibility for the correctness of that decision.
+</Callout>
+
+## The Bigger Picture
+
+HTTP caching in `fetch()` was always part of the spec. Browsers have had it since 1994. The fact that server-side JavaScript didn't have a standards-compliant implementation until 2024 is a gap that should have been closed earlier — but it's closed now.
+
+If you're building Node.js services that make outbound HTTP calls, you should at minimum be aware this exists. For services hitting slow or rate-limited upstreams, enabling it is one of the lowest-effort performance improvements available.
+
+```typescript
+// The entire change to unlock HTTP caching in your Node.js app:
+setGlobalDispatcher(
+  getGlobalDispatcher().compose(interceptors.cache())
+);
+```
+
+That's it. The cache respects the server's `Cache-Control` headers. It handles ETags. It handles `Vary`. It doesn't cache what it shouldn't. Four lines, standards-compliant behavior, no Redis required.
