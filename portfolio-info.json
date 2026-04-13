@@ -1,0 +1,477 @@
+{
+    "project": {
+        "name": "saadh393.github.io",
+        "version": "0.1.0",
+        "framework": "Next.js",
+        "runtime": "React 19",
+        "site_url": "https://saadh393.github.io"
+    },
+    "identity": {
+        "full_name": "Saad Hasan",
+        "alternate_names": ["Nasimul Hasan"],
+        "primary_handle": "@saadh393",
+        "other_handles": ["@saadx393"],
+        "location": {
+            "country": "Bangladesh",
+            "timezone": "UTC+6"
+        },
+        "roles": [
+            "Software Engineer",
+            "Junior Software Engineer",
+            "Frontend Developer",
+            "JavaScript Engineer",
+            "Frontend Developer & Educator"
+        ],
+        "availability": {
+            "status": "Available for Work",
+            "remote": "Open to remote worldwide"
+        },
+        "summary": "Full Stack Developer with 4+ years of experience building and shipping modern web applications using React, Next.js, and Node.js. Experienced in delivering features end-to-end from translating design ideas into functional interfaces to developing backend services and deploying production applications. Familiar with cloud deployments on AWS and GCP, containerization with Docker, and edge deployments using Cloudflare Workers and D1. Focused on writing clean, maintainable code, improving performance, and building practical solutions that provide a smooth user experience.",
+        "philosophy": "Your Creative Call"
+    },
+    "career": {
+        "experience_claims": {
+            "coding_years": "10+ years",
+            "journey_started": "2011",
+            "llms_claim": "12+ years software experience, 4 years professional engineering work"
+        },
+        "work_experience": [
+            {
+                "role": "Jr. Software Engineer",
+                "company": "Analyzen Innovation Lab",
+                "period": "2024 — Present",
+                "description": "Develop and deploy front-end components for web applications within the company's innovation lab."
+            },
+            {
+                "role": "Product Manager",
+                "company": "Learn with Sumit",
+                "period": "2023 — 2024",
+                "description": "Oversee planning, organizing, and directing product development across the company's portfolio."
+            }
+        ],
+        "strengths": [
+            "Analytical thinking",
+            "Problem-solving",
+            "API design",
+            "Modular frontend architecture",
+            "Debugging depth",
+            "Research-oriented engineering"
+        ]
+    },
+    "skills": {
+        "core_stack": ["JavaScript", "React", "Next.js", "Node.js"],
+        "detailed": [
+            {
+                "name": "React",
+                "category": "js",
+                "level": 95
+            },
+            {
+                "name": "Next.js",
+                "category": "js",
+                "level": 90
+            },
+            {
+                "name": "JavaScript",
+                "category": "js",
+                "level": 95
+            },
+            {
+                "name": "TypeScript",
+                "category": "js",
+                "level": 82
+            },
+            {
+                "name": "Node.js",
+                "category": "js",
+                "level": 80
+            },
+            {
+                "name": "Java",
+                "category": "backend",
+                "level": 75
+            },
+            {
+                "name": "Python",
+                "category": "backend",
+                "level": 70
+            },
+            {
+                "name": "PHP",
+                "category": "backend",
+                "level": 65
+            },
+            {
+                "name": "Kotlin",
+                "category": "backend",
+                "level": 60
+            },
+            {
+                "name": "MongoDB",
+                "category": "tools",
+                "level": 78
+            },
+            {
+                "name": "REST API",
+                "category": "tools",
+                "level": 90
+            },
+            {
+                "name": "Tailwind CSS",
+                "category": "tools",
+                "level": 88
+            },
+            {
+                "name": "Prisma",
+                "category": "tools",
+                "level": 72
+            },
+            {
+                "name": "Stripe",
+                "category": "tools",
+                "level": 68
+            },
+            {
+                "name": "Git",
+                "category": "tools",
+                "level": 92
+            },
+            {
+                "name": "Figma",
+                "category": "tools",
+                "level": 74
+            }
+        ],
+        "extended_domains_from_llms": [
+            "API Architecture & Microservices",
+            "Distributed Systems and Streaming",
+            "Redis",
+            "Docker",
+            "FFmpeg",
+            "ChatGPT/Copilot/Cursor Integrations"
+        ]
+    },
+    "social_links": [
+        {
+            "platform": "GitHub",
+            "handle": "@saadh393",
+            "url": "https://github.com/saadh393/"
+        },
+        {
+            "platform": "LinkedIn",
+            "handle": "@saadh393",
+            "url": "https://www.linkedin.com/in/saadh393/"
+        },
+        {
+            "platform": "Twitter / X",
+            "handle": "@saadx393",
+            "url": "https://x.com/saadx393"
+        },
+        {
+            "platform": "Medium",
+            "handle": "@saadh393",
+            "url": "https://medium.com/@saadh393"
+        },
+        {
+            "platform": "Hashnode",
+            "handle": "@saadh393",
+            "url": "https://saadh393.hashnode.dev/"
+        },
+        {
+            "platform": "Daily.dev",
+            "handle": "saadh393",
+            "url": "https://app.daily.dev/saadh393"
+        },
+        {
+            "platform": "Figma",
+            "handle": "@saadh393",
+            "url": "https://figma.com/@saadh393"
+        }
+    ],
+    "portfolio_projects": [
+        {
+            "id": 5,
+            "title": "Learn with Sumit – Scalable LMS Platform",
+            "category": "Enterprise LMS",
+            "year": "2025",
+            "description": "Learning management system serving 10,000+ students, generating over 1 crore BDT/year, deployed on Cloudflare's edge network.Built a full-stack Next.js and Node.js architecture, deployed to AWS and Leverage Cloudflare Worker to leverage Certificate Generation.Led implementation of frontend modules including quizzes, CV generator, real-time notifications, and watch-time tracking.Integrated Password less authentication with Magiclink and Passkey authentication.Implemented DRM protected video streaming with HLS and secured data with JWT authentication .Ensured UI matched high-fidelity Figma prototypes with attention to layout, interactivity, and accessibility.",
+            "stack": "Next.js, React, TypeScript, Node.js, MongoDB, Stripe, AWS",
+            "image": "https://saadh393.github.io/images/projects/uniliver.png",
+            "src": "https://learnwithsumit.com/ "
+        },
+        {
+            "id": 6,
+            "title": "Distributed Video Streaming Platform",
+            "category": "Distributed Systems",
+            "year": "2025",
+            "description": "proof-of-concept platform demonstrating a distributed, microservices-based architecture for video upload, transcoding (FFmpeg), and HLS streaming. Built a React/TypeScript frontend with Vite, ensuring responsive, performant user experience. Implemented video upload flows and streaming interfaces, integrating with Node.js/Express APIs and MinIO (S3-compatible) storage. Designed modular component architecture and optimized UI for seamless interaction with backend microservices. Leveraged Docker Compose for local development, simulating production-like microservices orchestration.",
+            "stack": "React, TypeScript, Vite, Tailwind CSS, Node.js, Express, FFmpeg, Docker, MinIO, BullMQ, Redis, PostgreSQL",
+            "image": "https://github.com/saadh393/distributed-hls-streaming-platform/raw/main/screenshots/2-upload.png",
+            "github": "https://github.com/saadh393/distributed-hls-streaming-platform "
+        },
+        {
+            "id": 7,
+            "title": "Semantic-Search-Engine",
+            "category": "AI Engineering",
+            "year": "2026",
+            "description": "An AI-powered product search engine that understands natural language intent — not just keywords. Built with FastAPI, Pinecone, and Google Gemini.",
+            "stack": "Python, FastAPI, Pinecone, Google Gemini, React, TypeScript, Tailwind CSS",
+            "image": "https://github.com/saadh393/Semantic-Search/raw/main/images/preview.png",
+            "github": "https://github.com/saadh393/Semantic-Search "
+        },
+        {
+            "id": 8,
+            "title": "SSHM",
+            "category": "CLI Tool",
+            "year": "2026",
+            "description": "A terminal-based SSH connection manager built with Go, Cobra, and Bubble Tea. Save, organize, and connect to SSH hosts by alias with a fuzzy-searchable TUI — no more memorizing IPs or long ssh commands.",
+            "stack": "Go, Cobra, Bubble Tea, Lip Gloss",
+            "image": "https://github.com/saadh393/sshm/raw/main/screenshort.png",
+            "github": "https://github.com/saadh393/sshm "
+        },
+        {
+            "id": 0,
+            "title": "Unilever Frontline Academy",
+            "category": "Enterprise LMS",
+            "year": "2024",
+            "description": "A large-scale learning management system for Unilever's frontline workforce across Bangladesh.",
+            "stack": ["React", "Next.js", "REST API"],
+            "image": "https://saadh393.github.io/images/projects/uniliver.png"
+        },
+        {
+            "id": 1,
+            "title": "Justicia",
+            "category": "Legal Platform",
+            "year": "2023",
+            "description": "A legal services platform connecting clients with attorneys, featuring case tracking and document management.",
+            "stack": ["React", "Node.js", "MongoDB"],
+            "image": "https://saadh393.github.io/images/projects/justicia.png"
+        },
+        {
+            "id": 2,
+            "title": "Bengal Meats",
+            "category": "E-Commerce",
+            "year": "2023",
+            "description": "An e-commerce storefront for a premium meat brand with product filtering, cart, and checkout flow.",
+            "stack": ["Next.js", "Tailwind", "Stripe"],
+            "image": "https://saadh393.github.io/images/projects/bengalmeats.png"
+        },
+        {
+            "id": 3,
+            "title": "MovieWall",
+            "category": "Web App",
+            "year": "2022",
+            "description": "A movie discovery app powered by TMDB API with real-time search, filtering, and watchlist features.",
+            "stack": ["React", "TMDB API", "CSS Modules"],
+            "image": "https://saadh393.github.io/images/projects/MovieWall.webp"
+        },
+        {
+            "id": 4,
+            "title": "Interactive Quiz App",
+            "category": "Web App",
+            "year": "2022",
+            "description": "A dynamic quiz application with multiple categories, live scoring, and result analytics.",
+            "stack": ["React", "Context API", "Tailwind"],
+            "image": "https://saadh393.github.io/images/projects/QuizApplication.webp"
+        }
+    ],
+    "highlighted_projects_from_llms": [
+        {
+            "title": "Learn with Sumit – Scalable LMS Platform",
+            "description": "Next.js + Node.js LMS serving 10,000+ students and generating 1 crore+ BDT revenue.",
+            "features": [
+                "Watch-time tracking",
+                "Quiz/assignment flow",
+                "CV generator",
+                "Real-time notifications",
+                "JWT auth",
+                "DRM-protected streaming"
+            ],
+            "stack": [
+                "Node.js",
+                "MongoDB",
+                "Cloudinary",
+                "Stripe",
+                "DRM",
+                "AWS S3",
+                "Next.js"
+            ]
+        },
+        {
+            "title": "Distributed Video Streaming Platform",
+            "description": "Proof-of-concept distributed HLS streaming platform with independent microservices for upload, transcoding, and streaming.",
+            "stack": [
+                "Node.js",
+                "Express",
+                "FFmpeg",
+                "BullMQ",
+                "Redis",
+                "Docker",
+                "MinIO"
+            ],
+            "repo": "https://github.com/saadh393/distributed-hls-streaming-platform"
+        },
+        {
+            "title": "env-example-gen",
+            "description": "CLI utility to generate .env.example files dynamically from existing environment configs.",
+            "package": "https://www.npmjs.com/package/env-example-gen"
+        }
+    ],
+    "blogs": {
+        "featured_and_listing": [
+            {
+                "title": "HTTP Caching in Node.js with Undici",
+                "date": "Mar 24, 2024",
+                "readTime": "8 min",
+                "tag": "Node.js",
+                "description": "Learn how to implement efficient HTTP caching in Node.js applications using Undici v7.0.0. Explore standards-compliant caching mechanisms and best practices.",
+                "link": "/blogs/http-caching-in-node-js-with-undici",
+                "featured": true
+            },
+            {
+                "title": "Understanding JavaScript's Execution Context",
+                "date": "Mar 23, 2024",
+                "readTime": "6 min",
+                "tag": "JavaScript",
+                "description": "A deep dive into how the JavaScript engine creates and manages execution contexts, the call stack, and the scope chain.",
+                "link": "/blogs/javascript-execution-context",
+                "featured": true
+            },
+            {
+                "title": "React useMemo Hook",
+                "date": "Sep 7, 2023",
+                "readTime": "5 min",
+                "tag": "React",
+                "description": "Core fundamentals of the React useMemo hook — understanding when and why to use memoization in your components.",
+                "link": "https://saadh393.hashnode.dev/react-usememo-hook",
+                "featured": true
+            },
+            {
+                "title": "useLocalStorage Hook",
+                "date": "Jul 3, 2023",
+                "readTime": "4 min",
+                "tag": "React",
+                "description": "Building a persistent state hook that syncs with the browser's localStorage API.",
+                "link": "https://saadh393.hashnode.dev/uselocalstorage-hook-building-react-custom-hooks-from-scratch",
+                "featured": true
+            },
+            {
+                "title": "Building React Custom Hooks from Scratch",
+                "date": "Jul 2, 2023",
+                "readTime": "7 min",
+                "tag": "React",
+                "description": "Supercharge your React components by extracting reusable stateful logic into custom hooks.",
+                "link": "https://saadh393.hashnode.dev/building-react-custom-hooks-from-scratch",
+                "featured": true
+            },
+            {
+                "title": "Getting Started with Prisma.js",
+                "date": "Jun 24, 2023",
+                "readTime": "5 min",
+                "tag": "Backend",
+                "description": "A high-level overview of Prisma ORM — schema definition, migrations, and querying a database.",
+                "link": "https://saadh393.hashnode.dev/getting-started-with-prismajs",
+                "featured": true
+            }
+        ],
+        "additional_articles_from_llms": [
+            "https://saadh393.medium.com/smart-strategies-for-node-js-i-o-and-cpu-bound-workloads-12cf84b8f7d3",
+            "https://blog.stackademic.com/how-diffie-hellman-became-the-backbone-of-modern-encryption-5a9d210dca3b",
+            "https://saadh393.medium.com/understand-idempotency-to-build-trustworthy-systems-44010cd98a9a",
+            "https://medium.com/@saadh393/the-event-loop-explained-like-youre-a-top-1-node-js-engineer-f9fea55b00f9",
+            "https://medium.com/@saadh393/understanding-concurrency-parallelism-and-sequential-execution-46f30c55ca07"
+        ]
+    },
+    "tutoring": {
+        "headline": "Master React & Next.js with Private Tutoring",
+        "subheadline": "Personalized 1-on-1 guidance to help you become a professional frontend developer",
+        "price": "$10/hour",
+        "constraints": {
+            "classes_per_month": "15 classes per month",
+            "daily_limit": "Maximum 2 hours per day"
+        },
+        "benefits": [
+            "Personalized Learning Path",
+            "Hands-on Practice",
+            "Industry-Ready Projects",
+            "Flexible Schedule",
+            "One-on-one personalized instruction",
+            "Project-based learning materials",
+            "Code review and feedback",
+            "Money-back guarantee if not satisfied"
+        ],
+        "learning_process": [
+            "Understand Core Concepts",
+            "Watch Live Implementation",
+            "Practice Together",
+            "Independent Building"
+        ],
+        "sample_projects": [
+            "Task Tracker",
+            "Weather Dashboard",
+            "Portfolio Site",
+            "Quiz Platform"
+        ]
+    },
+    "stats_displayed_in_ui": {
+        "about_section": {
+            "years_coding": "10+",
+            "journey_start": "2011",
+            "production_apps": "5",
+            "articles_published": "6"
+        },
+        "contact_section": {
+            "linkedin": "570+",
+            "connections": "434+",
+            "posts": "50+"
+        }
+    },
+    "seo_and_tracking": {
+        "metadata": {
+            "title": "Saad Hasan - Software Engineer",
+            "description": "Portfolio and professional profile of Saad Hasan, JavaScript engineer specialized in Node.js, React, and Next.js.",
+            "google_verification": "BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY",
+            "open_graph_image": "https://saadh393.github.io/images/saad-meta.png"
+        },
+        "person_schema": {
+            "type": "Person",
+            "name": "Saad Hasan",
+            "alternateName": "Nasimul Hasan",
+            "jobTitle": "Junior Software Engineer",
+            "workLocation": "Bangladesh",
+            "sameAs": [
+                "https://github.com/saadh393",
+                "https://www.linkedin.com/in/saadh393/",
+                "https://medium.com/@saadh393",
+                "https://saadh393.hashnode.dev/",
+                "https://x.com/saadx393",
+                "https://app.daily.dev/saadh393"
+            ]
+        },
+        "google_analytics": "G-PYGTE1BV4Z"
+    },
+    "portfolio_assets": {
+        "profile_images": [
+            "https://saadh393.github.io/images/saad-2.jpg",
+            "https://saadh393.github.io/images/saad.jpg",
+            "https://saadh393.github.io/images/saad-meta.png"
+        ],
+        "qr_code": "https://saadh393.github.io/images/qr-code.png",
+        "experience_logos": [
+            "/images/experience/analyzen.svg",
+            "/images/experience/lws.svg"
+        ]
+    },
+    "open_source_and_community": {
+        "mentioned_contributions": ["React Bits (Issue #278)"],
+        "resume_url": "https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
+    },
+    "notes": {
+        "data_conflicts": [
+            "Experience is listed as both 10+ years and 12+ years across different files.",
+            "Role wording varies: Junior Software Engineer, Jr. Software Engineer, Frontend Developer, Software Engineer.",
+            "LinkedIn URL in llms.txt includes '/in/saadh393/in' while other files use '/in/saadh393/'.",
+            "Blog date for 'Understanding JavaScript's Execution Context' appears as Mar 23, 2024 in BlogsData and August 24, 2024 in legacy Blogs.js."
+        ]
+    }
+}
