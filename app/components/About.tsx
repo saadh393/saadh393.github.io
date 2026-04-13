@@ -2,15 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const STRENGTHS = [
-  "API Design",
-  "Debugging Depth",
-  "Modular Architecture",
-  "Research-Oriented",
-  "Distributed Systems",
-  "Performance Tuning",
-  "Frontend Craft",
-  "System Thinking",
+const STACK = [
+  {
+    category: "Frontend",
+    note: "Primary domain -- 4 production apps",
+    items: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML/CSS"],
+  },
+  {
+    category: "Backend",
+    note: "APIs, services, and data layers",
+    items: ["Node.js", "Express", "REST API", "MongoDB", "PostgreSQL", "Prisma"],
+  },
+  {
+    category: "Infrastructure",
+    note: "Deployment and distributed systems",
+    items: ["AWS S3", "Cloudflare Workers", "Docker", "Redis", "BullMQ", "MinIO", "FFmpeg"],
+  },
+  {
+    category: "Tooling",
+    note: "Daily workflow",
+    items: ["Git", "Figma", "Stripe", "Pinecone", "Google Gemini", "Vercel"],
+  },
 ];
 
 export default function About() {
@@ -28,7 +40,7 @@ export default function About() {
           observer.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
 
     observer.observe(el);
@@ -39,7 +51,6 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="about-section"
       style={{
         padding: "90px 0",
         maxWidth: 1200,
@@ -49,88 +60,67 @@ export default function About() {
         paddingRight: "clamp(20px, 4vw, 48px)",
       }}
     >
-      {/* Bio */}
+      {/* Section label */}
       <div
-        className={`about-reveal ${visible ? "about-revealed" : ""}`}
-        style={{ transitionDelay: "0s" }}
-      >
-        <p
-          style={{
-            fontSize: "clamp(17px, 1.8vw, 20px)",
-            lineHeight: 1.65,
-            color: "#444",
-            letterSpacing: "-0.01em",
-            maxWidth: 680,
-            margin: 0,
-            fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-          }}
-        >
-          I&rsquo;ve been writing code since 2011. Most of it was terrible. The
-          gap between then and now is 10+ years of shipping things that broke,
-          debugging things nobody else could fix, and learning by building things
-          that actually had to work. I care about{" "}
-          <span style={{ color: "#000", fontWeight: 500 }}>correctness</span>,{" "}
-          <span style={{ color: "#000", fontWeight: 500 }}>performance</span>,
-          and{" "}
-          <span style={{ color: "#000", fontWeight: 500 }}>
-            systems that don&rsquo;t wake people up at 3am
-          </span>
-          .
-        </p>
-      </div>
-
-      {/* Strengths */}
-      <div
-        className={`about-reveal ${visible ? "about-revealed" : ""}`}
-        style={{
-          transitionDelay: "0.1s",
-          marginTop: 48,
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 8,
-        }}
-      >
-        {STRENGTHS.map((s) => (
-          <span key={s} className="about-pill">
-            {s}
-          </span>
-        ))}
-      </div>
-
-      {/* Currently thinking about */}
-      <div
-        className={`about-reveal ${visible ? "about-revealed" : ""}`}
-        style={{ transitionDelay: "0.2s", marginTop: 48 }}
+        className={`stack-reveal ${visible ? "stack-revealed" : ""}`}
+        style={{ transitionDelay: "0s", marginBottom: 48 }}
       >
         <span
           style={{
-            display: "block",
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#0070f3",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase" as const,
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#999",
             fontFamily: "var(--font-geist-mono), monospace",
-            marginBottom: 12,
+            letterSpacing: "0.01em",
           }}
         >
-          Currently thinking about
+          {"// stack"}
         </span>
-        <p
-          style={{
-            fontSize: 15,
-            lineHeight: 1.65,
-            color: "#666",
-            letterSpacing: "-0.008em",
-            maxWidth: 560,
-            margin: 0,
-            fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-          }}
-        >
-          How edge computing changes the assumptions we make about where code
-          runs. And what it means to build AI-native systems from scratch rather
-          than bolting AI onto existing ones.
-        </p>
+      </div>
+
+      {/* 2-column grid */}
+      <div className="stack-grid">
+        {STACK.map((group, gi) => (
+          <div
+            key={group.category}
+            className={`stack-reveal ${visible ? "stack-revealed" : ""}`}
+            style={{ transitionDelay: `${0.08 * (gi + 1)}s` }}
+          >
+            <div style={{ marginBottom: 8 }}>
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: "#000",
+                  letterSpacing: "-0.015em",
+                  fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                }}
+              >
+                {group.category}
+              </span>
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 400,
+                  color: "#999",
+                  fontFamily: "var(--font-geist-mono), monospace",
+                  letterSpacing: "0em",
+                }}
+              >
+                {group.note}
+              </span>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {group.items.map((item) => (
+                <span key={item} className="stack-token">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

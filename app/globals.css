@@ -33,18 +33,77 @@ body {
    Hero Section Styles
    ═══════════════════════════════════════════ */
 
-/* Grid background */
+/* Dot grid background */
 .hero-grid-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 30%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 30%, transparent 100%);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 45%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 45%, black 20%, transparent 100%);
+}
+
+/* Centered hero layout */
+.hero-centered-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px clamp(20px, 4vw, 48px) 0;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+
+/* Centered name */
+.hero-name-centered {
+  font-size: clamp(56px, 9vw, 96px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  color: #000;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  margin: 12px 0 12px;
+}
+
+/* Available badge */
+.hero-available-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 10px;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #15803d;
+  letter-spacing: 0.01em;
+}
+
+/* Stats centered */
+.hero-stats-centered {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.hero-stat-centered {
+  display: flex;
+  align-items: center;
+}
+.hero-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 0 clamp(16px, 3vw, 32px);
+  flex-shrink: 0;
 }
 
 /* Reveal animation */
@@ -443,6 +502,51 @@ body {
    About Section Styles
    ═══════════════════════════════════════════ */
 
+/* Stack / About reveal */
+.stack-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stack-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stack grid */
+.stack-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 64px;
+}
+@media (max-width: 640px) {
+  .stack-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+/* Stack token pills */
+.stack-token {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 0em;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.stack-token:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+  color: #000;
+}
+
+/* Keep .about-reveal for backwards compat in case anything references it */
 .about-reveal {
   opacity: 0;
   transform: translateY(20px);
@@ -451,25 +555,6 @@ body {
 .about-revealed {
   opacity: 1;
   transform: translateY(0);
-}
-
-.about-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: #555;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 9999px;
-  background: transparent;
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-.about-pill:hover {
-  border-color: rgba(0, 0, 0, 0.25);
-  color: #000;
 }
 
 /* ═══════════════════════════════════════════
@@ -1037,7 +1122,8 @@ body {
   .navbar-status-dot {
     animation: none;
   }
-  .about-reveal {
+  .about-reveal,
+  .stack-reveal {
     transition: none;
     opacity: 1;
     transform: none;

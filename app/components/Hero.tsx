@@ -102,7 +102,7 @@ export default function Hero() {
         position: "relative",
         background: "#fff",
         overflow: "hidden",
-        minHeight: "100svh",
+        height: "100svh",
         display: "flex",
         flexDirection: "column",
       }}
@@ -125,250 +125,185 @@ export default function Hero() {
         }}
       />
 
-      {/* Subtle grid */}
+      {/* Subtle dot grid */}
       <div className="hero-grid-bg" aria-hidden="true" />
 
-      {/* Main content area */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          flex: 1,
-          maxWidth: 1200,
-          margin: "0 auto",
-          width: "100%",
-          padding: "clamp(72px, 10vh, 120px) clamp(20px, 4vw, 48px) 0",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        {/* ── Header Row: Status + Location ── */}
+      {/* Main centered content */}
+      <div className="hero-centered-content">
+        {/* Available badge */}
         <div
           className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "clamp(48px, 7vh, 80px)",
-            transitionDelay: "0s",
-          }}
+          style={{ transitionDelay: "0s" }}
         >
-          {/* Status badge */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "5px 14px 5px 10px",
-              background: "rgba(34,197,94,0.06)",
-              border: "1px solid rgba(34,197,94,0.18)",
-              borderRadius: 9999,
-              fontSize: 12,
-              fontWeight: 500,
-              color: "#15803d",
-              letterSpacing: "0.01em",
-            }}
-          >
+          <div className="hero-available-badge">
             <span className="hero-status-dot" />
             Available for Work
           </div>
+        </div>
 
+        {/* Handle */}
+        <div
+          className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{ transitionDelay: "0.06s", marginTop: 20 }}
+        >
           <span
             style={{
-              fontSize: 11,
+              fontSize: 13,
               fontWeight: 500,
-              color: "#bbb",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              color: "#0070f3",
               fontFamily: "var(--font-geist-mono), monospace",
+              letterSpacing: "0.02em",
             }}
           >
-            Dhaka, BD / UTC+6
+            @saadh393
           </span>
         </div>
 
-        {/* ── Single Column Identity ── */}
-        <div style={{ minWidth: 0 }}>
-          {/* Handle */}
-          <div
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-            style={{ transitionDelay: "0.06s", marginBottom: 16 }}
-          >
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 500,
-                color: "#0070f3",
-                fontFamily: "var(--font-geist-mono), monospace",
-                letterSpacing: "0.02em",
-              }}
-            >
-              @saadh393
-            </span>
-          </div>
+        {/* Name */}
+        <h1
+          className={`hero-reveal hero-name-centered ${entered ? "hero-revealed" : ""}`}
+          style={{ transitionDelay: "0.12s" }}
+        >
+          Saad Hasan
+        </h1>
 
-          {/* Name */}
-          <h1
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+        {/* Role cycling */}
+        <div
+          className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{
+            transitionDelay: "0.18s",
+            height: 28,
+            overflow: "hidden",
+          }}
+        >
+          <span
+            key={roleIdx}
+            className={phase === "in" ? "hero-role-in" : "hero-role-out"}
             style={{
-              transitionDelay: "0.12s",
-              fontSize: "clamp(52px, 8vw, 88px)",
-              fontWeight: 700,
-              lineHeight: 0.95,
-              letterSpacing: "-0.04em",
-              color: "#000",
-              fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-              margin: "0 0 20px",
-            }}
-          >
-            Saad
-            <br />
-            Hasan
-          </h1>
-
-          {/* Role cycling */}
-          <div
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-            style={{
-              transitionDelay: "0.18s",
-              height: 28,
-              overflow: "hidden",
-              marginBottom: 28,
-            }}
-          >
-            <span
-              key={roleIdx}
-              className={phase === "in" ? "hero-role-in" : "hero-role-out"}
-              style={{
-                display: "block",
-                fontSize: "clamp(15px, 1.6vw, 18px)",
-                fontWeight: 400,
-                color: "#666",
-                letterSpacing: "-0.01em",
-                fontFamily: "var(--font-geist-sans)",
-              }}
-            >
-              {ROLES[roleIdx]}
-            </span>
-          </div>
-
-          {/* Opinionated bio */}
-          <p
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-            style={{
-              transitionDelay: "0.24s",
-              fontSize: 16,
-              lineHeight: 1.65,
-              color: "#555",
-              letterSpacing: "-0.008em",
-              maxWidth: 540,
-              margin: "0 0 36px",
+              display: "block",
+              fontSize: "clamp(15px, 1.6vw, 18px)",
+              fontWeight: 400,
+              color: "#999",
+              letterSpacing: "-0.01em",
               fontFamily: "var(--font-geist-sans)",
+              textAlign: "center",
             }}
           >
-            I build things that handle real traffic and real money.
-            Currently shipping production React at{" "}
-            <span style={{ color: "#000", fontWeight: 500 }}>
-              Analyzen Innovation Lab
-            </span>
-            . Previously built the LMS that serves{" "}
-            <span style={{ color: "#000", fontWeight: 500 }}>
-              10,000+ students
-            </span>{" "}
-            and processes{" "}
-            <span style={{ color: "#000", fontWeight: 500 }}>
-              1 Cr+ BDT/year
-            </span>
-            .
-          </p>
-
-          {/* CTAs */}
-          <div
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-            style={{
-              transitionDelay: "0.30s",
-              display: "flex",
-              gap: 10,
-              flexWrap: "wrap",
-              alignItems: "center",
-              marginBottom: 32,
-            }}
-          >
-            <a href="#work" className="hero-btn-primary">
-              View Work
-              <svg
-                className="hero-btn-arrow"
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-              >
-                <path
-                  d="M2.5 7h9M7 2.5L11.5 7 7 11.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
-            <a href="#contact" className="hero-btn-secondary">
-              Get in Touch
-            </a>
-            <a
-              href="https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hero-btn-secondary"
-            >
-              Resume
-              <span style={{ fontSize: 11, opacity: 0.5, marginLeft: 2 }}>
-                ↗
-              </span>
-            </a>
-          </div>
-
-          {/* Social row */}
-          <div
-            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-            style={{
-              transitionDelay: "0.36s",
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-            }}
-          >
-            {SOCIALS.map(({ href, label, icon }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-social-link"
-                aria-label={label}
-              >
-                {icon}
-              </a>
-            ))}
-          </div>
+            {ROLES[roleIdx]}
+          </span>
         </div>
 
-        {/* ── Stat Strip ── */}
+        {/* Bio */}
+        <p
+          className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{
+            transitionDelay: "0.24s",
+            fontSize: 16,
+            lineHeight: 1.65,
+            color: "#666",
+            letterSpacing: "-0.008em",
+            maxWidth: 480,
+            margin: "20px 0 0",
+            fontFamily: "var(--font-geist-sans)",
+            textAlign: "center",
+          }}
+        >
+          I build things that handle real traffic and real money.
+        </p>
+
+        {/* CTAs */}
+        <div
+          className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{
+            transitionDelay: "0.30s",
+            display: "flex",
+            gap: 10,
+            flexWrap: "wrap",
+            justifyContent: "center",
+            marginTop: 32,
+          }}
+        >
+          <a href="#work" className="hero-btn-primary">
+            View Work
+            <svg
+              className="hero-btn-arrow"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+            >
+              <path
+                d="M2.5 7h9M7 2.5L11.5 7 7 11.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </a>
+          <a href="#contact" className="hero-btn-secondary">
+            Get in Touch
+          </a>
+          <a
+            href="https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero-btn-secondary"
+          >
+            Resume
+            <span style={{ fontSize: 11, opacity: 0.5, marginLeft: 2 }}>
+              ↗
+            </span>
+          </a>
+        </div>
+
+        {/* Social icons */}
+        <div
+          className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{
+            transitionDelay: "0.36s",
+            display: "flex",
+            gap: 8,
+            justifyContent: "center",
+            marginTop: 24,
+          }}
+        >
+          {SOCIALS.map(({ href, label, icon }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-social-link"
+              aria-label={label}
+            >
+              {icon}
+            </a>
+          ))}
+        </div>
+
+        {/* Stat strip */}
         <div
           className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
           style={{
             transitionDelay: "0.42s",
-            marginTop: "clamp(48px, 6vh, 72px)",
+            marginTop: 48,
             paddingTop: 32,
             borderTop: "1px solid rgba(0,0,0,0.07)",
+            width: "100%",
+            maxWidth: 680,
           }}
         >
-          <div className="hero-stats-row">
-            {STATS.map(({ value, label }) => (
-              <div key={label} className="hero-stat">
-                <div className="hero-stat-value">{value}</div>
-                <div className="hero-stat-label">{label}</div>
+          <div className="hero-stats-row hero-stats-centered">
+            {STATS.map(({ value, label }, i) => (
+              <div key={label} className="hero-stat-centered" style={{ display: "flex", alignItems: "center", gap: 0 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div className="hero-stat-value">{value}</div>
+                  <div className="hero-stat-label">{label}</div>
+                </div>
+                {i < STATS.length - 1 && (
+                  <div className="hero-stat-divider" />
+                )}
               </div>
             ))}
           </div>
@@ -386,6 +321,7 @@ export default function Hero() {
           padding: "13px 0",
           marginTop: "auto",
           background: "rgba(250,250,250,0.6)",
+          flexShrink: 0,
         }}
       >
         <div className="hero-ticker-mask">
