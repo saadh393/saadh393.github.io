@@ -1,0 +1,355 @@
+---
+title: "Bézier Curves in JavaScript"
+date: "2026-04-14"
+description: "Every smooth curve in a design tool, SVG path, or CSS easing function is a Bézier curve. Here is how they actually work, built from scratch."
+tags: ["JavaScript", "Canvas", "Mathematics", "Graphics"]
+status: "published"
+type: "blog"
+---
+
+Open Figma. Draw a shape with the pen tool. Grab one of those handles on a curve segment and drag it sideways. The curve bends, but the endpoints stay put. That handle you're draggingit's a control point. The path it produces is a Bézier curve.
+
+You've been looking at them every day without thinking about it. The smooth S-curve in an iOS animation. The `transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1.0)` line in your CSS. The `C` command in an SVG path. Even the outlines of the letterforms you're reading right nowthose are defined as sequences of Bézier curves in the font file.
+
+Most of the time you interact with them through an API and don't think about the underlying math. Which is fine until it isn't: until you need to animate an object along a path at constant speed, or build a custom spline editor, or figure out why your CSS timing function produces a curve that feels wrong. At that point you want to actually understand what's happening.
+
+So let's build it from scratch.
+
+## The mental model, before anything else
+
+Here's the thing that makes Bézier curves click, you don't need to start with the formula. Start with the physical intuition.
+
+You have two endpointsa start and an end. Between them, you place one or two **control points** that act like magnets. The curve is pulled _toward_ the magnets without actually passing through them. The closer the control point, the stronger the pull. That's it. Everything elsethe polynomial, the algorithm, the rendering loopis just a formal description of that pulling.
+
+<BezierPlayground title="Drag the red control pointsthey pull the curve without the curve touching them" />
+
+Drag P1 and P2 around in that playground. Notice how the curve bends toward them. Notice how at `t=0` the curve is exactly at P0, and at `t=1` it's exactly at P3the control points influence the shape but the curve only ever starts and ends at the black dots.
+
+Toggle "de Casteljau" on and move the `t` slider. Those purple and green dots are intermediate pointswe'll get to exactly what they mean in a moment.
+
+## De Casteljau's constructionthe algorithm behind the curve
+
+There are two ways to understand Bézier curves. One is the closed form polynomial. The other is De Casteljau's algorithm, which Pierre de Casteljau worked out in 1959 while at Citroënyes, the car company needed a mathematical way to describe body curves for manufacturing.
+
+De Casteljau's insight was that you can find any point on a Bézier curve through a process of repeated linear interpolation. For a cubic curve with points P0, P1, P2, P3, here's what happens at some parameter value `t`:
+
+1. Interpolate between each adjacent pairP0→P1, P1→P2, P2→P3 at `t`. You get three new points: A, B, C.
+2. Interpolate between A→B and B→C at `t`. You get two points: D, E.
+3. Interpolate between D→E at `t`. That final point is on the curve.
+
+That's the purple → green reduction you see in the playground when you enable de Casteljau. Each level collapses the points by one until a single point remainsand that point is where the curve is for that value of `t`.
+
+In code:
+
+```javascript
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+
+function lerpPoint(p0, p1, t) {
+    return { x: lerp(p0.x, p1.x, t), y: lerp(p0.y, p1.y, t) };
+}
+
+function cubicBezier(p0, p1, p2, p3, t) {
+    // level 1
+    const a = lerpPoint(p0, p1, t);
+    const b = lerpPoint(p1, p2, t);
+    const c = lerpPoint(p2, p3, t);
+    // level 2
+    const ab = lerpPoint(a, b, t);
+    const bc = lerpPoint(b, c, t);
+    // level 3point on curve
+    return lerpPoint(ab, bc, t);
+}
+```
+
+This reads almost exactly like the mental model. Quadratic Bézier is the same thing with one fewer level:
+
+```javascript
+function quadraticBezier(p0, p1, p2, t) {
+    const a = lerpPoint(p0, p1, t);
+    const b = lerpPoint(p1, p2, t);
+    return lerpPoint(a, b, t);
+}
+```
+
+<Quiz
+    question="At t=0, what does the cubic Bézier function return?"
+    options='[
+    "The average position of all four control points",
+    "Exactly P0the start point",
+    "A point halfway between P0 and P1",
+    "P1the first control point"
+  ]'
+    correct={1}
+    explanation="At t=0, every lerp(a, b, 0) returns a. So lerpPoint(P0, P1, 0) = P0, and the whole reduction collapses to P0. Same logic gives you P3 at t=1. The curve is guaranteed to start and end at the endpointsnot the control points."
+/>
+
+## The Closed Form Version
+
+De Casteljau is clean and generalizes to any degree, but if you're sampling a curve at thousands of points per frame, the intermediate allocations add up. The closed form Bernstein polynomial version avoids them:
+
+```javascript
+// Cubic BézierBernstein form
+function cubicBezierFast(p0, p1, p2, p3, t) {
+    const mt = 1 - t;
+    const mt2 = mt * mt;
+    const mt3 = mt2 * mt;
+    const t2 = t * t;
+    const t3 = t2 * t;
+
+    return {
+        x: mt3 * p0.x + 3 * mt2 * t * p1.x + 3 * mt * t2 * p2.x + t3 * p3.x,
+        y: mt3 * p0.y + 3 * mt2 * t * p1.y + 3 * mt * t2 * p2.y + t3 * p3.y,
+    };
+}
+```
+
+The coefficients `1, 3, 3, 1` are binomial coefficientsthe third row of Pascal's triangle. For quadratic it's `1, 2, 1`. The key property: for any `t` in [0,1], the coefficients always sum to 1. That's what keeps the curve "inside" the convex hull of the control points. It also means you can't get a Bézier curve that suddenly teleports outside the bounding box of its control points.
+
+Both versions produce identical results. Use De Casteljau when you want readable code or need to subdivide the curve. Use the formula when you're sampling at high frequency.
+
+<Diagram>
+flowchart TD
+  A["cubicBezier(P0, P1, P2, P3, t)"]
+  A --> L1A["a = lerp(P0, P1, t)"]
+  A --> L1B["b = lerp(P1, P2, t)"]
+  A --> L1C["c = lerp(P2, P3, t)"]
+  L1A --> L2A["ab = lerp(a, b, t)"]
+  L1B --> L2A
+  L1B --> L2B["bc = lerp(b, c, t)"]
+  L1C --> L2B
+  L2A --> OUT["point on curve"]
+  L2B --> OUT
+  style A fill:#f0f7ff,stroke:#0070f3,color:#0070f3
+  style OUT fill:#f0fdf4,stroke:#16a34a,color:#16a34a
+</Diagram>
+
+## Drawing on Canvas
+
+Now wire it up:
+
+```javascript
+function drawCurve(ctx, p0, p1, p2, p3, steps = 100) {
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        const pt = cubicBezier(p0, p1, p2, p3, t);
+        ctx.lineTo(pt.x, pt.y);
+    }
+
+    ctx.stroke();
+}
+```
+
+You're sampling at `steps` evenly-spaced `t` values and connecting them with straight line segments. At 100 steps, nobody can see the approximation. At 6 steps, the polygon is obvious. The Canvas API has `bezierCurveTo()` built in, which does this internally (faster and without the intermediate points):
+
+```javascript
+ctx.beginPath();
+ctx.moveTo(p0.x, p0.y);
+ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+ctx.stroke();
+```
+
+Use the native method for rendering. Use your own sampler when you need to work with the actual pointsfor animation, collision detection, arc-length, or subdividing.
+
+## Why the step count matters more than you'd think
+
+Here's something that trips people up: equal steps in `t` do not produce equally spaced points along the curve. They produce equal steps in _parameter space_, which is not the same thing as equal steps in _physical distance_.
+
+<BezierSampling />
+
+Switch to the "Sampling steps" view and try 6 stepsyou can clearly see the line segments, and they're unequal lengths. The segments are longer on the flat stretches and shorter where the curve bends sharply. Crank it to 120 and it looks smooth. But the underlying spacing is still unevenyou just can't see it at that resolution.
+
+Now switch to "Arc-length vs uniform t". Watch the two dots. The amber one moves with uniform `t`it speeds up on the flat stretches and slows down on the bends. The green one moves at constant speed because it uses arc-length parameterization: we pre-compute the actual physical length of the curve, then find the `t` value that corresponds to each percentage of that length.
+
+For most rendering purposesdrawing the curve onceuniform `t` is fine. For animationmoving a character, a camera, a label along a pathyou almost always want arc-length parameterization. Otherwise your animation will feel jittery at bends.
+
+Building the lookup table:
+
+```javascript
+function buildArcLengthTable(p0, p1, p2, p3, precision = 500) {
+    const table = [{ len: 0, t: 0 }];
+    let totalLength = 0;
+    let prev = p0;
+
+    for (let i = 1; i <= precision; i++) {
+        const t = i / precision;
+        const curr = cubicBezier(p0, p1, p2, p3, t);
+        const dx = curr.x - prev.x;
+        const dy = curr.y - prev.y;
+        totalLength += Math.sqrt(dx * dx + dy * dy);
+        table.push({ len: totalLength, t });
+        prev = curr;
+    }
+
+    return { table, totalLength };
+}
+
+function tAtArcLength(table, totalLength, targetPercent) {
+    const target = targetPercent * totalLength;
+
+    for (let i = 1; i < table.length; i++) {
+        if (table[i].len >= target) {
+            const prev = table[i - 1];
+            const curr = table[i];
+            const frac = (target - prev.len) / (curr.len - prev.len);
+            return prev.t + frac * (curr.t - prev.t);
+        }
+    }
+    return 1;
+}
+```
+
+Build the table once per curve (or whenever the control points change). Then use it in your animation loop:
+
+```javascript
+const { table, totalLength } = buildArcLengthTable(p0, p1, p2, p3);
+
+// In your animation loopprogress goes from 0 to 1
+function getPosition(progress) {
+    const t = tAtArcLength(table, totalLength, progress);
+    return cubicBezier(p0, p1, p2, p3, t);
+}
+```
+
+<Diagram>
+flowchart TD
+  A["buildArcLengthTable(p0..p3, precision)"]
+  A --> B["table = empty, totalLength = 0"]
+  B --> C["loop i = 1 to precision"]
+  C --> D["t = i / precision"]
+  D --> E["curr = cubicBezier at t"]
+  E --> F["dist = distance(prev, curr)"]
+  F --> G["totalLength += dist"]
+  G --> H["table.push — len and t"]
+  H --> I["i < precision?"]
+  I -- yes --> C
+  I -- no --> J["return table + totalLength"]
+  style A fill:#f0f7ff,stroke:#0070f3,color:#0070f3
+  style J fill:#f0fdf4,stroke:#16a34a,color:#16a34a
+</Diagram>
+
+<Diagram>
+flowchart TD
+  A["tAtArcLength(table, totalLength, targetPct)"]
+  A --> B["target = targetPct x totalLength"]
+  B --> C["loop i = 1 to table.length"]
+  C --> D["table[i].len >= target?"]
+  D -- no --> C
+  D -- yes --> E["frac = (target - prev.len) / (curr.len - prev.len)"]
+  E --> F["return prev.t + frac x (curr.t - prev.t)"]
+  style A fill:#f5f0ff,stroke:#7928ca,color:#7928ca
+  style F fill:#f0fdf4,stroke:#16a34a,color:#16a34a
+</Diagram>
+
+The `precision` parameter is the knob. 200–500 is enough for most curves. Higher precision = more accurate table but more memory and slower setup. For a loading spinner animation, 100 is plenty. For a 1000-pixel-long SVG path that something needs to travel along with precise speed, go higher.
+
+<Callout type="tradeoff">
+    The lookup table approach trades memory for accuracy. A table of 500 entries
+    is about 12KB per curvenegligible for most use cases. The alternative is
+    numerical integration at runtime, which is more accurate but costs CPU per
+    frame. For static curves, pre-compute the table.
+</Callout>
+
+## Quadratic vs Cubic
+
+Quadratic curves have one control point. They can only bend in one directionyou can make an arc or a gentle curve, but you can't make an S-shape. TrueType fonts use quadratics almost exclusively because they're cheaper to rasterize. SVG's `Q` command is quadratic.
+
+Cubic curves have two independent control points. With them you can produce S-curves because each handle can pull in a different direction. CSS `cubic-bezier()` is always cubic. PostScript, PDF, OpenType CFF fonts, and SVG's `C` command all use cubics.
+
+<Comparison beforeLabel="Quadratic — one control point" afterLabel="Cubic — two control points" language="javascript">
+
+```javascript
+function quadraticBezier(p0, p1, p2, t) {
+  const a = lerpPoint(p0, p1, t);
+  const b = lerpPoint(p1, p2, t);
+  return lerpPoint(a, b, t);
+}
+
+// One control point — can only bend one way.
+// Works: arcs, gentle transitions, simple icons.
+// Fails: S-curves, CSS easing with inflection points.
+```
+
+```javascript
+function cubicBezier(p0, p1, p2, p3, t) {
+  const a  = lerpPoint(p0, p1, t);
+  const b  = lerpPoint(p1, p2, t);
+  const c  = lerpPoint(p2, p3, t);
+  const ab = lerpPoint(a, b, t);
+  const bc = lerpPoint(b, c, t);
+  return lerpPoint(ab, bc, t);
+}
+
+// Two control points — each handle pulls independently.
+// Works: S-curves, CSS easing, complex paths.
+// Cost: one more point to manage per segment.
+```
+
+</Comparison>
+
+CSS `cubic-bezier(x1, y1, x2, y2)` is a cubic Bézier where P0 is locked to `(0,0)` and P3 is locked to `(1,1)`. The x-axis is time, the y-axis is progress. The two values you pass are just the coordinates of the two middle control points. That's the whole thing. So `cubic-bezier(0.25, 0.1, 0.25, 1.0)` means: P1 is at (0.25, 0.1) and P2 is at (0.25, 1.0)both in the left half of the time axis, which creates the ease-out feel.
+
+## Edge cases that bite you later
+
+**Degenerate curves.** If you collapse P1 and P2 onto the P0→P3 line, you get a straight line. If you put all four points in the same location, you get a point. Nothing breaksthe math handles it. But if you're generating control points programmatically and you wonder why your curve looks like a ruler, this is why.
+
+**Floating point at the endpoints.** The formula computes `(1-t)^3 * P0` at t very close to 1. Floating point subtraction near zero loses precision. In practice this is sub-pixel error and you'll never see it. But if you're joining two curves and need the endpoints to match exactly, don't trust the formula at t=0 and t=1just return P0 and P3 directly.
+
+```javascript
+function cubicBezierSafe(p0, p1, p2, p3, t) {
+    if (t <= 0) return { ...p0 };
+    if (t >= 1) return { ...p3 };
+    return cubicBezier(p0, p1, p2, p3, t);
+}
+```
+
+**Smooth joins between segments.** When you chain two cubic Bézier segments together (which is what every spline editor does), a visible kink forms at the join unless the outgoing handle of curve A, the shared endpoint, and the incoming handle of curve B are collinear. This is called G1 continuity. To enforce it:
+
+```javascript
+// Given endpoint E and the outgoing control point from curve A (cA),
+// compute the incoming control point for curve B so the join is smooth:
+function mirrorHandle(endpoint, controlPoint) {
+    return {
+        x: 2 * endpoint.x - controlPoint.x,
+        y: 2 * endpoint.y - controlPoint.y,
+    };
+}
+```
+
+SVG's `S` (smooth cubic) command does this automaticallyit reflects the previous handle for you. Most spline editors enforce it as a constraint.
+
+<Callout type="result">
+    Once you build this once, CSS easing functions stop being magic numbers. SVG
+    paths become readable. And when you need to animate something along a
+    complex path at constant speed, you know exactly which part of the code to
+    reach forand why.
+</Callout>
+
+<Accordion>
+    <AccordionItem title="Why not just use bezierCurveTo() for everything?">
+        The native Canvas method is fine for drawing. The problem is when you
+        need to work with the curve beyond drawingfinding a point at a specific
+        distance along it, animating something along it, testing if a point is
+        near it, subdividing it for hit detection. The browser does not expose
+        any of that from the native API. You need your own sampler.
+    </AccordionItem>
+    <AccordionItem title="Can you have more than 4 control points?">
+        Yesdegree-n Bézier curves have n+1 control points. De Casteljau
+        generalizes with no changes. The problem is that high-degree curves are
+        expensive (O(n²) per point) and hard to control locallymoving one point
+        affects the whole curve. The practical solution is to join multiple
+        cubic segments, which is what splines are. Fonts, SVG paths, and all
+        real design tools do this.
+    </AccordionItem>
+    <AccordionItem title="What is the difference between a Bézier spline and a Bézier curve?">
+        A single Bézier curve connects two endpoints with some control points. A
+        spline is a sequence of Bézier curves joined end-to-end, with continuity
+        constraints enforced at the joins so the result looks like one smooth
+        curve. Figma paths, SVG paths, and font outlines are all splinesthey
+        just look like one curve.
+    </AccordionItem>
+</Accordion>

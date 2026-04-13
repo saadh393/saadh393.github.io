@@ -9,6 +9,15 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    title: "Bézier Curves in JavaScript — From the Math to the Canvas",
+    date: "Apr 14, 2026",
+    readTime: "10 min",
+    tag: "Graphics",
+    description:
+      "Every smooth curve in Figma, SVG, or CSS easing is a Bézier curve. Here is how they actually work — built from scratch with interactive demos.",
+    link: "/blog/bezier-curves-javascript",
+  },
+  {
     title: "How Diffie–Hellman Became the Backbone of Modern Encryption",
     date: "Apr 13, 2026",
     readTime: "9 min",
@@ -60,5 +69,6 @@ export const tagColors: Record<string, string> = {
   JavaScript: "#d97706",
   React: "#0070f3",
   Security: "#7c3aed",
+  Graphics: "#0891b2",
   Backend: "#888888",
 };

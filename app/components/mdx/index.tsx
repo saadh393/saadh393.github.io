@@ -20,6 +20,8 @@ import {
   AccordionDynamic as Accordion,
   AccordionItemDynamic as AccordionItem,
   QuizDynamic as Quiz,
+  BezierPlaygroundDynamic as BezierPlayground,
+  BezierSamplingDynamic as BezierSampling,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -272,4 +274,7 @@ export const mdxComponents: MDXComponents = {
   AccordionItem,
   // NEW: knowledge check
   Quiz,
+  // Bézier-specific interactive widgets
+  BezierPlayground,
+  BezierSampling,
 };

@@ -1,35 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-interface ComparisonProps {
-  before: string;
-  after: string;
-  beforeLabel?: string;
-  afterLabel?: string;
-  language?: string;
+// ─── Panel ─────────────────────────────────────────────────────────────────
+
+interface PanelProps {
+  label: string;
+  accent: string;
+  children: React.ReactNode;
 }
 
-export function Comparison({
-  before = "",
-  after = "",
-  beforeLabel = "Before",
-  afterLabel = "After",
-  language = "javascript",
-}: ComparisonProps) {
-  const [view, setView] = useState<"split" | "before" | "after">("split");
-
-  const Panel = ({
-    code,
-    label,
-    accent,
-  }: {
-    code: string;
-    label: string;
-    accent: string;
-  }) => (
+function Panel({ label, accent, children }: PanelProps) {
+  return (
     <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-      {/* Panel header */}
+      {/* header */}
       <div
         style={{
           padding: "8px 16px",
@@ -38,6 +22,7 @@ export function Comparison({
           alignItems: "center",
           gap: 8,
           background: "#fafafa",
+          flexShrink: 0,
         }}
       >
         <span
@@ -62,25 +47,83 @@ export function Comparison({
           {label}
         </span>
       </div>
-      <pre
-        data-language={language}
+      {/* content */}
+      <div
         style={{
-          margin: 0,
-          padding: "16px 20px",
-          background: "#fff",
-          fontSize: 13,
-          lineHeight: 1.7,
-          fontFamily: "var(--font-geist-mono), monospace",
-          color: "#333",
-          overflowX: "auto",
-          whiteSpace: "pre",
           flex: 1,
+          overflowX: "auto",
+          background: "#fff",
         }}
       >
-        <code>{code.trim()}</code>
-      </pre>
+        {children}
+      </div>
     </div>
   );
+}
+
+// ─── Comparison ────────────────────────────────────────────────────────────
+
+interface ComparisonProps {
+  /** Pass two fenced code blocks as children — first is "before", second is "after" */
+  children?: React.ReactNode;
+  beforeLabel?: string;
+  afterLabel?: string;
+  /** Legacy: plain string code, works only when content has no { } braces */
+  before?: string;
+  after?: string;
+  language?: string;
+}
+
+export function Comparison({
+  children,
+  before,
+  after,
+  beforeLabel = "Before",
+  afterLabel = "After",
+  language = "javascript",
+}: ComparisonProps) {
+  const [view, setView] = useState<"split" | "before" | "after">("split");
+
+  // ── resolve before/after content ────────────────────────────────────────
+  // children mode: two code blocks as children → first = before, second = after
+  // legacy mode: `before` / `after` string props
+  let beforeContent: React.ReactNode;
+  let afterContent: React.ReactNode;
+
+  if (children) {
+    const arr = React.Children.toArray(children);
+    beforeContent = arr[0];
+    afterContent = arr[1] ?? null;
+  } else {
+    const codeStyle: React.CSSProperties = {
+      fontFamily: "var(--font-geist-mono), monospace",
+      fontSize: 13,
+      color: "#333",
+      background: "none",
+      padding: 0,
+      borderRadius: 0,
+      lineHeight: 1.7,
+    };
+    const preStyle: React.CSSProperties = {
+      margin: 0,
+      padding: "16px 20px",
+      background: "#fff",
+      overflowX: "auto",
+      whiteSpace: "pre",
+      minHeight: 80,
+    };
+    const safe = (s: unknown) => (typeof s === "string" ? s : String(s ?? "")).trim();
+    beforeContent = (
+      <pre style={preStyle}>
+        <code style={codeStyle}>{safe(before)}</code>
+      </pre>
+    );
+    afterContent = (
+      <pre style={preStyle}>
+        <code style={codeStyle}>{safe(after)}</code>
+      </pre>
+    );
+  }
 
   const isSplit = view === "split";
 
@@ -93,7 +136,7 @@ export function Comparison({
         margin: "28px 0",
       }}
     >
-      {/* Toolbar */}
+      {/* toolbar */}
       <div
         style={{
           display: "flex",
@@ -117,7 +160,6 @@ export function Comparison({
         >
           Comparison · {language}
         </span>
-        {/* View toggle */}
         <div
           style={{
             display: "flex",
@@ -152,22 +194,25 @@ export function Comparison({
         </div>
       </div>
 
-      {/* Panels */}
+      {/* panels */}
       <div
         style={{
           display: "flex",
           flexDirection: isSplit ? "row" : "column",
-          gap: 0,
         }}
       >
         {(view === "split" || view === "before") && (
-          <Panel code={before} label={beforeLabel} accent="#d97706" />
+          <Panel label={beforeLabel} accent="#d97706">
+            {beforeContent}
+          </Panel>
         )}
-        {view === "split" && (
+        {isSplit && (
           <div style={{ width: 1, background: "rgba(0,0,0,0.07)", flexShrink: 0 }} />
         )}
         {(view === "split" || view === "after") && (
-          <Panel code={after} label={afterLabel} accent="#16a34a" />
+          <Panel label={afterLabel} accent="#16a34a">
+            {afterContent}
+          </Panel>
         )}
       </div>
     </div>

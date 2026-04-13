@@ -79,10 +79,9 @@ export const TabDynamic = dynamic(
   { ssr: false, loading: placeholder(0) }
 );
 
-export const ComparisonDynamic = dynamic(
-  () => import("./Comparison").then((m) => ({ default: m.Comparison })),
-  { ssr: false, loading: placeholder(200) }
-);
+// Comparison SSRs so multiline string props cross the RSC→client boundary
+// via normal React hydration instead of the async ssr:false dynamic handoff.
+export { Comparison as ComparisonDynamic } from "./Comparison";
 
 export const AccordionDynamic = dynamic(
   () => import("./Accordion").then((m) => ({ default: m.Accordion })),
@@ -97,4 +96,14 @@ export const AccordionItemDynamic = dynamic(
 export const QuizDynamic = dynamic(
   () => import("./Quiz").then((m) => ({ default: m.Quiz })),
   { ssr: false, loading: placeholder(180) }
+);
+
+export const BezierPlaygroundDynamic = dynamic(
+  () => import("./BezierPlayground").then((m) => ({ default: m.BezierPlayground })),
+  { ssr: false, loading: placeholder(380) }
+);
+
+export const BezierSamplingDynamic = dynamic(
+  () => import("./BezierSampling").then((m) => ({ default: m.BezierSampling })),
+  { ssr: false, loading: placeholder(340) }
 );
