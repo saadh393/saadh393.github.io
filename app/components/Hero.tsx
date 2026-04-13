@@ -362,8 +362,9 @@ export default function Hero() {
                     zIndex: 1,
                     // borderTop: "1px solid rgba(0,0,0,0.06)",
                     padding: "18px 0",
-                    marginTop: "auto",
                     background: "rgba(250,250,250,0.6)",
+                    marginTop: 48,
+
                     flexShrink: 0,
                 }}
             >
