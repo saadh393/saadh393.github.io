@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext } from "react";
+import { paletteAt } from "./palette";
 
 // ─── Context ────────────────────────────────────────────────────────────────
 
@@ -97,7 +98,7 @@ export function ProseListItem({ children, index = 0 }: ProseListItemProps) {
   // Ordered: numbered circle. Unordered: dot with depth-aware style.
   const marker = ordered
     ? <OrderedMarker index={index} scale={scale} depth={depth} />
-    : <UnorderedMarker count={count} scale={scale} depth={depth} />;
+    : <UnorderedMarker index={index} scale={scale} depth={depth} />;
 
   return (
     <li
@@ -130,21 +131,18 @@ function OrderedMarker({
   scale: "large" | "medium" | "compact";
   depth: number;
 }) {
-  // Large (≤3 items): filled blue circle with white number
-  // Medium (4–7 items): outlined circle with blue number
-  // Compact (8+): plain mono number
-  // Depth 2+: always compact plain
+  const { ink, bg, ring } = paletteAt(index);
 
+  // Depth 2+ or compact (8+): plain mono number, colored
   if (depth > 1 || scale === "compact") {
     return (
       <span
         style={{
           fontFamily: "var(--font-geist-mono), monospace",
           fontSize: 13,
-          color: "#0070f3",
+          color: ink,
           fontWeight: 600,
           minWidth: 20,
-          paddingTop: 1,
           flexShrink: 0,
           lineHeight: 1,
           marginTop: 3,
@@ -155,6 +153,7 @@ function OrderedMarker({
     );
   }
 
+  // Large (≤3): filled circle, palette color background, white number
   if (scale === "large") {
     return (
       <span
@@ -162,7 +161,7 @@ function OrderedMarker({
           width: 22,
           height: 22,
           borderRadius: "50%",
-          background: "#0070f3",
+          background: ink,
           color: "#fff",
           fontSize: 11,
           fontWeight: 700,
@@ -179,15 +178,16 @@ function OrderedMarker({
     );
   }
 
-  // medium
+  // Medium (4–7): outlined circle, palette ink color
   return (
     <span
       style={{
         width: 20,
         height: 20,
         borderRadius: "50%",
-        border: "1.5px solid #0070f3",
-        color: "#0070f3",
+        border: `1.5px solid ${ring}`,
+        background: bg,
+        color: ink,
         fontSize: 10,
         fontWeight: 700,
         fontFamily: "var(--font-geist-mono), monospace",
@@ -204,15 +204,17 @@ function OrderedMarker({
 }
 
 function UnorderedMarker({
-  count,
+  index,
   scale,
   depth,
 }: {
-  count: number;
+  index: number;
   scale: "large" | "medium" | "compact";
   depth: number;
 }) {
-  // Depth 2+: hollow square
+  const { ink } = paletteAt(index);
+
+  // Depth 2+: neutral hollow square — no color competition with parent
   if (depth > 1) {
     return (
       <span
@@ -228,33 +230,16 @@ function UnorderedMarker({
     );
   }
 
-  // Large (≤3): filled blue diamond
+  // Large (≤3): filled rotated square (diamond), palette ink
   if (scale === "large") {
     return (
       <span
         style={{
-          width: 8,
-          height: 8,
-          background: "#0070f3",
+          width: 7,
+          height: 7,
+          background: ink,
           borderRadius: 1,
           transform: "rotate(45deg)",
-          flexShrink: 0,
-          marginTop: 7,
-        }}
-      />
-    );
-  }
-
-  // Medium (4–7): solid filled circle, medium gray-blue
-  if (scale === "medium") {
-    return (
-      <span
-        style={{
-          width: 6,
-          height: 6,
-          borderRadius: "50%",
-          background: "#0070f3",
-          opacity: 0.55,
           flexShrink: 0,
           marginTop: 8,
         }}
@@ -262,7 +247,24 @@ function UnorderedMarker({
     );
   }
 
-  // Compact (8+): small dash
+  // Medium (4–7): filled circle, palette ink at 60% opacity
+  if (scale === "medium") {
+    return (
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: ink,
+          opacity: 0.6,
+          flexShrink: 0,
+          marginTop: 8,
+        }}
+      />
+    );
+  }
+
+  // Compact (8+): gray dash — de-emphasized, prose-like
   return (
     <span
       style={{

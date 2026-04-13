@@ -104,24 +104,28 @@ const prose: MDXComponents = {
   em: (props) => (
     <em style={{ fontStyle: "italic", color: "#555" }} {...props} />
   ),
-  ul: ({ children }) => (
-    <ProseList ordered={false}>
-      {React.Children.map(children, (child, i) =>
-        React.isValidElement(child)
-          ? React.cloneElement(child as React.ReactElement<{ index: number }>, { index: i })
-          : child
-      )}
-    </ProseList>
-  ),
-  ol: ({ children }) => (
-    <ProseList ordered={true}>
-      {React.Children.map(children, (child, i) =>
-        React.isValidElement(child)
-          ? React.cloneElement(child as React.ReactElement<{ index: number }>, { index: i })
-          : child
-      )}
-    </ProseList>
-  ),
+  ul: ({ children }) => {
+    let elementIdx = 0;
+    return (
+      <ProseList ordered={false}>
+        {React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return child;
+          return React.cloneElement(child as React.ReactElement<{ index: number }>, { index: elementIdx++ });
+        })}
+      </ProseList>
+    );
+  },
+  ol: ({ children }) => {
+    let elementIdx = 0;
+    return (
+      <ProseList ordered={true}>
+        {React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return child;
+          return React.cloneElement(child as React.ReactElement<{ index: number }>, { index: elementIdx++ });
+        })}
+      </ProseList>
+    );
+  },
   li: ({ children, ...rest }) => (
     <ProseListItem {...(rest as { index?: number })}>{children}</ProseListItem>
   ),

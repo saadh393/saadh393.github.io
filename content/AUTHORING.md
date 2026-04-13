@@ -66,6 +66,28 @@ live: "https://yourproject.com"          # optional
 
 ---
 
+## Component Quick Reference
+
+| Component | Interactive | JSON String Props | Best For |
+|---|---|---|---|
+| `<Callout>` | No | None | Insights, warnings, outcomes |
+| `<MetricStrip>` + `<Metric>` | No | None | Proof numbers at a glance |
+| `<Figure>` | No | None | Images with captions |
+| `<Timeline>` + `<Event>` | No | None | Chronological decision log |
+| `<Diagram>` | Yes (zoom/pan) | None | Sequence flows, decision trees |
+| `<FlowMap>` | Yes (pan/zoom) | `nodes`, `edges` | Static architecture overview |
+| `<StepThrough>` | Yes (click steps) | `nodes`, `edges`, `steps` | Guided architecture walkthroughs |
+| `<Pipeline>` | Yes (hover) | `steps` | Inline process flows |
+| `<FileTree>` | Yes (expand) | `tree` | File system structure |
+| `<VideoMath>` | Yes (slider) | None | HLS segment math |
+| `<RenditionTable>` | Yes (hover) | `rows` | Codec/bitrate tables |
+| `<Tabs>` + `<Tab>` | Yes (click) | None | Same concept in multiple languages |
+| `<Comparison>` | Yes (toggle) | None | Before/after code side-by-side |
+| `<Accordion>` + `<AccordionItem>` | Yes (expand) | None | FAQs, trade-off Q&A |
+| `<Quiz>` | Yes (select/reveal) | `options` | Knowledge checks in articles |
+
+---
+
 ## Full Component Reference
 
 All components are globally available — no import needed.
@@ -460,6 +482,155 @@ Multiple choice knowledge check. Reveals the correct answer with explanation.
 
 ---
 
+### `<Tabs>` + `<Tab>`
+
+Tabbed content panels. Each `<Tab>` needs a `label` prop. The first tab is active by default. Pass `defaultTab={N}` on `<Tabs>` to open a different tab on load.
+
+```mdx
+<Tabs>
+  <Tab label="Node.js">
+
+  ```javascript
+  const result = await db.query("SELECT * FROM users");
+  ```
+
+  </Tab>
+  <Tab label="Python">
+
+  ```python
+  result = db.execute("SELECT * FROM users")
+  ```
+
+  </Tab>
+  <Tab label="Go">
+
+  ```go
+  rows, _ := db.Query("SELECT * FROM users")
+  ```
+
+  </Tab>
+</Tabs>
+```
+
+Tabs can hold any MDX content inside them, not just code blocks. Prose, callouts, diagrams — all valid inside a `<Tab>`.
+
+**When to use:**
+- Same operation shown in multiple languages or runtimes
+- Config options that differ by environment (dev vs prod vs Docker)
+- Two valid approaches where neither is clearly better
+- Before/after where each side has more than ~20 lines (use `<Comparison>` for shorter diffs)
+
+**When not to use:** Don't put tabs inside tabs. Don't use tabs to hide content that belongs in the main prose flow.
+
+---
+
+### `<Comparison>`
+
+Side-by-side code panels with a three-way toggle: split view, before only, after after only. The amber dot marks "before", green marks "after".
+
+```mdx
+<Comparison
+  beforeLabel="Callback hell"
+  afterLabel="async/await"
+  language="javascript"
+  before={`fs.readFile('a.txt', (err, a) => {
+  fs.readFile('b.txt', (err, b) => {
+    fs.writeFile('out.txt', a + b, (err) => {
+      console.log('done');
+    });
+  });
+});`}
+  after={`const a = await fs.promises.readFile('a.txt', 'utf8');
+const b = await fs.promises.readFile('b.txt', 'utf8');
+await fs.promises.writeFile('out.txt', a + b);
+console.log('done');`}
+/>
+```
+
+**Props:**
+- `before` — code string for the left/before panel (required)
+- `after` — code string for the right/after panel (required)
+- `beforeLabel` — label shown above the before panel (default: `"Before"`)
+- `afterLabel` — label shown above the after panel (default: `"After"`)
+- `language` — shown in the toolbar label, cosmetic only (default: `"javascript"`)
+
+**When to use:**
+- Refactoring: showing the old pattern and the new one together
+- API migrations where callers need to see exactly what changes
+- "The wrong way vs the right way" explanations
+- Any before/after where the diff is 5 to ~25 lines per side
+
+**When not to use:** Don't use for more than ~30 lines per panel — on mobile the split view becomes hard to read. Switch to `<Tabs>` for longer comparisons.
+
+---
+
+### `<Accordion>` + `<AccordionItem>`
+
+Collapsible sections. Each `<AccordionItem>` needs a `title` prop. All items are collapsed by default. Add `defaultOpen` to pre-expand one item.
+
+```mdx
+<Accordion>
+  <AccordionItem title="Why not just use WebSockets?">
+    WebSockets keep a persistent connection open, which adds server-side state you have
+    to manage across restarts, load balancers, and deploys. HLS over plain HTTP means
+    every segment is a cacheable GET request — your CDN handles the load without any
+    special treatment.
+  </AccordionItem>
+  <AccordionItem title="What about MPEG-DASH?" defaultOpen>
+    DASH is the open-standard equivalent of HLS. Both slice video into segments and
+    use a manifest file. HLS has broader out-of-the-box support in browsers. If you
+    need DRM across platforms, DASH with Widevine and FairPlay is the production path.
+  </AccordionItem>
+</Accordion>
+```
+
+`<AccordionItem>` children can be any prose — paragraphs, code blocks, lists. Keep each item focused on one question or point.
+
+**When to use:**
+- "Why didn't you use X?" questions that would derail the main narrative
+- Trade-off elaborations where most readers won't need the detail
+- Supplementary background that helps some readers but isn't essential
+- FAQ sections at the end of a case study
+
+**When not to use:** Don't collapse content that the reader needs to understand the next section. If someone has to open an accordion to follow the article, that content belongs in the prose, not hidden away.
+
+---
+
+### `<Quiz>`
+
+Multiple choice question with A/B/C/D labels. Reader picks an answer, clicks "Check answer", and sees whether they got it right along with an explanation. A "Try again" button resets the state.
+
+**`options` must be a JSON string array.**
+
+```mdx
+<Quiz
+  question="What happens when the JavaScript call stack is empty?"
+  options='[
+    "The program exits immediately",
+    "The event loop checks the task queue for pending callbacks",
+    "JavaScript pauses and waits for user input",
+    "The garbage collector runs a full collection"
+  ]'
+  correct={1}
+  explanation="When the call stack empties, the event loop picks the first callback from the task queue and pushes it onto the stack. This is how setTimeout, Promise.then, and I/O callbacks get executed without blocking the thread."
+/>
+```
+
+**Props:**
+- `question` — the question text (required)
+- `options` — JSON string array, 2 to 5 choices (required)
+- `correct` — zero-based index of the correct answer (required)
+- `explanation` — shown after the reader answers, regardless of whether they got it right (optional but strongly recommended)
+
+**When to use:**
+- Directly after explaining a key mechanism — forces active recall instead of passive reading
+- At natural "checkpoint" moments before moving to the next concept
+- Maximum 2 to 3 per article; more than that starts to feel like a test rather than an article
+
+**When not to use:** Don't add a quiz just to have one. If the preceding section was clear and the concept is obvious, a quiz adds friction without value. The explanation field matters most — that's what a reader who got it wrong actually needs.
+
+---
+
 ## The JSON String Rule
 
 `<FlowMap>`, `<StepThrough>`, `<Pipeline>`, `<FileTree>`, `<RenditionTable>`, and `<Quiz>` accept complex props as **JSON strings**, not JavaScript object literals.
@@ -519,7 +690,7 @@ Create a new component when:
 - Register it in `app/components/mdx/index.tsx`
 - All props must have defaults — the component must render without throwing even if props are missing
 - Follow the same inline-style pattern (no Tailwind classes in MDX components)
-- Follow the same color palette: `#0070f3` blue, `#16a34a` green, `#d97706` amber, `#7c3aed` purple, `#dc2626` red
+- Use colors from `app/components/mdx/palette.ts` via `paletteAt(index)` — never hardcode accent colors. The palette cycles blue, violet, green, amber, red, cyan.
 - Document it in this file
 
 ---

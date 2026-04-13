@@ -1,4 +1,22 @@
+import React from "react";
+import { paletteAt } from "./palette";
+
+interface EventProps {
+  date: string;
+  label: string;
+  note?: string;
+  _index?: number; // injected by Timeline
+}
+
 export function Timeline({ children }: { children: React.ReactNode }) {
+  // Inject _index so each Event knows its position and picks a palette color
+  const items = React.Children.toArray(children);
+  const injected = items.map((child, i) =>
+    React.isValidElement(child)
+      ? React.cloneElement(child as React.ReactElement<EventProps>, { _index: i })
+      : child
+  );
+
   return (
     <div
       style={{
@@ -11,12 +29,14 @@ export function Timeline({ children }: { children: React.ReactNode }) {
         gap: 0,
       }}
     >
-      {children}
+      {injected}
     </div>
   );
 }
 
-export function Event({ date, label, note }: { date: string; label: string; note?: string }) {
+export function Event({ date, label, note, _index = 0 }: EventProps) {
+  const { ink } = paletteAt(_index);
+
   return (
     <div style={{ position: "relative", paddingBottom: 24 }}>
       {/* Dot */}
@@ -28,16 +48,16 @@ export function Event({ date, label, note }: { date: string; label: string; note
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: "#0070f3",
+          background: ink,
           border: "2px solid #fff",
-          outline: "2px solid #0070f3",
+          outline: `2px solid ${ink}`,
         }}
       />
       <div
         style={{
           fontSize: 11,
           fontFamily: "var(--font-geist-mono), monospace",
-          color: "#0070f3",
+          color: ink,
           letterSpacing: "0.04em",
           marginBottom: 3,
         }}

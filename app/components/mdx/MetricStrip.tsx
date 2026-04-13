@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { paletteAt } from "./palette";
 
 /* Usage in MDX:
    <MetricStrip>
@@ -9,7 +10,15 @@ import React from "react";
    </MetricStrip>
 */
 
-export function Metric({ label, value }: { label: string; value: string }) {
+interface MetricProps {
+  label: string;
+  value: string;
+  _index?: number; // injected by MetricStrip — not set by author
+}
+
+export function Metric({ label, value, _index = 0 }: MetricProps) {
+  const { ink } = paletteAt(_index);
+
   return (
     <div
       style={{
@@ -25,9 +34,10 @@ export function Metric({ label, value }: { label: string; value: string }) {
           fontSize: 26,
           fontWeight: 700,
           letterSpacing: "-0.04em",
-          color: "#000",
+          color: ink,
           fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
           lineHeight: 1,
+          fontVariantNumeric: "tabular-nums",
         }}
       >
         {value}
@@ -47,8 +57,16 @@ export function Metric({ label, value }: { label: string; value: string }) {
 }
 
 export function MetricStrip({ children }: { children: React.ReactNode }) {
-  const metrics = React.Children.toArray(children);
-  const count = Math.min(metrics.length, 4) || 1;
+  // Inject _index into each Metric child so it can pick its palette color
+  const items = React.Children.toArray(children);
+  const count = Math.min(items.length, 4) || 1;
+
+  const injected = items.slice(0, 4).map((child, i) =>
+    React.isValidElement(child)
+      ? React.cloneElement(child as React.ReactElement<MetricProps>, { _index: i })
+      : child
+  );
+
   return (
     <div
       style={{
@@ -62,7 +80,7 @@ export function MetricStrip({ children }: { children: React.ReactNode }) {
         background: "rgba(0,0,0,0.04)",
       }}
     >
-      {children}
+      {injected}
     </div>
   );
 }
