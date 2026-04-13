@@ -7,11 +7,26 @@ interface PipelineStep {
   detail?: string;
 }
 
-export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }) {
-  const [hovered, setHovered] = useState<number | null>(null);
+interface PipelineProps {
+  steps: PipelineStep[] | string;
+  layout?: "horizontal" | "vertical";
+}
 
+export function Pipeline({ steps: stepsRaw, layout = "horizontal" }: PipelineProps) {
   const steps: PipelineStep[] =
     typeof stepsRaw === "string" ? JSON.parse(stepsRaw) : stepsRaw;
+
+  if (layout === "vertical") {
+    return <VerticalPipeline steps={steps} />;
+  }
+
+  return <HorizontalPipeline steps={steps} />;
+}
+
+/* ─── Horizontal (original, used in case studies) ─── */
+
+function HorizontalPipeline({ steps }: { steps: PipelineStep[] }) {
+  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <div
@@ -36,9 +51,13 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
         {steps.map((step, i) => (
           <div
             key={i}
-            style={{ display: "flex", alignItems: "center", gap: 0, position: "relative" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0,
+              position: "relative",
+            }}
           >
-            {/* Step pill */}
             <div
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
@@ -66,7 +85,6 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
                 {step.label}
               </div>
 
-              {/* Tooltip */}
               {step.detail && hovered === i && (
                 <div
                   style={{
@@ -77,7 +95,8 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
                     background: "#1a1a1a",
                     color: "#fff",
                     fontSize: 11,
-                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                    fontFamily:
+                      "var(--font-geist-sans), system-ui, sans-serif",
                     padding: "6px 10px",
                     borderRadius: 6,
                     whiteSpace: "nowrap",
@@ -88,7 +107,6 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
                   }}
                 >
                   {step.detail}
-                  {/* Arrow */}
                   <div
                     style={{
                       position: "absolute",
@@ -105,7 +123,6 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
               )}
             </div>
 
-            {/* Arrow */}
             {i < steps.length - 1 && (
               <div
                 style={{
@@ -123,6 +140,136 @@ export function Pipeline({ steps: stepsRaw }: { steps: PipelineStep[] | string }
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ─── Vertical (for multi-line explanations like two-phase breakdown) ─── */
+
+function VerticalPipeline({ steps }: { steps: PipelineStep[] }) {
+  const [active, setActive] = useState<number | null>(null);
+
+  return (
+    <div
+      style={{
+        margin: "24px 0",
+        border: "1px solid rgba(0,0,0,0.08)",
+        borderRadius: 12,
+        overflow: "hidden",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+      }}
+    >
+      {steps.map((step, i) => {
+        const isActive = active === i;
+        const isLast = i === steps.length - 1;
+
+        return (
+          <div
+            key={i}
+            onMouseEnter={() => setActive(i)}
+            onMouseLeave={() => setActive(null)}
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 0,
+              borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.06)",
+              background: isActive ? "#f0f7ff" : i % 2 === 0 ? "#fff" : "#fafafa",
+              cursor: "default",
+              transition: "background 0.15s",
+            }}
+          >
+            {/* Left accent bar */}
+            <div
+              style={{
+                width: 4,
+                alignSelf: "stretch",
+                flexShrink: 0,
+                background: isActive ? "#0070f3" : "transparent",
+                transition: "background 0.15s",
+              }}
+            />
+
+            {/* Step number */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                padding: "18px 16px 18px 16px",
+                flexShrink: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: isActive ? "#0070f3" : "#f0f0f0",
+                  border: `1.5px solid ${isActive ? "#0070f3" : "rgba(0,0,0,0.1)"}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: isActive ? "#fff" : "#999",
+                  fontFamily: "var(--font-geist-mono), monospace",
+                  flexShrink: 0,
+                  transition: "all 0.15s",
+                }}
+              >
+                {i + 1}
+              </div>
+            </div>
+
+            {/* Content */}
+            <div style={{ flex: 1, padding: "18px 20px 18px 0" }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: isActive ? "#0070f3" : "#111",
+                  fontFamily: "var(--font-geist-mono), monospace",
+                  letterSpacing: "-0.01em",
+                  marginBottom: step.detail ? 6 : 0,
+                  transition: "color 0.15s",
+                  lineHeight: 1.4,
+                }}
+              >
+                {step.label}
+              </div>
+              {step.detail && (
+                <div
+                  style={{
+                    fontSize: 14,
+                    lineHeight: 1.65,
+                    color: isActive ? "#334155" : "#666",
+                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                    transition: "color 0.15s",
+                  }}
+                >
+                  {step.detail}
+                </div>
+              )}
+            </div>
+
+            {/* Right arrow indicator */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "18px 20px",
+                color: isActive ? "#0070f3" : "#ddd",
+                fontSize: 16,
+                flexShrink: 0,
+                transition: "color 0.15s, transform 0.15s",
+                transform: isActive ? "translateX(3px)" : "translateX(0)",
+              }}
+            >
+              →
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -13,7 +13,7 @@ const prettyCodeOptions = {
 } as const;
 
 export async function generateStaticParams() {
-    const slugs = getSlugs("projects");
+    const slugs = getSlugs("blog");
     return slugs.map((slug) => ({ slug }));
 }
 
@@ -24,7 +24,7 @@ export async function generateMetadata({
 }) {
     const { slug } = await params;
     try {
-        const { frontmatter } = getContent("projects", slug);
+        const { frontmatter } = getContent("blog", slug);
         return {
             title: `${frontmatter.title} — Saad Hasan`,
             description: frontmatter.description,
@@ -34,7 +34,7 @@ export async function generateMetadata({
     }
 }
 
-export default async function CaseStudyPage({
+export default async function BlogPostPage({
     params,
 }: {
     params: Promise<{ slug: string }>;
@@ -43,7 +43,7 @@ export default async function CaseStudyPage({
 
     let item;
     try {
-        item = getContent("projects", slug);
+        item = getContent("blog", slug);
     } catch {
         notFound();
     }
@@ -74,7 +74,7 @@ export default async function CaseStudyPage({
                 }}
             >
                 <Link
-                    href="/#work"
+                    href="/#writing"
                     style={{
                         fontSize: 13,
                         fontFamily: "var(--font-geist-mono), monospace",
@@ -86,7 +86,7 @@ export default async function CaseStudyPage({
                         transition: "color 0.15s",
                     }}
                 >
-                    ← Work
+                    ← Writing
                 </Link>
                 <span style={{ color: "rgba(0,0,0,0.12)" }}>·</span>
                 <span
@@ -96,7 +96,7 @@ export default async function CaseStudyPage({
                         color: "#bbb",
                     }}
                 >
-                    Case Study
+                    Article
                 </span>
             </div>
 
@@ -157,10 +157,10 @@ export default async function CaseStudyPage({
                 {/* Title */}
                 <h1
                     style={{
-                        fontSize: "clamp(28px, 5vw, 44px)",
+                        fontSize: "clamp(26px, 4.5vw, 40px)",
                         fontWeight: 700,
-                        letterSpacing: "-0.04em",
-                        lineHeight: 1.1,
+                        letterSpacing: "-0.03em",
+                        lineHeight: 1.15,
                         color: "#000",
                         margin: "0 0 16px",
                         fontFamily:
@@ -204,19 +204,18 @@ export default async function CaseStudyPage({
                             {
                                 year: "numeric",
                                 month: "long",
+                                day: "numeric",
                             },
                         )}
                     </span>
                     <span>·</span>
                     <span>Saad Hasan</span>
                 </div>
+
                 {/* Divider */}
                 <div
                     style={{
-                        maxWidth: 720,
-                        margin: "0 auto",
                         marginTop: 32,
-                        padding: "0 clamp(20px, 4vw, 48px)",
                         borderTop: "1px solid rgba(0,0,0,0.07)",
                         marginBottom: 48,
                     }}
@@ -245,8 +244,8 @@ export default async function CaseStudyPage({
                 />
 
                 <CaseStudyFooter
-                    github={frontmatter.github}
-                    live={frontmatter.live}
+                    backHref="/#writing"
+                    backLabel="← Back to writing"
                 />
             </article>
         </main>

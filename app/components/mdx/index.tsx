@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import { Callout } from "./Callout";
+import { CodeBlock } from "./CodeBlock";
 import { MetricStrip, Metric } from "./MetricStrip";
 import { Figure } from "./Figure";
 import { Timeline, Event } from "./Timeline";
@@ -134,23 +135,81 @@ const prose: MDXComponents = {
       />
     );
   },
-  pre: ({ style, ...props }) => (
-    <pre
+  pre: ({ style, className, children }) => (
+    <CodeBlock style={style} className={className}>
+      {children}
+    </CodeBlock>
+  ),
+  hr: () => (
+    <hr style={{ border: "none", borderTop: "1px solid rgba(0,0,0,0.07)", margin: "40px 0" }} />
+  ),
+
+  /* ─── Table ─── */
+  table: (props) => (
+    <div
       style={{
+        overflowX: "auto",
         margin: "28px 0",
-        borderRadius: 10,
-        overflow: "auto",
-        fontSize: 13,
-        lineHeight: 1.75,
         border: "1px solid rgba(0,0,0,0.08)",
-        // Merge Shiki's background colour (passed via inline style) with our shell
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+    >
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: 14,
+          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+        }}
+        {...props}
+      />
+    </div>
+  ),
+  thead: (props) => (
+    <thead
+      style={{ background: "#f5f5f5", borderBottom: "1px solid rgba(0,0,0,0.08)" }}
+      {...props}
+    />
+  ),
+  tbody: (props) => <tbody {...props} />,
+  tr: ({ style, ...props }) => (
+    <tr
+      style={{
+        borderBottom: "1px solid rgba(0,0,0,0.05)",
+        transition: "background 0.1s",
         ...style,
       }}
       {...props}
     />
   ),
-  hr: () => (
-    <hr style={{ border: "none", borderTop: "1px solid rgba(0,0,0,0.07)", margin: "40px 0" }} />
+  th: (props) => (
+    <th
+      style={{
+        padding: "10px 16px",
+        textAlign: "left",
+        fontSize: 11,
+        fontWeight: 600,
+        color: "#666",
+        fontFamily: "var(--font-geist-mono), monospace",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        whiteSpace: "nowrap",
+      }}
+      {...props}
+    />
+  ),
+  td: (props) => (
+    <td
+      style={{
+        padding: "11px 16px",
+        color: "#444",
+        lineHeight: 1.6,
+        verticalAlign: "top",
+        fontSize: 14,
+      }}
+      {...props}
+    />
   ),
   blockquote: (props) => (
     <blockquote

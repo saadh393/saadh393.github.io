@@ -10,9 +10,11 @@ interface CaseStudyFooterProps {
   github?: string;
   live?: string;
   related?: FooterLink[];
+  backHref?: string;
+  backLabel?: string;
 }
 
-export function CaseStudyFooter({ github, live, related }: CaseStudyFooterProps) {
+export function CaseStudyFooter({ github, live, related, backHref = "/#work", backLabel = "← Back to all work" }: CaseStudyFooterProps) {
   return (
     <footer
       style={{
@@ -121,7 +123,7 @@ export function CaseStudyFooter({ github, live, related }: CaseStudyFooterProps)
         }}
       >
         <Link
-          href="/#work"
+          href={backHref}
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -132,7 +134,7 @@ export function CaseStudyFooter({ github, live, related }: CaseStudyFooterProps)
             textDecoration: "none",
           }}
         >
-          ← Back to all work
+          {backLabel}
         </Link>
 
         <div

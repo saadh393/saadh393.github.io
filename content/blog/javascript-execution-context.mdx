@@ -1,0 +1,425 @@
+---
+title: "JavaScript Execution Context — What the Engine Actually Does When It Runs Your Code"
+date: "2026-04-13"
+description: "You can't debug what you don't understand. This is how the JS engine actually runs your code — the call stack, hoisting, this binding, and closures explained from the inside out."
+tags: ["JavaScript", "V8", "Internals", "Debugging"]
+status: "published"
+type: "blog"
+---
+
+Every time I see a `this is undefined` error or a variable that "shouldn't be undefined but is," I know the person hitting that bug doesn't have a mental model of how JavaScript actually executes code. Not their fault — the language hides a lot. But it means every unexpected behavior feels random, and debugging becomes guesswork.
+
+This article is about building that mental model. Not the theory-first, definition-heavy way. The "here's what the engine literally does, step by step" way.
+
+---
+
+## The One Thing You Need to Understand First
+
+JavaScript is **single-threaded**. One thing at a time. But the language has to keep track of *where* it is in the code, what variables exist, and what `this` means at any given moment. The data structure it uses for that is the **execution context**.
+
+Every time JavaScript runs code, it creates an execution context. Think of it as a container that holds:
+
+1. The variables and functions available in the current scope
+2. The value of `this`
+3. A reference to the outer scope (for variable lookups)
+
+There are three kinds:
+
+- **Global** — the one that exists when the script first loads
+- **Function** — created fresh every single time a function is called
+- **Eval** — created inside `eval()` calls (forget about this one, you shouldn't be using `eval`)
+
+---
+
+## The Call Stack
+
+The engine manages execution contexts using a stack — last in, first out. When a function is called, its context gets pushed onto the stack. When it returns, it's popped off. The context at the top of the stack is the one currently running.
+
+<Diagram title="call-stack — push & pop lifecycle">
+sequenceDiagram
+  participant E as Engine
+  participant S as Call Stack
+
+  E->>S: Script starts → push Global EC
+  Note over S: [Global EC]
+  E->>S: greet() called → push Function EC
+  Note over S: [Function EC (greet)] ← running<br/>[Global EC]
+  E->>S: getName() called inside greet → push Function EC
+  Note over S: [Function EC (getName)] ← running<br/>[Function EC (greet)]<br/>[Global EC]
+  E->>S: getName() returns → pop
+  Note over S: [Function EC (greet)] ← running<br/>[Global EC]
+  E->>S: greet() returns → pop
+  Note over S: [Global EC]
+</Diagram>
+
+When the stack is empty (or only Global EC remains), the script is done. When the stack overflows — you've made too many recursive calls without a base case — you get the `Maximum call stack size exceeded` error. Now you know exactly what that means.
+
+---
+
+## The Two Phases
+
+Every execution context, when created, goes through two phases before a single line of your code runs.
+
+<Pipeline layout="vertical" steps='[
+  {"label":"Creation Phase — before a single line runs","detail":"The engine scans the entire scope. It hoists declarations, builds the Variable Object, establishes the scope chain, and determines the value of this. All of this happens before your first statement executes."},
+  {"label":"Variable Object built","detail":"Function declarations are stored with their full body — immediately callable. var declarations are stored as undefined. let and const are hoisted but left uninitialized — the Temporal Dead Zone starts here, and any access before the declaration line throws a ReferenceError."},
+  {"label":"Scope chain established","detail":"A reference to the outer environment is captured at the point where the function is defined in source code — not where it is called. This is lexical scoping. Move the function call anywhere you like; the scope chain stays fixed."},
+  {"label":"this binding resolved","detail":"Determined entirely by how the function was called: implicit binding (dot notation), explicit binding (call/apply/bind), new binding (constructor), or default binding (standalone call). Arrow functions skip this — they inherit this from the surrounding lexical context instead."},
+  {"label":"Execution Phase — your code actually runs","detail":"The engine walks the code line by line. Variables get their assigned values, overwriting the hoisted placeholders. Function calls push new execution contexts onto the call stack, each going through the same two phases."}
+]' />
+
+This two-phase model is the root cause of almost every hoisting-related bug. The engine reads your entire scope *before* executing it.
+
+---
+
+## Hoisting — The Part Everyone Gets Wrong
+
+"Hoisting" is the informal name for what happens in the Creation Phase. Declarations move to the top of their scope. But they don't all behave the same.
+
+```javascript
+console.log(a); // undefined — NOT ReferenceError
+console.log(b); // ReferenceError: Cannot access 'b' before initialization
+console.log(c); // ReferenceError: Cannot access 'c' before initialization
+console.log(d); // "hello" — the whole function body, not just the name
+
+var a = 1;
+let b = 2;
+const c = 3;
+function d() { return "hello"; }
+```
+
+Here's what the engine actually stored in the Variable Object before execution started:
+
+| Declaration | Stored as | Accessible before assignment? |
+|---|---|---|
+| `var a` | `undefined` | Yes — returns `undefined` |
+| `let b` | (uninitialized) | No — throws ReferenceError |
+| `const c` | (uninitialized) | No — throws ReferenceError |
+| `function d` | full function definition | Yes — returns the function |
+
+<Callout type="insight">
+  `let` and `const` **are** hoisted. The engine knows they exist before the line runs. But they're placed in the **Temporal Dead Zone** — a period between "hoisted but not initialized" and "initialized at the point of declaration." Accessing them in this window throws. This is intentional — it prevents the confusing `undefined` behavior that `var` gives you.
+</Callout>
+
+### The Function Declaration Trap
+
+Function declarations are hoisted completely — name and body. Function expressions are not.
+
+```javascript
+sayHi();   // works — declaration is hoisted
+sayBye();  // TypeError: sayBye is not a function
+
+function sayHi() { console.log("hi"); }
+var sayBye = function() { console.log("bye"); };
+```
+
+`sayBye` is a `var`. In the Creation Phase it's stored as `undefined`. Then you try to call `undefined` as a function. That's the TypeError.
+
+<Callout type="warning">
+  This is a real gotcha. `var sayBye = function() {}` and `function sayBye() {}` look similar but behave completely differently before their declaration line. When you're reorganizing code and moving things around, this distinction matters.
+</Callout>
+
+---
+
+## The Scope Chain
+
+When JavaScript looks up a variable, it doesn't just check the current context. It walks up the **scope chain** — the linked list of outer environments captured at the time each function was *defined*.
+
+```javascript
+const city = "Dhaka";
+
+function outer() {
+  const country = "Bangladesh";
+
+  function inner() {
+    const name = "Saad";
+    console.log(name);    // "Saad"    — found in inner's own scope
+    console.log(country); // "Bangladesh" — found in outer's scope
+    console.log(city);    // "Dhaka"   — found in global scope
+  }
+
+  inner();
+}
+```
+
+The key phrase: **captured at the point of definition**. The scope chain is determined by where you wrote the function in the source code (lexical scoping), not where you call it from.
+
+<Callout type="insight">
+  This is why moving a callback into a utility module changes what variables it can "see." The function's outer environment reference is fixed at definition time. Call it wherever you want — it still looks up its scope chain from where it was written.
+</Callout>
+
+---
+
+## `this` — The Most Misunderstood Keyword
+
+`this` is determined during the Creation Phase of a Function EC. The rule: it depends on **how the function was called**, not where it was defined. There are four call patterns.
+
+### 1. Implicit Binding — called as a method
+
+```javascript
+const user = {
+  name: "Saad",
+  greet() {
+    console.log(this.name); // "Saad" — this = user
+  }
+};
+user.greet();
+```
+
+When a function is called with dot notation, `this` is the object to the left of the dot.
+
+### 2. Default Binding — called as a standalone function
+
+```javascript
+function greet() {
+  console.log(this); // window (browser) or global (Node) — or undefined in strict mode
+}
+greet();
+```
+
+No dot, no explicit binding. In non-strict mode `this` falls back to the global object. In strict mode it's `undefined`. This is the one that bites people most.
+
+### 3. Explicit Binding — call, apply, bind
+
+```javascript
+function greet() {
+  console.log(this.name);
+}
+
+const user = { name: "Saad" };
+
+greet.call(user);        // "Saad" — this = user
+greet.apply(user);       // "Saad" — this = user
+const bound = greet.bind(user);
+bound();                 // "Saad" — permanently bound
+```
+
+### 4. `new` Binding — constructor call
+
+```javascript
+function User(name) {
+  this.name = name; // this = the new object being created
+}
+
+const u = new User("Saad");
+console.log(u.name); // "Saad"
+```
+
+`new` creates a fresh object, sets `this` to it, runs the constructor, then returns it.
+
+### Arrow Functions — the exception to all of the above
+
+Arrow functions don't have their own `this`. They inherit `this` from the surrounding lexical context — whichever execution context was active when the arrow function was *defined*.
+
+```javascript
+const timer = {
+  count: 0,
+  start() {
+    // 'this' here is timer (implicit binding)
+    setInterval(() => {
+      this.count++; // arrow inherits 'this' from start() — still timer
+      console.log(this.count);
+    }, 1000);
+  }
+};
+
+timer.start(); // 1, 2, 3...
+```
+
+Replace the arrow function with a regular function and `this.count` is `NaN` — because the callback's `this` falls back to `undefined` (strict) or `window` (non-strict), neither of which has `count`.
+
+<Callout type="warning">
+  The most common version of this bug: passing a class method as a callback. `setTimeout(this.handleClick, 100)` — the method is extracted from the object, `this` is gone. You need `setTimeout(this.handleClick.bind(this), 100)` or an arrow function class field. React developers hit this constantly.
+</Callout>
+
+---
+
+## Closures — What They Actually Are
+
+A closure is not a special feature. It's just what happens when a function retains a reference to its outer scope's Variable Object after the outer function has returned.
+
+```javascript
+function makeCounter() {
+  let count = 0;  // lives in makeCounter's Variable Object
+
+  return function increment() {
+    count++;           // accesses outer VO through scope chain
+    console.log(count);
+  };
+}
+
+const counter = makeCounter();
+counter(); // 1
+counter(); // 2
+counter(); // 3
+```
+
+`makeCounter` has returned and its execution context was popped off the stack. But `increment` holds a reference to `makeCounter`'s scope. As long as `increment` exists, the garbage collector can't reclaim that scope. That's the closure.
+
+<Callout type="insight">
+  Closures are not "magic boxes that capture variables." They're just scope chain references that outlive the context that created them. The Variable Object stays in memory as long as something references it. Once the last reference is gone (function assigned to `null`, etc.), GC cleans it up.
+</Callout>
+
+### The Classic Loop Bug
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i); // prints 3, 3, 3 — not 0, 1, 2
+  }, 100);
+}
+```
+
+Why? `var` is function-scoped. There's only one `i` in the enclosing scope. By the time the timeouts fire, the loop has finished and `i` is 3. All three closures reference the same `i`.
+
+Fix with `let` (block-scoped, one `i` per iteration):
+
+```javascript
+for (let i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i); // 0, 1, 2
+  }, 100);
+}
+```
+
+Or with an IIFE (creates a new scope per iteration, capturing `i` at that moment):
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  (function(j) {
+    setTimeout(function() { console.log(j); }, 100);
+  })(i);
+}
+```
+
+This IIFE pattern is the old-school solution from before `let` existed. You see it in legacy codebases constantly.
+
+---
+
+## Execution Contexts and Async Code
+
+JavaScript is single-threaded but non-blocking. Async operations — `setTimeout`, `fetch`, Promise callbacks — don't run in a parallel thread. They wait in a queue and run when the call stack is empty.
+
+<Diagram title="event-loop — async callback delivery">
+sequenceDiagram
+  participant S as Call Stack
+  participant W as Web APIs / Node APIs
+  participant Q as Callback Queue / Microtask Queue
+  participant E as Event Loop
+
+  S->>W: setTimeout(fn, 0)
+  S->>S: continues executing synchronous code
+  W->>Q: timer fires → fn pushed to callback queue
+  Note over S: Stack empties
+  E->>S: Event loop pushes fn to stack
+  S->>S: fn executes
+</Diagram>
+
+Microtasks (Promise `.then`, `queueMicrotask`) run before the next macrotask (setTimeout, setInterval). This ordering matters.
+
+```javascript
+console.log("1");
+
+setTimeout(() => console.log("2"), 0);
+
+Promise.resolve().then(() => console.log("3"));
+
+console.log("4");
+
+// Output: 1, 4, 3, 2
+```
+
+The synchronous code runs first (1, 4). Then the microtask queue drains (3). Then the macrotask queue (2). Even with a 0ms timeout, the Promise wins.
+
+<Callout type="insight">
+  When people say "JavaScript is asynchronous," they mean the runtime environment — the browser or Node.js — can do I/O work off the main thread and deliver results back to JS via the event loop. The JavaScript execution itself is always single-threaded. You don't have to worry about race conditions on shared memory — but you do have to understand the event loop ordering or async code will surprise you.
+</Callout>
+
+---
+
+## Where This Actually Matters in Real Work
+
+### Debugging `this` in event handlers
+
+```javascript
+class Modal {
+  constructor() {
+    this.isOpen = false;
+    document.querySelector('#btn').addEventListener('click', this.toggle);
+    // BUG: this.toggle is extracted from Modal — 'this' inside toggle will be the button element
+  }
+
+  toggle() {
+    this.isOpen = !this.isOpen; // 'this' is the button, not Modal
+  }
+}
+```
+
+Fix: bind in the constructor, or use an arrow function class field.
+
+```javascript
+// Option A
+document.querySelector('#btn').addEventListener('click', this.toggle.bind(this));
+
+// Option B — class field, arrow function, inherits this lexically
+toggle = () => {
+  this.isOpen = !this.isOpen; // always Modal's instance
+};
+```
+
+### Memory leaks from closures
+
+```javascript
+function attachHandler() {
+  const largeData = new Array(1000000).fill('x');
+
+  document.querySelector('#btn').addEventListener('click', function() {
+    console.log('clicked'); // largeData is in the closure scope
+    // even though we never use largeData, it can't be GC'd
+    // as long as the event listener is attached
+  });
+}
+```
+
+The callback's closure captures `largeData` even though it doesn't use it. If the element persists in the DOM, `largeData` persists in memory. Remove event listeners when done, or restructure to not capture large objects unnecessarily.
+
+<Callout type="warning">
+  This is one of the most common sources of memory leaks in single-page apps. Components mount, attach event listeners, unmount — but forget to call `removeEventListener`. The closure keeps the old scope alive, which can include DOM references, large arrays, or expensive objects.
+</Callout>
+
+### Understanding prototype chain vs scope chain
+
+These are two different lookup mechanisms and people confuse them constantly.
+
+- **Scope chain** — for resolving variable names (`let`, `const`, `var`, function names). Follows lexical nesting of functions.
+- **Prototype chain** — for resolving property access on objects (`obj.property`). Follows `__proto__` links.
+
+```javascript
+const name = "global name"; // in scope chain
+
+const obj = {
+  greet() {
+    console.log(name);      // scope chain lookup — finds "global name"
+    console.log(this.name); // prototype chain lookup on 'this'
+  }
+};
+```
+
+They're independent. `name` lookup walks scope chain. `this.name` walks the prototype chain starting from whatever `this` is bound to.
+
+---
+
+## A Mental Model Worth Keeping
+
+When you're reading a piece of JavaScript and something isn't making sense, ask these questions in order:
+
+1. **What execution context is this code running in?** (Global? Which function call?)
+2. **What's in scope?** Walk up the scope chain from that context.
+3. **How was this function called?** That determines `this`.
+4. **Is this async?** If so, what was on the stack when the callback was defined vs when it runs?
+
+Most JavaScript bugs — wrong `this`, unexpected `undefined`, stale closure values — are answerable in under a minute with this checklist.
+
+<Callout type="result">
+  Execution contexts are not an advanced topic. They're the foundation. Once you have this model, hoisting stops being magic, closures stop being mysterious, and `this` stops being random. You're not guessing anymore — you're reading the engine's playbook.
+</Callout>

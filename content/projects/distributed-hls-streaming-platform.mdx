@@ -199,7 +199,7 @@ await queue.add("transcode", { path: outputPath });
 
 The problem: `writeableStream.end()` schedules the stream to close — it does not block until the file is fully flushed to disk. The BullMQ job gets queued before the `finish` event fires. If the Transcode Worker picks up the job quickly and opens the file, it may read a partially-written file.
 
-<Diagram>
+<Diagram title="race-condition — chunk assembly vs job queue">
 sequenceDiagram
   participant C as Client
   participant U as Upload Service
