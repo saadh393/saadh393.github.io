@@ -252,13 +252,14 @@ export default function Projects() {
         paddingRight: "clamp(20px, 4vw, 48px)",
       }}
     >
-      {/* Section label */}
+      {/* Section header */}
       <div
         ref={headerRef}
         className={`proj-reveal ${headerVisible ? "proj-revealed" : ""}`}
         style={{ marginBottom: 48 }}
       >
-        <span className="proj-section-label">{"// selected work"}</span>
+        <span className="section-overline">Work</span>
+        <h2 className="section-heading">Selected Projects</h2>
       </div>
 
       {/* Featured project */}

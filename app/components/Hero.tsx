@@ -188,226 +188,169 @@ export default function Hero() {
           </span>
         </div>
 
-        {/* ── Two-column: Identity + Photo ── */}
-        <div className="hero-main-grid">
-          {/* Left column */}
-          <div style={{ minWidth: 0 }}>
-            {/* Handle */}
-            <div
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-              style={{ transitionDelay: "0.06s", marginBottom: 16 }}
-            >
-              <span
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#0070f3",
-                  fontFamily: "var(--font-geist-mono), monospace",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                @saadh393
-              </span>
-            </div>
-
-            {/* Name */}
-            <h1
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+        {/* ── Single Column Identity ── */}
+        <div style={{ minWidth: 0 }}>
+          {/* Handle */}
+          <div
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{ transitionDelay: "0.06s", marginBottom: 16 }}
+          >
+            <span
               style={{
-                transitionDelay: "0.12s",
-                fontSize: "clamp(52px, 8vw, 88px)",
-                fontWeight: 700,
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
-                color: "#000",
-                fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-                margin: "0 0 20px",
+                fontSize: 13,
+                fontWeight: 500,
+                color: "#0070f3",
+                fontFamily: "var(--font-geist-mono), monospace",
+                letterSpacing: "0.02em",
               }}
             >
-              Saad
-              <br />
-              Hasan
-            </h1>
+              @saadh393
+            </span>
+          </div>
 
-            {/* Role cycling */}
-            <div
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-              style={{
-                transitionDelay: "0.18s",
-                height: 28,
-                overflow: "hidden",
-                marginBottom: 28,
-              }}
-            >
-              <span
-                key={roleIdx}
-                className={phase === "in" ? "hero-role-in" : "hero-role-out"}
-                style={{
-                  display: "block",
-                  fontSize: "clamp(15px, 1.6vw, 18px)",
-                  fontWeight: 400,
-                  color: "#666",
-                  letterSpacing: "-0.01em",
-                  fontFamily: "var(--font-geist-sans)",
-                }}
-              >
-                {ROLES[roleIdx]}
-              </span>
-            </div>
+          {/* Name */}
+          <h1
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{
+              transitionDelay: "0.12s",
+              fontSize: "clamp(52px, 8vw, 88px)",
+              fontWeight: 700,
+              lineHeight: 0.95,
+              letterSpacing: "-0.04em",
+              color: "#000",
+              fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+              margin: "0 0 20px",
+            }}
+          >
+            Saad
+            <br />
+            Hasan
+          </h1>
 
-            {/* Opinionated bio */}
-            <p
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+          {/* Role cycling */}
+          <div
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{
+              transitionDelay: "0.18s",
+              height: 28,
+              overflow: "hidden",
+              marginBottom: 28,
+            }}
+          >
+            <span
+              key={roleIdx}
+              className={phase === "in" ? "hero-role-in" : "hero-role-out"}
               style={{
-                transitionDelay: "0.24s",
-                fontSize: 16,
-                lineHeight: 1.65,
-                color: "#555",
-                letterSpacing: "-0.008em",
-                maxWidth: 480,
-                margin: "0 0 36px",
+                display: "block",
+                fontSize: "clamp(15px, 1.6vw, 18px)",
+                fontWeight: 400,
+                color: "#666",
+                letterSpacing: "-0.01em",
                 fontFamily: "var(--font-geist-sans)",
               }}
             >
-              I build things that handle real traffic and real money.
-              Currently shipping production React at{" "}
-              <span style={{ color: "#000", fontWeight: 500 }}>
-                Analyzen Innovation Lab
-              </span>
-              . Previously built the LMS that serves{" "}
-              <span style={{ color: "#000", fontWeight: 500 }}>
-                10,000+ students
-              </span>{" "}
-              and processes{" "}
-              <span style={{ color: "#000", fontWeight: 500 }}>
-                1 Cr+ BDT/year
-              </span>
-              .
-            </p>
-
-            {/* CTAs */}
-            <div
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-              style={{
-                transitionDelay: "0.30s",
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap",
-                alignItems: "center",
-                marginBottom: 48,
-              }}
-            >
-              <a href="#work" className="hero-btn-primary">
-                View Work
-                <svg
-                  className="hero-btn-arrow"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                >
-                  <path
-                    d="M2.5 7h9M7 2.5L11.5 7 7 11.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#contact" className="hero-btn-secondary">
-                Get in Touch
-              </a>
-              <a
-                href="https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-btn-secondary"
-              >
-                Resume
-                <span style={{ fontSize: 11, opacity: 0.5, marginLeft: 2 }}>
-                  ↗
-                </span>
-              </a>
-            </div>
-
-            {/* Social row */}
-            <div
-              className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-              style={{
-                transitionDelay: "0.36s",
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-              }}
-            >
-              {SOCIALS.map(({ href, label, icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hero-social-link"
-                  aria-label={label}
-                >
-                  {icon}
-                </a>
-              ))}
-            </div>
+              {ROLES[roleIdx]}
+            </span>
           </div>
 
-          {/* Right column: Photo */}
-          <div
-            className={`hero-reveal hero-photo-col ${entered ? "hero-revealed" : ""}`}
-            style={{ transitionDelay: "0.15s" }}
+          {/* Opinionated bio */}
+          <p
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{
+              transitionDelay: "0.24s",
+              fontSize: 16,
+              lineHeight: 1.65,
+              color: "#555",
+              letterSpacing: "-0.008em",
+              maxWidth: 540,
+              margin: "0 0 36px",
+              fontFamily: "var(--font-geist-sans)",
+            }}
           >
-            <div className="hero-photo-frame">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://saadh393.github.io/images/saad-2.jpg"
-                alt="Saad Hasan"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "top center",
-                  display: "block",
-                }}
-              />
-            </div>
-            {/* Photo caption */}
-            <div
-              style={{
-                marginTop: 10,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0 2px",
-              }}
+            I build things that handle real traffic and real money.
+            Currently shipping production React at{" "}
+            <span style={{ color: "#000", fontWeight: 500 }}>
+              Analyzen Innovation Lab
+            </span>
+            . Previously built the LMS that serves{" "}
+            <span style={{ color: "#000", fontWeight: 500 }}>
+              10,000+ students
+            </span>{" "}
+            and processes{" "}
+            <span style={{ color: "#000", fontWeight: 500 }}>
+              1 Cr+ BDT/year
+            </span>
+            .
+          </p>
+
+          {/* CTAs */}
+          <div
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{
+              transitionDelay: "0.30s",
+              display: "flex",
+              gap: 10,
+              flexWrap: "wrap",
+              alignItems: "center",
+              marginBottom: 32,
+            }}
+          >
+            <a href="#work" className="hero-btn-primary">
+              View Work
+              <svg
+                className="hero-btn-arrow"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  d="M2.5 7h9M7 2.5L11.5 7 7 11.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+            <a href="#contact" className="hero-btn-secondary">
+              Get in Touch
+            </a>
+            <a
+              href="https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-btn-secondary"
             >
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "#aaa",
-                  fontWeight: 500,
-                  fontFamily: "var(--font-geist-mono), monospace",
-                  letterSpacing: "0.04em",
-                }}
-              >
-                Since 2011
+              Resume
+              <span style={{ fontSize: 11, opacity: 0.5, marginLeft: 2 }}>
+                ↗
               </span>
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "#aaa",
-                  fontWeight: 500,
-                  fontFamily: "var(--font-geist-mono), monospace",
-                  letterSpacing: "0.04em",
-                }}
+            </a>
+          </div>
+
+          {/* Social row */}
+          <div
+            className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
+            style={{
+              transitionDelay: "0.36s",
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+            }}
+          >
+            {SOCIALS.map(({ href, label, icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hero-social-link"
+                aria-label={label}
               >
-                Remote Worldwide
-              </span>
-            </div>
+                {icon}
+              </a>
+            ))}
           </div>
         </div>
 
@@ -447,7 +390,7 @@ export default function Hero() {
       >
         <div className="hero-ticker-mask">
           <div className="hero-ticker-track" aria-hidden="true">
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
               <span key={i} className="hero-ticker-item">
                 <span className="hero-ticker-dot" />
                 {item}

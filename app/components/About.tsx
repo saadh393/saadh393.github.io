@@ -13,13 +13,6 @@ const STRENGTHS = [
   "System Thinking",
 ];
 
-const STATS = [
-  { value: "10+", label: "Years Coding" },
-  { value: "4+", label: "Years Professional" },
-  { value: "5", label: "Production Apps" },
-  { value: "6", label: "Published Articles" },
-];
-
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -86,56 +79,11 @@ export default function About() {
         </p>
       </div>
 
-      {/* Stats row */}
-      <div
-        className={`about-reveal ${visible ? "about-revealed" : ""}`}
-        style={{
-          transitionDelay: "0.1s",
-          display: "flex",
-          gap: "clamp(28px, 5vw, 64px)",
-          flexWrap: "wrap",
-          marginTop: 48,
-          paddingTop: 32,
-          borderTop: "1px solid rgba(0,0,0,0.07)",
-        }}
-      >
-        {STATS.map(({ value, label }) => (
-          <div key={label}>
-            <div
-              style={{
-                fontSize: "clamp(26px, 3vw, 36px)",
-                fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: "-0.04em",
-                color: "#000",
-                fontVariantNumeric: "tabular-nums",
-                fontFamily: "var(--font-geist-mono), monospace",
-              }}
-            >
-              {value}
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 500,
-                color: "#999",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase" as const,
-                marginTop: 6,
-                fontFamily: "var(--font-geist-mono), monospace",
-              }}
-            >
-              {label}
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Strengths */}
       <div
         className={`about-reveal ${visible ? "about-revealed" : ""}`}
         style={{
-          transitionDelay: "0.2s",
+          transitionDelay: "0.1s",
           marginTop: 48,
           display: "flex",
           flexWrap: "wrap",
@@ -152,7 +100,7 @@ export default function About() {
       {/* Currently thinking about */}
       <div
         className={`about-reveal ${visible ? "about-revealed" : ""}`}
-        style={{ transitionDelay: "0.3s", marginTop: 48 }}
+        style={{ transitionDelay: "0.2s", marginTop: 48 }}
       >
         <span
           style={{

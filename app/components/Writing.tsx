@@ -94,19 +94,11 @@ export default function Writing() {
         paddingRight: "clamp(16px, 4vw, 48px)",
       }}
     >
-      {/* Section label */}
-      <p
-        style={{
-          fontSize: 13,
-          fontWeight: 500,
-          color: "#999",
-          letterSpacing: "0.04em",
-          fontFamily: "var(--font-geist-mono), monospace",
-          margin: "0 0 40px",
-        }}
-      >
-        {"// published work"}
-      </p>
+      {/* Section header */}
+      <div style={{ marginBottom: 48 }}>
+        <span className="section-overline">Writing</span>
+        <h2 className="section-heading">Published Work</h2>
+      </div>
 
       {/* Articles list */}
       <div

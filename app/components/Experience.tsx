@@ -66,23 +66,13 @@ export default function Experience() {
         paddingRight: "clamp(20px, 4vw, 48px)",
       }}
     >
-      {/* Section marker */}
+      {/* Section header */}
       <div
         className={`exp-reveal ${visible ? "exp-revealed" : ""}`}
         style={{ transitionDelay: "0s" }}
       >
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#999",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase" as const,
-            fontFamily: "var(--font-geist-mono), monospace",
-          }}
-        >
-          // delivery history
-        </span>
+        <span className="section-overline">Experience</span>
+        <h2 className="section-heading">Delivery History</h2>
       </div>
 
       {/* Timeline */}
