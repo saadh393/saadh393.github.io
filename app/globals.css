@@ -72,6 +72,18 @@ body {
   margin: 12px 0 12px;
 }
 
+/* Profile avatar */
+.hero-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  outline: 4px solid rgba(0, 112, 243, 0.08);
+  margin-bottom: 20px;
+  display: block;
+}
+
 /* Available badge */
 .hero-available-badge {
   display: inline-flex;

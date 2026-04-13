@@ -130,10 +130,19 @@ export default function Hero() {
 
       {/* Main centered content */}
       <div className="hero-centered-content">
+        {/* Profile photo */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://saadh393.github.io/images/saad-2.jpg"
+          alt="Saad Hasan"
+          className={`hero-avatar hero-reveal ${entered ? "hero-revealed" : ""}`}
+          style={{ transitionDelay: "0s" }}
+        />
+
         {/* Available badge */}
         <div
           className={`hero-reveal ${entered ? "hero-revealed" : ""}`}
-          style={{ transitionDelay: "0s" }}
+          style={{ transitionDelay: "0.05s" }}
         >
           <div className="hero-available-badge">
             <span className="hero-status-dot" />
