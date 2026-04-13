@@ -213,6 +213,40 @@ Horizontal flow of labeled pills with hover tooltips. Use for showing a request 
 
 ---
 
+### `<FileTree>`
+
+Visual file system tree with folder expand/collapse, file type icons, and inline annotations. Use whenever you'd otherwise write a code block with indented paths.
+
+**`tree` must be a JSON string** — see the JSON String Rule below.
+
+```mdx
+<FileTree
+  title="Upload Service — local disk"
+  tree='[
+    {"name":"tmp","type":"dir","children":[
+      {"name":"{videoId}.meta.json","type":"file","note":"chunk count, total chunks","highlight":true},
+      {"name":"{videoId}","type":"dir","children":[
+        {"name":"chunk-0","type":"file"},
+        {"name":"chunk-1","type":"file"}
+      ]}
+    ]}
+  ]'
+/>
+```
+
+**Node fields:**
+- `name` — filename or directory name (required)
+- `type` — `"file"` or `"dir"` (required)
+- `note` — annotation shown to the right in muted italic (optional)
+- `highlight` — `true` draws the name in blue to call attention (optional)
+- `children` — nested nodes, only for `type: "dir"` (optional)
+
+`title` prop is optional — shows in the header bar above the tree.
+
+File icon colours are determined automatically by extension: `.json` amber, `.ts` blue, `.js` yellow, `.yml`/`.yaml` purple, `.env` green.
+
+---
+
 ### `<VideoMath>`
 
 Interactive HLS file count calculator. No props needed. The reader drags a slider (1–60 min) and watches the calculation update step-by-step in real time.

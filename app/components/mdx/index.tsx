@@ -10,6 +10,7 @@ import {
   VideoMathDynamic as VideoMath,
   RenditionTableDynamic as RenditionTable,
   PipelineDynamic as Pipeline,
+  FileTreeDynamic as FileTree,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -180,4 +181,5 @@ export const mdxComponents: MDXComponents = {
   VideoMath,
   RenditionTable,
   Pipeline,
+  FileTree,
 };

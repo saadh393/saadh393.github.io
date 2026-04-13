@@ -30,6 +30,11 @@ const placeholder = (height: number) =>
     );
   };
 
+export const FileTreeDynamic = dynamic(
+  () => import("./FileTree").then((m) => ({ default: m.FileTree })),
+  { ssr: false, loading: placeholder(80) }
+);
+
 export const VideoMathDynamic = dynamic(
   () => import("./VideoMath").then((m) => ({ default: m.VideoMath })),
   { ssr: false, loading: placeholder(220) }

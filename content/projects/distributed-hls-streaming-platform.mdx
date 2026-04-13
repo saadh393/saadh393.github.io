@@ -241,14 +241,10 @@ The README lists this as a TODO. In production, it means silently lost uploads w
 
 The chunked upload mechanism tracks received chunks in a JSON metadata file on the Upload Service's local disk:
 
-```
-tmp/
-  {videoId}.meta.json     ← received chunk count, total chunks
-  {videoId}/
-    chunk-0
-    chunk-1
-    ...
-```
+<FileTree
+  title="Upload Service — local disk"
+  tree='[{"name":"tmp","type":"dir","children":[{"name":"{videoId}.meta.json","type":"file","note":"chunk count, total chunks","highlight":true},{"name":"{videoId}","type":"dir","children":[{"name":"chunk-0","type":"file"},{"name":"chunk-1","type":"file"},{"name":"chunk-2","type":"file"},{"name":"...","type":"file","note":"all N chunks"}]}]}]'
+/>
 
 If the Upload Service container restarts mid-upload, that metadata file is gone. The client has no way to resume — all previously sent chunks are lost. In a production system this state belongs in Redis or a database, where it survives restarts and is accessible across replicas.
 

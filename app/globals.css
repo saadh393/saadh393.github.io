@@ -1269,3 +1269,8 @@ body {
 .react-flow__controls-button svg {
   fill: #555 !important;
 }
+
+/* ─── FileTree component ─── */
+.filetree-row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
