@@ -39,12 +39,22 @@ const articles = [
       "Extracting reusable stateful logic into custom hooks — the pattern that changed how I write React.",
     link: "https://saadh393.hashnode.dev/building-react-custom-hooks-from-scratch",
   },
+  {
+    title: "How Diffie–Hellman Became the Backbone of Modern Encryption",
+    date: "Apr 13, 2026",
+    readTime: "9 min",
+    tag: "Security",
+    description:
+      "How two strangers agree on a secret key over a public network without ever sending it — the math behind every HTTPS connection and Signal message.",
+    link: "/blog/diffie-hellman-key-exchange",
+  },
 ];
 
 const tagColors: Record<string, string> = {
   "Node.js": "#16a34a",
   JavaScript: "#d97706",
   React: "#0070f3",
+  Security: "#7c3aed",
   Backend: "#888888",
 };
 
@@ -115,8 +125,8 @@ export default function Writing() {
             <a
               key={article.title}
               href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={article.link.startsWith("/") ? "_self" : "_blank"}
+              rel={article.link.startsWith("/") ? undefined : "noopener noreferrer"}
               ref={(el) => {
                 itemRefs.current[i] = el;
               }}

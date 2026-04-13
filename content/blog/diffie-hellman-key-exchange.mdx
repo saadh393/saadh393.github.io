@@ -1,0 +1,237 @@
+---
+title: "How Diffie–Hellman Became the Backbone of Modern Encryption"
+date: "2026-04-13"
+description: "How two strangers agree on a secret key over a public network without ever sending it — the math behind every HTTPS connection, Signal message, and VPN tunnel."
+tags: ["Security", "Cryptography", "JavaScript"]
+status: "published"
+type: "blog"
+---
+
+Every time you open WhatsApp, Signal, or Telegram, your phone and the other person's phone agree on a secret key. They do it over the public internet — through routers, ISPs, and data centers that could be watching. And they do it without ever sending that key across the wire.
+
+That's not magic. It's Diffie–Hellman key exchange. It's one of the few algorithms where understanding the math makes the result feel *more* impressive, not less.
+
+## The Problem Symmetric Encryption Can't Solve
+
+The obvious way to secure a message: encrypt it with a key, share the key with the recipient. But this just moves the problem — how do you share the key securely in the first place?
+
+<Callout type="warning">
+  If you send the encryption key over the same network as the message, an attacker who can intercept one can intercept both. Symmetric encryption doesn't help here.
+</Callout>
+
+**Asymmetric encryption** looked like the fix. Two keys: a public key anyone can use to encrypt, and a private key only you hold to decrypt. Your friend sends you their public key, you encrypt with it, only they can decrypt.
+
+But it has a hole.
+
+## The Man-in-the-Middle Problem
+
+<Pipeline steps='[
+  {"label":"Friend generates keypair","detail":"Creates public + private key. Private key never leaves their device."},
+  {"label":"Friend sends public key","detail":"Transmitted over the network. Intended for you."},
+  {"label":"Attacker intercepts","detail":"Swaps the real public key for their own. You receive the attacker public key, not your friend public key."},
+  {"label":"You encrypt with wrong key","detail":"You think you are encrypting for your friend. You are encrypting for the attacker."},
+  {"label":"Attacker decrypts, re-encrypts","detail":"Reads your message, optionally modifies it, re-encrypts with the real public key, and forwards it on."}
+]' layout="vertical" />
+
+Both sides believe the conversation is private. Neither can detect the interception. This is why certificate authorities exist in TLS — to verify that the public key really belongs to who it claims to belong to.
+
+But Diffie–Hellman takes a different approach entirely: instead of sending keys, both sides *derive* the same shared secret independently.
+
+## How Diffie–Hellman Works
+
+Both parties agree on two public values — a prime `p` and a base `g`. These are visible to everyone, including any attacker. That's fine.
+
+```
+p = 23   (prime modulus)
+g = 5    (generator base)
+```
+
+Each party picks a private secret they never share:
+
+```
+secretA = 6    // Friend A's private number
+secretB = 15   // Friend B's private number
+```
+
+Each computes a public value using modular exponentiation:
+
+```
+publicA = (g ^ secretA) % p = (5^6) % 23  = 15625 % 23  = 8
+publicB = (g ^ secretB) % p = (5^15) % 23 = 30517578125 % 23 = 19
+```
+
+They exchange `publicA` and `publicB` over the network. The attacker sees these numbers too. Doesn't matter.
+
+Now each side computes the shared key using the *other's* public value and their *own* private secret:
+
+```
+sharedA = (publicB ^ secretA) % p = (19^6) % 23  = 47045881 % 23        = 2
+sharedB = (publicA ^ secretB) % p = (8^15) % 23  = 35184372088832 % 23  = 2
+```
+
+Both arrive at `2`. They never sent `2` anywhere.
+
+<Callout type="insight">
+  This works because of a property of modular exponentiation: `(g^a)^b mod p` equals `(g^b)^a mod p`. Both sides are computing the same thing — just from different directions.
+</Callout>
+
+<Quiz
+  question="An attacker sees: p=23, g=5, publicA=8, publicB=19. What do they need to compute the shared key?"
+  options='[
+    "Just publicA and publicB — that is enough",
+    "Either secretA or secretB — which they cannot derive",
+    "The prime p — if it is small enough to factor",
+    "The base g — reverse the exponentiation"
+  ]'
+  correct={1}
+  explanation="To compute the shared key, you need (publicB ^ secretA) % p or (publicA ^ secretB) % p. Both require a private secret. The attacker only has the public values. Recovering secretA from publicA = (g^secretA) % p is the discrete logarithm problem — computationally infeasible for large primes."
+/>
+
+## Why the Attacker Can't Reverse It
+
+Given `publicA = 8`, the attacker knows `g=5` and `p=23`. They need to find `secretA` such that `5^secretA mod 23 = 8`. This is the **discrete logarithm problem**.
+
+For small numbers like these, brute force works. For real-world DH, the prime is 2048–4096 bits long. The number of possible values is astronomically large. No known algorithm makes this feasible.
+
+<Callout type="tradeoff">
+  Small primes (like p=23) are illustrative only. Real DH uses primes large enough that brute force would take longer than the age of the universe. The security of the entire scheme rests on the hardness of the discrete logarithm problem.
+</Callout>
+
+## The Full Exchange Visualized
+
+<StepThrough
+  title="Diffie–Hellman Key Exchange"
+  nodes='[
+    {"id":"a","label":"Friend A","x":0,"y":120,"type":"client"},
+    {"id":"net","label":"Public Network","x":260,"y":120,"type":"store"},
+    {"id":"b","label":"Friend B","x":520,"y":120,"type":"client"},
+    {"id":"attacker","label":"Attacker","x":260,"y":280,"type":"client"}
+  ]'
+  edges='[
+    {"from":"a","to":"net","label":"publicA=8"},
+    {"from":"b","to":"net","label":"publicB=19"},
+    {"from":"net","to":"attacker","label":"sees p,g,publicA,publicB"}
+  ]'
+  steps='[
+    {
+      "label":"Agree on public params",
+      "description":"Both parties agree on prime p=23 and base g=5. These are public — the attacker sees them too.",
+      "active":["a","b"],
+      "activeEdges":[]
+    },
+    {
+      "label":"Generate private secrets",
+      "description":"Friend A picks secretA=6, Friend B picks secretB=15. These never leave their devices.",
+      "active":["a","b"],
+      "activeEdges":[]
+    },
+    {
+      "label":"Compute and exchange public values",
+      "description":"A sends publicA=8, B sends publicB=19 over the network. Attacker can intercept both.",
+      "active":["a","net","b","attacker"],
+      "activeEdges":["a→net","b→net","net→attacker"]
+    },
+    {
+      "label":"Derive shared key independently",
+      "description":"A computes (publicB^secretA)%p=2. B computes (publicA^secretB)%p=2. Same result, no transmission.",
+      "active":["a","b"],
+      "activeEdges":[]
+    }
+  ]'
+/>
+
+## Beyond Basic DH — ECDH and Forward Secrecy
+
+Classic Diffie–Hellman works, but modern applications use **Elliptic Curve Diffie–Hellman (ECDH)**. Instead of primes and exponentiation, it uses the geometry of elliptic curves. The hardness guarantee is stronger, and the keys are much smaller.
+
+<Comparison
+  beforeLabel="Classic DH — 3072-bit key"
+  afterLabel="ECDH — 256-bit key (equivalent strength)"
+  language="text"
+  before={`Prime modulus p: 3072 bits
+Key exchange payload: ~384 bytes
+Operations: modular exponentiation
+Security assumption: integer factorization + DLP`}
+  after={`Curve: P-256 (NIST standard)
+Key exchange payload: ~64 bytes
+Operations: elliptic curve point multiplication
+Security assumption: elliptic curve DLP (harder)`}
+/>
+
+On top of ECDH, modern protocols add **Forward Secrecy**: every session generates a fresh, ephemeral key pair. When the session ends, those keys are discarded. If an attacker records your encrypted traffic today and steals your private key next year, they still can't decrypt the old sessions — the ephemeral keys are gone.
+
+<Callout type="result">
+  ECDH + Forward Secrecy is what Signal, WhatsApp, and TLS 1.3 all use. A 256-bit ECDH key provides the same security as a 3072-bit classic DH key at 6× less wire overhead.
+</Callout>
+
+## A Minimal JavaScript Implementation
+
+Here's the classic DH exchange in Node.js using the built-in `crypto` module — no libraries needed:
+
+```javascript
+import { createDiffieHellman } from "crypto";
+
+// Friend A generates group params and their keypair
+const alice = createDiffieHellman(2048); // 2048-bit prime
+const alicePublic = alice.generateKeys();
+const prime = alice.getPrime();
+const generator = alice.getGenerator();
+
+// Friend B uses the same group, generates their keypair
+const bob = createDiffieHellman(prime, generator);
+const bobPublic = bob.generateKeys();
+
+// Each computes the shared secret from the other's public key
+const aliceShared = alice.computeSecret(bobPublic);
+const bobShared = bob.computeSecret(alicePublic);
+
+console.log(aliceShared.equals(bobShared)); // true
+// Both have identical buffers — the shared secret — without ever transmitting it
+```
+
+For production use, prefer ECDH:
+
+```javascript
+import { createECDH } from "crypto";
+
+const alice = createECDH("prime256v1");
+const alicePublic = alice.generateKeys();
+
+const bob = createECDH("prime256v1");
+const bobPublic = bob.generateKeys();
+
+const aliceShared = alice.computeSecret(bobPublic);
+const bobShared = bob.computeSecret(alicePublic);
+
+console.log(aliceShared.equals(bobShared)); // true
+```
+
+<Quiz
+  question="Why does ECDH use smaller keys than classic DH for the same security level?"
+  options='[
+    "Elliptic curve math is faster, so you need fewer bits",
+    "The elliptic curve discrete logarithm problem is harder to solve than the integer DLP",
+    "ECDH uses symmetric encryption internally",
+    "Smaller keys are a design choice, not a security property"
+  ]'
+  correct={1}
+  explanation="The elliptic curve discrete logarithm problem (ECDLP) is believed to be harder than the standard integer DLP. This means you get an equivalent security guarantee with a much smaller key. A 256-bit ECDH key is roughly as hard to break as a 3072-bit classic DH key."
+/>
+
+## When to Use Each
+
+<Accordion>
+  <AccordionItem title="Should I implement DH myself?">
+    No. Use your language's built-in `crypto` module or a well-audited library like libsodium. Cryptography is subtle — even correct math can produce insecure implementations through timing attacks, weak RNG, or improper key derivation. The Node.js `crypto` module wraps OpenSSL and is safe for production use.
+  </AccordionItem>
+  <AccordionItem title="What's the relationship between DH and TLS?">
+    TLS 1.3 mandates forward secrecy. It uses ECDHE (Elliptic Curve Diffie–Hellman Ephemeral) as the key exchange mechanism, meaning a fresh ECDH keypair is generated per TLS handshake. The certificate only proves the server's identity — the actual session key comes from the ephemeral DH exchange.
+  </AccordionItem>
+  <AccordionItem title="Does DH prevent man-in-the-middle attacks on its own?">
+    No. DH establishes a shared secret between two parties, but it doesn't authenticate *who* those parties are. Without authentication (certificates in TLS, identity keys in Signal), an attacker can perform a DH exchange with both sides simultaneously, acting as a relay. Authentication is a separate layer on top.
+  </AccordionItem>
+</Accordion>
+
+<Callout type="insight">
+  Diffie–Hellman doesn't transmit the secret — it transmits the ingredients to independently derive it. The security comes from the fact that the ingredients (public values) cannot be reversed to reveal the private inputs. That asymmetry is the entire trick.
+</Callout>

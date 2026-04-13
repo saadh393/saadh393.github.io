@@ -25,9 +25,38 @@ export async function generateMetadata({
     const { slug } = await params;
     try {
         const { frontmatter } = getContent("projects", slug);
+        const url = `https://saadhasan.dev/projects/${slug}`;
         return {
-            title: `${frontmatter.title} — Saad Hasan`,
+            title: frontmatter.title,
             description: frontmatter.description,
+            keywords: frontmatter.tags,
+            authors: [{ name: "Saad Hasan", url: "https://saadhasan.dev" }],
+            alternates: { canonical: url },
+            openGraph: {
+                type: "article",
+                url,
+                title: frontmatter.title,
+                description: frontmatter.description,
+                publishedTime: frontmatter.date,
+                authors: ["Saad Hasan"],
+                tags: frontmatter.tags,
+                images: [
+                    {
+                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                        width: 1200,
+                        height: 630,
+                        alt: frontmatter.title,
+                    },
+                ],
+            },
+            twitter: {
+                card: "summary_large_image",
+                title: frontmatter.title,
+                description: frontmatter.description,
+                images: [
+                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                ],
+            },
         };
     } catch {
         return { title: "Not Found" };

@@ -12,6 +12,12 @@ import {
   RenditionTableDynamic as RenditionTable,
   PipelineDynamic as Pipeline,
   FileTreeDynamic as FileTree,
+  TabsDynamic as Tabs,
+  TabDynamic as Tab,
+  ComparisonDynamic as Comparison,
+  AccordionDynamic as Accordion,
+  AccordionItemDynamic as AccordionItem,
+  QuizDynamic as Quiz,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -58,6 +64,19 @@ const prose: MDXComponents = {
       {...props}
     />
   ),
+  h4: (props) => (
+    <h4
+      style={{
+        fontSize: 15,
+        fontWeight: 600,
+        letterSpacing: "-0.01em",
+        color: "#111",
+        margin: "24px 0 8px",
+        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+      }}
+      {...props}
+    />
+  ),
   p: (props) => (
     <p
       style={{
@@ -79,6 +98,9 @@ const prose: MDXComponents = {
   ),
   strong: (props) => (
     <strong style={{ fontWeight: 600, color: "#000" }} {...props} />
+  ),
+  em: (props) => (
+    <em style={{ fontStyle: "italic", color: "#555" }} {...props} />
   ),
   ul: (props) => (
     <ul
@@ -115,7 +137,7 @@ const prose: MDXComponents = {
       {...props}
     />
   ),
-  // Block code: rehype-pretty-code adds data-language — let Shiki styles win, only add shell
+  // Block code: rehype-pretty-code adds data-language — let Shiki styles win
   // Inline code: no data-language — apply our inline style
   code: ({ className, ...props }) => {
     const isBlock = className?.includes("language-");
@@ -228,17 +250,34 @@ const prose: MDXComponents = {
 /* ─── Full registry ─── */
 export const mdxComponents: MDXComponents = {
   ...prose,
+  // Structural callouts
   Callout,
+  // Data display
   MetricStrip,
   Metric,
+  // Media
   Figure,
+  // Chronological
   Timeline,
   Event,
+  // Diagrams & flow
   Diagram,
   FlowMap,
   StepThrough,
+  Pipeline,
+  // Interactive calculators / tables
   VideoMath,
   RenditionTable,
-  Pipeline,
+  // File system
   FileTree,
+  // NEW: tabbed content
+  Tabs,
+  Tab,
+  // NEW: side-by-side comparison
+  Comparison,
+  // NEW: collapsible sections
+  Accordion,
+  AccordionItem,
+  // NEW: knowledge check
+  Quiz,
 };

@@ -1,14 +1,31 @@
-# Case Study & Blog Authoring Guide
+# MDX Authoring Guide — Saad Hasan Portfolio
+
+This guide is the authoritative reference for writing case studies and articles for this portfolio. It is written to be used directly by LLMs generating new content.
+
+---
+
+## Design Principles
+
+Every piece of content must follow these rules:
+
+1. **Lead with the problem, end with the outcome** — every section, every paragraph.
+2. **No adjectives without proof** — not "scalable" unless you show the scale.
+3. **Real numbers only** — never placeholder metrics. If a real number isn't known, describe the constraint instead.
+4. **Clarity over cleverness** — plain language. Assume the reader is a smart developer who hasn't seen this problem before.
+5. **Interactive over static** — prefer `<StepThrough>` over a diagram, `<Quiz>` over a summary paragraph, `<Tabs>` over code blocks with a note saying "here's the alternative".
+6. **Visual components break walls of text** — aim for at most 3 consecutive prose paragraphs before a component.
+
+---
 
 ## Directory Structure
 
 ```
 content/
-  projects/   → renders at /projects/[slug]
-  blog/        → renders at /blog/[slug]  (future)
+  projects/   → renders at /projects/[slug]  (case studies)
+  blog/        → renders at /blog/[slug]       (articles)
 ```
 
-Drop any `.mdx` file into the right folder. It builds automatically on the next `npm run build`.
+Drop any `.mdx` file in the right folder. Builds automatically on `npm run build`.
 
 ---
 
@@ -18,24 +35,40 @@ Every MDX file must start with this block:
 
 ```yaml
 ---
-title: "Your Case Study Title"
-date: "2025-03-01"
-description: "One sentence shown under the title and in <meta> description."
+title: "Your Title Here"
+date: "2025-06-01"
+description: "One sentence. Shown under the title and in <meta> description. Make it specific."
 tags: ["Node.js", "Architecture", "Docker"]
-status: "published"   # set to "draft" to exclude from build entirely
+status: "published"   # "draft" = excluded from build entirely
 type: "case-study"    # or "blog"
-github: "https://github.com/you/repo"   # optional — shows button in footer
-live: "https://yourproject.com"          # optional — shows button in footer
+github: "https://github.com/you/repo"   # optional
+live: "https://yourproject.com"          # optional
 ---
 ```
 
-**`status: "draft"`** — the file is skipped at build time entirely. No route is generated.
+**`status: "draft"`** — route is never generated. Use it while writing.
+
+**`description` rules:**
+- One sentence, max ~160 chars.
+- Specific, not generic. "How I built X" is bad. "Why keyword search fails at intent matching, and how vector embeddings fix it" is good.
+- This appears in Google search snippets and OG cards.
 
 ---
 
-## Custom Components
+## Picking the Right Content Type
 
-All components are globally available — no import needed in the MDX file.
+| Situation | Type |
+|---|---|
+| Multi-stage engineering project with architecture decisions | `case-study` |
+| Deep dive into a single concept, library, or technique | `blog` |
+| Comparison of two approaches with trade-offs | `blog` |
+| Post-mortem or lessons learned from a real project | `case-study` |
+
+---
+
+## Full Component Reference
+
+All components are globally available — no import needed.
 
 ---
 
@@ -49,18 +82,20 @@ Highlighted aside. Use for insights, warnings, trade-offs, or measured results.
 </Callout>
 ```
 
-| Type | Color | When to use |
+| `type` | Color | When to use |
 |---|---|---|
-| `insight` | Blue | Engineering observation or non-obvious finding |
+| `insight` | Blue | Engineering observation, non-obvious finding |
 | `warning` | Amber | Known risk, footgun, or missing safeguard |
 | `tradeoff` | Purple | Decision with meaningful downsides |
-| `result` | Green | Measurable outcome — put this at the end |
+| `result` | Green | Measurable outcome — use at the end of a section |
+
+**When to use:** After explaining a decision or finding. Not as a standalone section opener.
 
 ---
 
 ### `<MetricStrip>` + `<Metric>`
 
-Proof numbers in a horizontal strip. One `<Metric>` child per number. Max 4 display cleanly.
+Proof numbers in a horizontal strip. Max 4 display cleanly.
 
 ```mdx
 <MetricStrip>
@@ -70,6 +105,8 @@ Proof numbers in a horizontal strip. One `<Metric>` child per number. Max 4 disp
   <Metric label="Services" value="5" />
 </MetricStrip>
 ```
+
+**When to use:** Near the top of a case study (after the opening paragraph) and at the end (in a results section). Values must be real. Use "~" for approximations, "+" for lower bounds.
 
 ---
 
@@ -85,11 +122,13 @@ Image with optional caption. Place images in `public/images/`.
 />
 ```
 
+**When to use:** For screenshots, architecture diagrams saved as PNG, or any image that needs a caption. Prefer `<FlowMap>` or `<Diagram>` for architecture diagrams you can express programmatically.
+
 ---
 
 ### `<Timeline>` + `<Event>`
 
-Chronological list. Use for project history or decision log. `note` is optional.
+Chronological decision log. The `note` field is optional.
 
 ```mdx
 <Timeline>
@@ -99,11 +138,13 @@ Chronological list. Use for project history or decision log. `note` is optional.
 </Timeline>
 ```
 
+**When to use:** When documenting the progression of a project over time. Shows you didn't build it in one shot — shows real engineering process.
+
 ---
 
 ### `<Diagram>`
 
-Mermaid diagram. Write Mermaid syntax as plain text children. Renders full-width, responsive.
+Mermaid diagram. Write Mermaid syntax as plain text children.
 
 ```mdx
 <Diagram>
@@ -115,15 +156,17 @@ sequenceDiagram
 </Diagram>
 ```
 
-Supported types: `sequenceDiagram`, `flowchart`, `graph`, `classDiagram`, `erDiagram`, `gantt`, `pie`, and all standard Mermaid diagrams.
+Supported types: `sequenceDiagram`, `flowchart`, `graph`, `classDiagram`, `erDiagram`, `gantt`, `pie`.
+
+**When to use:** Sequence diagrams for request/response flows. Flow charts for decision logic. Use `<FlowMap>` or `<StepThrough>` for architecture overviews — they are more interactive.
 
 ---
 
 ### `<FlowMap>`
 
-Static React Flow node graph. Pannable and zoomable. Use for architecture overviews.
+Static React Flow node graph. Pannable and zoomable.
 
-**`nodes` and `edges` must be JSON strings** — see the JSON String Rule below.
+**`nodes` and `edges` must be JSON strings.**
 
 ```mdx
 <FlowMap
@@ -142,18 +185,18 @@ Static React Flow node graph. Pannable and zoomable. Use for architecture overvi
 
 **Node `type` options:**
 - `"service"` (default) — rounded rectangle
-- `"store"` — sharp rectangle (databases, queues, object storage)
-- `"client"` — pill shape (browsers, mobile apps)
+- `"store"` — sharp rectangle (databases, queues, storage)
+- `"client"` — pill shape (browsers, apps)
 
-`height` defaults to `280`. Zoom controls appear bottom-left.
+**When to use:** Architecture overviews where the reader doesn't need to step through — just see the whole picture. For guided walkthroughs, use `<StepThrough>` instead.
 
 ---
 
 ### `<StepThrough>`
 
-Interactive step-by-step walker. Nodes and edges in the diagram highlight per step as the reader clicks through or jumps via the dot nav.
+Interactive React Flow graph. Nodes and edges highlight per step as the reader clicks through.
 
-**All complex props must be JSON strings** — see the JSON String Rule below.
+**All complex props must be JSON strings.**
 
 ```mdx
 <StepThrough
@@ -170,7 +213,7 @@ Interactive step-by-step walker. Nodes and edges in the diagram highlight per st
   steps='[
     {
       "label":"User uploads file",
-      "description":"Browser sends multipart/form-data.",
+      "description":"Browser sends multipart/form-data to the Upload Service.",
       "active":["client","upload"],
       "activeEdges":["client→upload"]
     },
@@ -185,39 +228,42 @@ Interactive step-by-step walker. Nodes and edges in the diagram highlight per st
 ```
 
 **Step fields:**
-- `label` — short title shown in the control bar (required)
-- `description` — longer explanation next to the label (optional)
+- `label` — short title in the control bar (required)
+- `description` — explanation shown next to the label (optional but recommended)
 - `active` — node IDs to highlight blue in this step
-- `activeEdges` — `"from→to"` strings to animate in this step (optional)
+- `activeEdges` — `"from→to"` strings to animate (optional)
+
+**When to use:** Any multi-stage pipeline where the reader benefits from being walked through step by step. Prefer this over static diagrams for complex flows.
 
 ---
 
 ### `<Pipeline>`
 
-Horizontal flow of labeled pills with hover tooltips. Use for showing a request or process lifecycle inline in prose — cleaner than an ASCII diagram.
+Horizontal or vertical labeled steps with hover tooltips. Use for inline process flows.
 
-**`steps` must be a JSON string** — see the JSON String Rule below.
+**`steps` must be a JSON string.**
 
 ```mdx
 <Pipeline steps='[
   {"label":"Upload Service","detail":"Receives chunked file, writes to disk"},
-  {"label":"queue job","detail":"Pushes job record to BullMQ on Redis"},
-  {"label":"return 200","detail":"HTTP response returned immediately"},
-  {"label":"Transcode Worker","detail":"Separate Node.js process"},
-  {"label":"ffmpeg × 4","detail":"Four sequential renditions"},
-  {"label":"push to MinIO","detail":"Streams all .ts segments and playlists"}
+  {"label":"BullMQ","detail":"Pushes job record to Redis queue"},
+  {"label":"Transcode Worker","detail":"Separate Node.js process picks up job"},
+  {"label":"FFmpeg","detail":"Four sequential renditions at 360p–1080p"},
+  {"label":"MinIO","detail":"Streams all .ts segments and playlists"}
 ]' />
 ```
 
-`detail` is optional — shown as a tooltip on hover.
+Add `layout="vertical"` for a numbered vertical list (use when steps have longer `detail` text).
+
+**When to use:** Inline within prose to show a process sequence without breaking the reading flow. Cleaner than ASCII art or a bulleted list. Use `<StepThrough>` when the architecture has branching or parallel paths.
 
 ---
 
 ### `<FileTree>`
 
-Visual file system tree with folder expand/collapse, file type icons, and inline annotations. Use whenever you'd otherwise write a code block with indented paths.
+Visual file system tree with expand/collapse and file-type icons.
 
-**`tree` must be a JSON string** — see the JSON String Rule below.
+**`tree` must be a JSON string.**
 
 ```mdx
 <FileTree
@@ -238,56 +284,201 @@ Visual file system tree with folder expand/collapse, file type icons, and inline
 - `name` — filename or directory name (required)
 - `type` — `"file"` or `"dir"` (required)
 - `note` — annotation shown to the right in muted italic (optional)
-- `highlight` — `true` draws the name in blue to call attention (optional)
+- `highlight` — `true` draws the name in blue (optional)
 - `children` — nested nodes, only for `type: "dir"` (optional)
 
-`title` prop is optional — shows in the header bar above the tree.
-
-File icon colours are determined automatically by extension: `.json` amber, `.ts` blue, `.js` yellow, `.yml`/`.yaml` purple, `.env` green.
+**When to use:** Whenever you'd otherwise write a code block with indented paths. Shows the real structure with context notes.
 
 ---
 
 ### `<VideoMath>`
 
-Interactive HLS file count calculator. No props needed. The reader drags a slider (1–60 min) and watches the calculation update step-by-step in real time.
+Interactive HLS file count calculator with a duration slider.
 
 ```mdx
 <VideoMath />
 ```
 
-Currently specific to 4-second HLS segments and 4 renditions. To change those values, edit `app/components/mdx/VideoMath.tsx`.
+Optional configuration props:
+
+```mdx
+<VideoMath segmentLength={6} renditionCount={3} title="HLS Segment Calculator" />
+```
+
+| Prop | Default | Description |
+|---|---|---|
+| `segmentLength` | `4` | Seconds per HLS segment |
+| `renditionCount` | `4` | Number of quality renditions |
+| `title` | `"HLS File Count Calculator"` | Header label |
+
+**When to use:** In articles or case studies about HLS/adaptive streaming. Makes the math tangible. Good directly before or after the `<RenditionTable>`.
 
 ---
 
 ### `<RenditionTable>`
 
-Hoverable FFmpeg renditions table — 360p through 1080p with animated bitrate bars, colour-coded by quality tier. No props.
+Hoverable bitrate table with animated bar charts.
 
 ```mdx
 <RenditionTable />
 ```
 
-Currently hardcoded for the HLS case study renditions. To use for a different project, extend or fork the component.
+With default HLS renditions. Or pass custom data:
+
+```mdx
+<RenditionTable
+  title="Output Renditions — libvpx-vp9 · Opus"
+  rows='[
+    {"name":"360p","res":"640×360","videoBitrate":500,"audioBitrate":64,"preset":"good"},
+    {"name":"720p","res":"1280×720","videoBitrate":1500,"audioBitrate":128,"preset":"good"},
+    {"name":"1080p","res":"1920×1080","videoBitrate":3000,"audioBitrate":192,"preset":"good"}
+  ]'
+/>
+```
+
+**Row fields:** `name`, `res`, `videoBitrate` (kbps), `audioBitrate` (kbps), `preset`.
+
+**When to use:** After explaining transcoding configuration. Shows the quality ladder visually. Use the default props for H.264 HLS; pass `rows` for any other codec configuration.
+
+---
+
+### `<Tabs>`
+
+Tabbed content panels. Great for showing the same concept in multiple languages or frameworks.
+
+```mdx
+<Tabs>
+  <Tab label="Node.js">
+
+  ```javascript
+  const result = await db.query("SELECT * FROM users");
+  ```
+
+  </Tab>
+  <Tab label="Python">
+
+  ```python
+  result = db.execute("SELECT * FROM users")
+  ```
+
+  </Tab>
+</Tabs>
+```
+
+**When to use:** Alternative implementations of the same thing. Before/after where the content is more than a few lines (use `<Comparison>` for short code blocks). Configuration options for different environments.
+
+---
+
+### `<Comparison>`
+
+Side-by-side before/after code panels. Toggle between split view, before only, and after only.
+
+```mdx
+<Comparison
+  beforeLabel="Synchronous (blocks the thread)"
+  afterLabel="Async (non-blocking)"
+  language="javascript"
+  before={`function fetchData(url) {
+  const response = http.get(url); // blocks
+  return JSON.parse(response.body);
+}`}
+  after={`async function fetchData(url) {
+  const response = await fetch(url);
+  return response.json();
+}`}
+/>
+```
+
+**Props:**
+- `before` — code string for the left/before panel (required)
+- `after` — code string for the right/after panel (required)
+- `beforeLabel` — label for the before panel (default: `"Before"`)
+- `afterLabel` — label for the after panel (default: `"After"`)
+- `language` — shown in the toolbar (default: `"javascript"`)
+
+**When to use:** Refactoring explanations, API evolution, "the wrong way vs the right way". Keep both panels under ~20 lines for best mobile display.
+
+---
+
+### `<Accordion>` + `<AccordionItem>`
+
+Collapsible sections. Good for FAQs, deep dives, or "further reading" that would interrupt flow if always visible.
+
+```mdx
+<Accordion>
+  <AccordionItem title="Why not use WebSockets instead?">
+    WebSockets maintain a persistent connection, which adds server-side state.
+    For video playback, HLS over HTTP means the client can use standard CDN caching —
+    every segment request is a plain cacheable GET.
+  </AccordionItem>
+  <AccordionItem title="What about DASH?">
+    MPEG-DASH is the open standard equivalent of Apple's HLS. Both work the same way
+    conceptually. HLS has broader browser support without additional libraries.
+  </AccordionItem>
+</Accordion>
+```
+
+Add `defaultOpen` to expand an item on load:
+
+```mdx
+<AccordionItem title="The most important question" defaultOpen>
+  ...
+</AccordionItem>
+```
+
+**When to use:** Trade-off questions that interrupt the main narrative. "Why didn't you use X?" answers. Supplementary context that some readers need but most don't.
+
+---
+
+### `<Quiz>`
+
+Multiple choice knowledge check. Reveals the correct answer with explanation.
+
+**`options` must be a JSON string.**
+
+```mdx
+<Quiz
+  question="What happens when the JavaScript call stack is empty?"
+  options='[
+    "The program exits",
+    "The event loop checks the task queue for pending callbacks",
+    "Nothing — JavaScript pauses until user input",
+    "The garbage collector runs"
+  ]'
+  correct={1}
+  explanation="When the call stack is empty, the event loop dequeues the first callback from the task queue and pushes it onto the stack. This is how setTimeout, Promise.then, and I/O callbacks are executed."
+/>
+```
+
+**Props:**
+- `question` — the question text (required)
+- `options` — JSON string array of answer choices (required)
+- `correct` — 0-based index of the correct answer (required)
+- `explanation` — shown after answering, whether correct or wrong (optional but recommended)
+
+**When to use:** After explaining a key concept in an article. Forces active recall. Place at natural "did you get this?" moments — after a concept explanation, before moving to the next topic. Don't overuse: max 2–3 per article.
 
 ---
 
 ## The JSON String Rule
 
-`<FlowMap>`, `<StepThrough>`, and `<Pipeline>` accept their complex props as **JSON strings**, not JavaScript object literals.
-
-**Why:** Turbopack cannot serialize arrays of objects across the RSC boundary when written as inline JSX prop syntax. Passing a plain string sidesteps the boundary — the component calls `JSON.parse` internally.
+`<FlowMap>`, `<StepThrough>`, `<Pipeline>`, `<FileTree>`, `<RenditionTable>`, and `<Quiz>` accept complex props as **JSON strings**, not JavaScript object literals.
 
 **Write this:**
 ```mdx
-nodes='[{"id":"a","label":"A","x":0,"y":0}]'
+options='["A","B","C"]'
 ```
 
 **Not this — will break the build:**
 ```mdx
-nodes={[{ id: "a", label: "A", x: 0, y: 0 }]}
+options={["A","B","C"]}
 ```
 
-All other components (`Callout`, `MetricStrip`, `Figure`, `Timeline`, `Diagram`, `VideoMath`, `RenditionTable`) use normal MDX syntax.
+**Why:** Turbopack cannot serialize arrays/objects across the RSC boundary as inline JSX props. Passing a plain string sidesteps the boundary — the component calls `JSON.parse` internally.
+
+Components that accept string props: `FlowMap`, `StepThrough`, `Pipeline`, `FileTree`, `RenditionTable` (rows), `Quiz` (options).
+
+Components that use normal MDX syntax: `Callout`, `MetricStrip`, `Figure`, `Timeline`, `Diagram`, `VideoMath`, `Tabs`, `Tab`, `Accordion`, `AccordionItem`, `Comparison`.
 
 ---
 
@@ -301,22 +492,138 @@ const lenis = new Lenis({ duration: 1.2 });
 ```
 ````
 
-Supported languages: `javascript`, `typescript`, `bash`, `json`, `yaml`, `go`, `python`, `sql`, and all other Shiki languages.
+Supported: `javascript`, `typescript`, `bash`, `json`, `yaml`, `go`, `python`, `sql`, and all other Shiki languages.
+
+For inline code, use backticks: `const x = 1`.
 
 ---
 
-## Prose
+## When to Create a New Component
 
-Standard Markdown — headings (`##`, `###`), bold, italic, links, ordered/unordered lists, blockquotes, horizontal rules — all styled to match the portfolio design system (Geist Sans, light mode, `#0070f3` accent).
+Create a new component when:
+
+1. You need a **domain-specific interactive widget** that doesn't fit existing components (e.g., a database query planner simulator, a JWT decoder, a regex tester).
+2. You need **a table format that can't be expressed with `<RenditionTable>`** — e.g., a comparison matrix with more than 5 columns, or a table where cells need custom formatting.
+3. You need **a multi-step interaction that requires state across multiple nodes** — not just "which step am I on" but "what did the user input in step 2".
+
+**Before creating a new component, verify:**
+- `<Tabs>` + code blocks can't solve it
+- `<Comparison>` can't solve it
+- `<Pipeline layout="vertical">` with detailed `detail` fields can't solve it
+- `<Accordion>` with nested content can't solve it
+
+**If you do create a new component:**
+- Place it in `app/components/mdx/`
+- Add `"use client"` if it uses state or browser APIs
+- Add a dynamic import wrapper to `ClientComponents.tsx` (see existing pattern)
+- Register it in `app/components/mdx/index.tsx`
+- All props must have defaults — the component must render without throwing even if props are missing
+- Follow the same inline-style pattern (no Tailwind classes in MDX components)
+- Follow the same color palette: `#0070f3` blue, `#16a34a` green, `#d97706` amber, `#7c3aed` purple, `#dc2626` red
+- Document it in this file
+
+---
+
+## Content Structure Templates
+
+### Case Study Template
+
+```mdx
+---
+title: "What the Problem Actually Was"
+date: "2025-06-01"
+description: "One sentence about the problem and what the outcome was."
+tags: ["Node.js", "Redis", "Docker"]
+status: "published"
+type: "case-study"
+github: "https://github.com/..."
+---
+
+Opening paragraph: the problem from the user's perspective. One or two sentences. No technical terms yet.
+
+<MetricStrip>
+  <Metric label="Key metric 1" value="X" />
+  <Metric label="Key metric 2" value="Y" />
+  <Metric label="Key metric 3" value="Z" />
+</MetricStrip>
+
+## The Problem
+
+What was wrong, what was breaking, what constraint made this hard. Lead with reality, not solution.
+
+## The Architecture
+
+<StepThrough ... />
+
+Walk through the design decisions. Use `<Callout type="tradeoff">` when a decision had real downsides.
+
+## Implementation
+
+Key code patterns. `<FileTree>` for structure. `<Pipeline>` for request flows.
+
+## Results
+
+<Callout type="result">
+  Specific measurable outcome.
+</Callout>
+
+## Lessons Learned
+
+What you'd do differently. Honest, not defensive.
+```
+
+### Blog Article Template
+
+```mdx
+---
+title: "The Specific Claim This Article Proves"
+date: "2025-06-01"
+description: "One sentence that tells the reader exactly what they'll learn."
+tags: ["JavaScript", "Performance"]
+status: "published"
+type: "blog"
+---
+
+Opening: the problem most developers don't notice, or the assumption most developers hold that is wrong.
+
+## Why This Matters
+
+The consequence of not knowing this. Real example.
+
+## How It Actually Works
+
+Use `<Diagram>` or `<Pipeline>` to show the mechanism.
+
+<Quiz
+  question="..."
+  options='[...]'
+  correct={N}
+  explanation="..."
+/>
+
+## The Fix / The Pattern
+
+Code, `<Comparison>`, `<Tabs>` for alternatives.
+
+## When to Apply This
+
+Specific conditions. Not "always" or "never".
+
+<Callout type="result">
+  Concrete outcome when applied correctly.
+</Callout>
+```
 
 ---
 
 ## Publishing Checklist
 
-- [ ] Frontmatter `status` is `"published"`
-- [ ] `date` is accurate — used for sort order on listing pages
-- [ ] `description` is one sentence — appears in `<meta>` and as the subtitle
-- [ ] `github` and/or `live` URLs filled in if the project has them
-- [ ] Every `<Metric>` value is a real number, not a claim
+- [ ] `status` is `"published"`
+- [ ] `date` is accurate (used for sort order)
+- [ ] `description` is one sentence, under 160 characters
+- [ ] Every `<Metric>` value is a real number
 - [ ] `<Callout type="result">` present if there is a measurable outcome
-- [ ] Run `npm run build` locally and confirm the route appears in the build output
+- [ ] At least one interactive component (`<StepThrough>`, `<Quiz>`, `<Tabs>`, `<Comparison>`, or `<Pipeline>`) per 600 words
+- [ ] No three consecutive prose paragraphs without a visual component
+- [ ] `github` and/or `live` URLs filled in if the project has them
+- [ ] Run `npm run build` and confirm the route appears in build output

@@ -60,22 +60,13 @@ export default function About() {
         paddingRight: "clamp(20px, 4vw, 48px)",
       }}
     >
-      {/* Section label */}
+      {/* Section header */}
       <div
         className={`stack-reveal ${visible ? "stack-revealed" : ""}`}
         style={{ transitionDelay: "0s", marginBottom: 48 }}
       >
-        <span
-          style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: "#999",
-            fontFamily: "var(--font-geist-mono), monospace",
-            letterSpacing: "0.01em",
-          }}
-        >
-          {"// stack"}
-        </span>
+        <span className="section-overline">Stack</span>
+        <h2 className="section-heading">Production Stack</h2>
       </div>
 
       {/* 2-column grid */}

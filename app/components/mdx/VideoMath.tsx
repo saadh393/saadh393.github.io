@@ -2,10 +2,20 @@
 
 import { useState } from "react";
 
-export function VideoMath() {
+interface VideoMathProps {
+  segmentLength?: number;   // seconds per HLS segment (default: 4)
+  renditionCount?: number;  // number of quality renditions (default: 4)
+  title?: string;           // header label (default: "HLS File Count Calculator")
+}
+
+export function VideoMath({
+  segmentLength = 4,
+  renditionCount = 4,
+  title = "HLS File Count Calculator",
+}: VideoMathProps = {}) {
   const [duration, setDuration] = useState(2); // minutes
-  const segLength = 4; // seconds
-  const renditions = 4;
+  const segLength = segmentLength;
+  const renditions = renditionCount;
 
   const totalSec = duration * 60;
   const segsPerRendition = Math.ceil(totalSec / segLength);
@@ -80,7 +90,7 @@ export function VideoMath() {
               fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
             }}
           >
-            HLS File Count Calculator
+            {title}
           </span>
         </div>
 

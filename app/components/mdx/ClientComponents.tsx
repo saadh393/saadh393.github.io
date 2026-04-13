@@ -30,6 +30,8 @@ const placeholder = (height: number) =>
     );
   };
 
+// ── Existing components ───────────────────────────────────────────────────────
+
 export const FileTreeDynamic = dynamic(
   () => import("./FileTree").then((m) => ({ default: m.FileTree })),
   { ssr: false, loading: placeholder(80) }
@@ -63,4 +65,36 @@ export const FlowMapDynamic = dynamic(
 export const StepThroughDynamic = dynamic(
   () => import("./StepThrough").then((m) => ({ default: m.StepThrough })),
   { ssr: false, loading: placeholder(380) }
+);
+
+// ── New components ────────────────────────────────────────────────────────────
+
+export const TabsDynamic = dynamic(
+  () => import("./Tabs").then((m) => ({ default: m.Tabs })),
+  { ssr: false, loading: placeholder(80) }
+);
+
+export const TabDynamic = dynamic(
+  () => import("./Tabs").then((m) => ({ default: m.Tab })),
+  { ssr: false, loading: placeholder(0) }
+);
+
+export const ComparisonDynamic = dynamic(
+  () => import("./Comparison").then((m) => ({ default: m.Comparison })),
+  { ssr: false, loading: placeholder(200) }
+);
+
+export const AccordionDynamic = dynamic(
+  () => import("./Accordion").then((m) => ({ default: m.Accordion })),
+  { ssr: false, loading: placeholder(60) }
+);
+
+export const AccordionItemDynamic = dynamic(
+  () => import("./Accordion").then((m) => ({ default: m.AccordionItem })),
+  { ssr: false, loading: placeholder(0) }
+);
+
+export const QuizDynamic = dynamic(
+  () => import("./Quiz").then((m) => ({ default: m.Quiz })),
+  { ssr: false, loading: placeholder(180) }
 );

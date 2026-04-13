@@ -2,24 +2,52 @@
 
 import { useState } from "react";
 
-const renditions = [
-  { name: "360p", res: "640×360", videoBitrate: 800, audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
-  { name: "480p", res: "854×480", videoBitrate: 1400, audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
-  { name: "720p", res: "1280×720", videoBitrate: 2800, audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
+interface Rendition {
+  name: string;
+  res: string;
+  videoBitrate: number;
+  audioBitrate: number;
+  preset: string;
+  codec?: string;
+}
+
+interface RenditionTableProps {
+  rows?: Rendition[] | string; // JSON string or array — if omitted, uses HLS defaults
+  title?: string;
+  footer?: string;
+}
+
+const DEFAULT_RENDITIONS: Rendition[] = [
+  { name: "360p",  res: "640×360",   videoBitrate: 800,  audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
+  { name: "480p",  res: "854×480",   videoBitrate: 1400, audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
+  { name: "720p",  res: "1280×720",  videoBitrate: 2800, audioBitrate: 128, preset: "veryfast", codec: "H.264 + AAC" },
   { name: "1080p", res: "1920×1080", videoBitrate: 5000, audioBitrate: 192, preset: "veryfast", codec: "H.264 + AAC" },
 ];
 
-const maxBitrate = 5000;
+const PALETTE = ["#d97706", "#16a34a", "#0070f3", "#7c3aed", "#dc2626", "#0891b2"];
 
-const qualityColors: Record<string, string> = {
-  "360p": "#d97706",
-  "480p": "#16a34a",
-  "720p": "#0070f3",
-  "1080p": "#7c3aed",
-};
-
-export function RenditionTable() {
+export function RenditionTable({
+  rows: rowsRaw,
+  title = "FFmpeg Output Renditions — CRF 23 · libx264 · aac · veryfast",
+  footer,
+}: RenditionTableProps = {}) {
   const [hovered, setHovered] = useState<string | null>(null);
+
+  const renditions: Rendition[] = (() => {
+    if (!rowsRaw) return DEFAULT_RENDITIONS;
+    if (typeof rowsRaw === "string") {
+      try { return JSON.parse(rowsRaw); } catch { return DEFAULT_RENDITIONS; }
+    }
+    return rowsRaw.length > 0 ? rowsRaw : DEFAULT_RENDITIONS;
+  })();
+
+  const maxBitrate = Math.max(...renditions.map((r) => r.videoBitrate), 1);
+  const colorOf = (i: number) => PALETTE[i % PALETTE.length];
+
+  const autoFooter =
+    renditions.length > 1
+      ? `Total output bitrate range: ${(renditions[0].videoBitrate + renditions[0].audioBitrate).toLocaleString()} kbps (${renditions[0].name}) → ${(renditions[renditions.length - 1].videoBitrate + renditions[renditions.length - 1].audioBitrate).toLocaleString()} kbps (${renditions[renditions.length - 1].name})`
+      : null;
 
   return (
     <div
@@ -51,7 +79,7 @@ export function RenditionTable() {
             fontWeight: 500,
           }}
         >
-          FFmpeg Output Renditions — CRF 23 · libx264 · aac · veryfast
+          {title}
         </span>
       </div>
 
@@ -83,9 +111,9 @@ export function RenditionTable() {
       </div>
 
       {/* Rows */}
-      {renditions.map((r) => {
+      {renditions.map((r, idx) => {
         const isHovered = hovered === r.name;
-        const color = qualityColors[r.name];
+        const color = colorOf(idx);
         const barWidth = (r.videoBitrate / maxBitrate) * 100;
 
         return (
@@ -105,7 +133,6 @@ export function RenditionTable() {
               cursor: "default",
             }}
           >
-            {/* Rendition badge */}
             <span
               style={{
                 fontSize: 13,
@@ -121,28 +148,12 @@ export function RenditionTable() {
               {r.name}
             </span>
 
-            {/* Resolution */}
-            <span
-              style={{
-                fontSize: 12,
-                color: "#555",
-                fontFamily: "var(--font-geist-mono), monospace",
-              }}
-            >
+            <span style={{ fontSize: 12, color: "#555", fontFamily: "var(--font-geist-mono), monospace" }}>
               {r.res}
             </span>
 
-            {/* Bitrate bar */}
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div
-                style={{
-                  flex: 1,
-                  height: 6,
-                  background: "rgba(0,0,0,0.06)",
-                  borderRadius: 9999,
-                  overflow: "hidden",
-                }}
-              >
+              <div style={{ flex: 1, height: 6, background: "rgba(0,0,0,0.06)", borderRadius: 9999, overflow: "hidden" }}>
                 <div
                   style={{
                     width: `${barWidth}%`,
@@ -169,18 +180,10 @@ export function RenditionTable() {
               </span>
             </div>
 
-            {/* Audio */}
-            <span
-              style={{
-                fontSize: 12,
-                color: "#888",
-                fontFamily: "var(--font-geist-mono), monospace",
-              }}
-            >
+            <span style={{ fontSize: 12, color: "#888", fontFamily: "var(--font-geist-mono), monospace" }}>
               {r.audioBitrate} kbps
             </span>
 
-            {/* Preset */}
             <span
               style={{
                 fontSize: 11,
@@ -198,7 +201,7 @@ export function RenditionTable() {
         );
       })}
 
-      {/* Footer note */}
+      {/* Footer */}
       <div
         style={{
           padding: "10px 20px",
@@ -206,14 +209,8 @@ export function RenditionTable() {
           borderTop: "1px solid rgba(0,0,0,0.04)",
         }}
       >
-        <span
-          style={{
-            fontSize: 11,
-            color: "#bbb",
-            fontFamily: "var(--font-geist-mono), monospace",
-          }}
-        >
-          Total output bitrate range: 928 kbps (360p) → 5,192 kbps (1080p)
+        <span style={{ fontSize: 11, color: "#bbb", fontFamily: "var(--font-geist-mono), monospace" }}>
+          {footer ?? autoFooter}
         </span>
       </div>
     </div>
