@@ -3,6 +3,7 @@
 import {
   ReactFlow,
   Background,
+  Controls,
   type Node,
   type Edge,
   type NodeTypes,
@@ -117,16 +118,13 @@ export function FlowMap({
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.3 }}
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}
         proOptions={{ hideAttribution: true }}
       >
         <Background color="#e5e5e5" gap={20} size={1} />
+        <Controls showInteractive={false} style={{ bottom: 10, left: 10 }} />
       </ReactFlow>
     </div>
   );

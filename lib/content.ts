@@ -11,6 +11,8 @@ export interface FrontMatter {
   tags: string[];
   status: "published" | "draft";
   type: "case-study" | "blog";
+  github?: string;
+  live?: string;
 }
 
 export interface ContentItem {

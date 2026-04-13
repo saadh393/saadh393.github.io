@@ -3,7 +3,14 @@ import { Callout } from "./Callout";
 import { MetricStrip, Metric } from "./MetricStrip";
 import { Figure } from "./Figure";
 import { Timeline, Event } from "./Timeline";
-import { DiagramDynamic as Diagram, FlowMapDynamic as FlowMap, StepThroughDynamic as StepThrough } from "./ClientComponents";
+import {
+  DiagramDynamic as Diagram,
+  FlowMapDynamic as FlowMap,
+  StepThroughDynamic as StepThrough,
+  VideoMathDynamic as VideoMath,
+  RenditionTableDynamic as RenditionTable,
+  PipelineDynamic as Pipeline,
+} from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
 const prose: MDXComponents = {
@@ -106,28 +113,37 @@ const prose: MDXComponents = {
       {...props}
     />
   ),
-  code: (props) => (
-    <code
-      style={{
-        fontFamily: "var(--font-geist-mono), monospace",
-        fontSize: "0.875em",
-        background: "rgba(0,0,0,0.05)",
-        padding: "2px 6px",
-        borderRadius: 4,
-        color: "#0070f3",
-      }}
-      {...props}
-    />
-  ),
-  pre: (props) => (
+  // Block code: rehype-pretty-code adds data-language — let Shiki styles win, only add shell
+  // Inline code: no data-language — apply our inline style
+  code: ({ className, ...props }) => {
+    const isBlock = className?.includes("language-");
+    if (isBlock) return <code className={className} {...props} />;
+    return (
+      <code
+        className={className}
+        style={{
+          fontFamily: "var(--font-geist-mono), monospace",
+          fontSize: "0.875em",
+          background: "rgba(0,112,243,0.07)",
+          padding: "2px 6px",
+          borderRadius: 4,
+          color: "#0070f3",
+        }}
+        {...props}
+      />
+    );
+  },
+  pre: ({ style, ...props }) => (
     <pre
       style={{
-        margin: "24px 0",
+        margin: "28px 0",
         borderRadius: 10,
         overflow: "auto",
         fontSize: 13,
-        lineHeight: 1.7,
+        lineHeight: 1.75,
         border: "1px solid rgba(0,0,0,0.08)",
+        // Merge Shiki's background colour (passed via inline style) with our shell
+        ...style,
       }}
       {...props}
     />
@@ -161,4 +177,7 @@ export const mdxComponents: MDXComponents = {
   Diagram,
   FlowMap,
   StepThrough,
+  VideoMath,
+  RenditionTable,
+  Pipeline,
 };

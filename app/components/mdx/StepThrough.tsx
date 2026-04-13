@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   ReactFlow,
   Background,
+  Controls,
   type Node,
   type Edge,
   type NodeTypes,
@@ -214,6 +215,7 @@ export function StepThrough({
           proOptions={{ hideAttribution: true }}
         >
           <Background color="#e5e5e5" gap={20} size={1} />
+          <Controls showInteractive={false} style={{ bottom: 10, left: 10 }} />
         </ReactFlow>
       </div>
 

@@ -30,6 +30,21 @@ const placeholder = (height: number) =>
     );
   };
 
+export const VideoMathDynamic = dynamic(
+  () => import("./VideoMath").then((m) => ({ default: m.VideoMath })),
+  { ssr: false, loading: placeholder(220) }
+);
+
+export const RenditionTableDynamic = dynamic(
+  () => import("./RenditionTable").then((m) => ({ default: m.RenditionTable })),
+  { ssr: false, loading: placeholder(200) }
+);
+
+export const PipelineDynamic = dynamic(
+  () => import("./Pipeline").then((m) => ({ default: m.Pipeline })),
+  { ssr: false, loading: placeholder(60) }
+);
+
 export const DiagramDynamic = dynamic(
   () => import("./Diagram").then((m) => ({ default: m.Diagram })),
   { ssr: false, loading: placeholder(120) }

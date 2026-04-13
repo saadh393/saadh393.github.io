@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getSlugs, getContent } from "@/lib/content";
 import { mdxComponents } from "@/app/components/mdx";
+import { CaseStudyFooter } from "@/app/components/mdx/CaseStudyFooter";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 
@@ -204,6 +205,11 @@ export default async function CaseStudyPage({
               rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]],
             },
           }}
+        />
+
+        <CaseStudyFooter
+          github={frontmatter.github}
+          live={frontmatter.live}
         />
       </article>
     </main>
