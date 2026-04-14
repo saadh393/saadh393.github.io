@@ -4,29 +4,29 @@ import { useEffect, useRef, useState } from "react";
 
 const JOBS = [
     {
-        company: "Analyzen Innovation Lab",
-        role: "Jr. Software Engineer",
-        period: "2024 — Present",
-        current: true,
-        logoPath: "/images/experience/analyzen.svg",
-        logoFallback: "A",
-        bullets: [
-            "Shipped production frontend components serving real users inside an enterprise innovation lab — zero tolerance for regressions",
-            "Collaborated directly with designers and PMs to translate high-fidelity specs into pixel-accurate, accessible interfaces",
-            "Contributed to internal tooling that accelerated team delivery cadence",
-        ],
-    },
-    {
         company: "Learn with Sumit",
-        role: "Product Manager",
-        period: "2023 — 2024",
-        current: false,
+        role: "Software Engineer & Product Lead",
+        period: "2021 — Present",
+        current: true,
         logoPath: "/images/experience/lws.svg",
         logoFallback: "L",
         bullets: [
-            "Owned product roadmap for an LMS serving 10,000+ active students — every decision had revenue implications (1 Cr+ BDT/year)",
-            "Coordinated cross-functional teams across engineering, content, and design to ship features on schedule",
-            "Bridged the gap between business needs and technical constraints — often writing specs and implementation notes simultaneously",
+            "End-to-end ownership of an LMS platform serving 10,000+ students and processing 1 Cr+ BDT/year in revenue — every feature decision had direct financial implications",
+            "Built core frontend infrastructure: watch-time tracking, DRM-protected HLS streaming, passkey auth, quiz flows, CV generator — deployed on AWS with Cloudflare edge",
+            "Scoped and shipped features across the full stack while coordinating content, design, and engineering timelines across multiple product roadmaps",
+        ],
+    },
+    {
+        company: "Analyzen",
+        role: "Software Engineer",
+        period: "2022 — 2024",
+        current: false,
+        logoPath: "/images/experience/analyzen.svg",
+        logoFallback: "A",
+        bullets: [
+            "Built and shipped production React interfaces for enterprise clients — translating high-fidelity Figma specs into pixel-accurate, accessible components across devices",
+            "Developed interactive dashboards with REST API integration and complex frontend state management for digital marketing and consulting engagements",
+            "Promoted from Jr. Front End Developer (Aug 2021) to Software Engineer based on delivery consistency and technical ownership",
         ],
     },
 ];

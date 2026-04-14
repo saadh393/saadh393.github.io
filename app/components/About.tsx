@@ -6,22 +6,22 @@ const STACK = [
   {
     category: "Frontend",
     note: "Primary domain -- 4 production apps",
-    items: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML/CSS"],
+    items: ["React", "Next.js", "TypeScript", "Redux", "Tailwind CSS", "Shadcn/ui"],
   },
   {
     category: "Backend",
     note: "APIs, services, and data layers",
-    items: ["Node.js", "Express", "REST API", "MongoDB", "PostgreSQL", "Prisma"],
+    items: ["Node.js", "Express", "REST APIs", "MongoDB", "PostgreSQL", "BullMQ"],
   },
   {
     category: "Infrastructure",
     note: "Deployment and distributed systems",
-    items: ["AWS S3", "Cloudflare Workers", "Docker", "Redis", "BullMQ", "MinIO", "FFmpeg"],
+    items: ["AWS", "Cloudflare Workers", "Docker", "Redis", "MinIO", "FFmpeg"],
   },
   {
     category: "Tooling",
     note: "Daily workflow",
-    items: ["Git", "Figma", "Stripe", "Pinecone", "Google Gemini", "Vercel"],
+    items: ["Git", "Figma", "Stripe", "Pinecone", "Google Gemini", "Vite"],
   },
 ];
 
