@@ -104,6 +104,7 @@ export default async function CaseStudyPage({
             >
                 <Link
                     href="/#work"
+                    prefetch={true}
                     style={{
                         fontSize: 13,
                         fontFamily: "var(--font-geist-mono), monospace",

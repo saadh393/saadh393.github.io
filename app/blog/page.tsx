@@ -10,7 +10,13 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
     return (
-        <main style={{ minHeight: "100vh", background: "#fff", paddingBottom: 120 }}>
+        <main
+            style={{
+                minHeight: "100vh",
+                background: "#fff",
+                paddingBottom: 120,
+            }}
+        >
             {/* Top bar */}
             <div
                 style={{
@@ -28,6 +34,7 @@ export default function BlogPage() {
             >
                 <Link
                     href="/"
+                    prefetch={true}
                     style={{
                         fontSize: 13,
                         fontFamily: "var(--font-geist-mono), monospace",
@@ -83,7 +90,8 @@ export default function BlogPage() {
                         lineHeight: 1.1,
                         color: "#000",
                         margin: "0 0 16px",
-                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        fontFamily:
+                            "var(--font-geist-sans), system-ui, sans-serif",
                     }}
                 >
                     Published Work
@@ -95,12 +103,14 @@ export default function BlogPage() {
                         color: "#666",
                         margin: 0,
                         maxWidth: 520,
-                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        fontFamily:
+                            "var(--font-geist-sans), system-ui, sans-serif",
                         letterSpacing: "-0.008em",
                     }}
                 >
-                    {articles.length} articles on JavaScript, React, Node.js, and the
-                    infrastructure decisions that matter at production scale.
+                    {articles.length} articles on JavaScript, React, Node.js,
+                    and the infrastructure decisions that matter at production
+                    scale.
                 </p>
             </div>
 
@@ -111,7 +121,8 @@ export default function BlogPage() {
                     margin: "0 auto",
                     padding: "0 clamp(20px, 4vw, 48px)",
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+                    gridTemplateColumns:
+                        "repeat(auto-fill, minmax(340px, 1fr))",
                     gap: 16,
                 }}
             >
@@ -131,7 +142,8 @@ export default function BlogPage() {
                                 borderRadius: 12,
                                 border: "1px solid rgba(0, 0, 0, 0.08)",
                                 background: "#ffffff",
-                                transition: "border-color 0.15s ease, transform 0.15s ease",
+                                transition:
+                                    "border-color 0.15s ease, transform 0.15s ease",
                             }}
                             className="writing-card"
                         >
@@ -155,7 +167,8 @@ export default function BlogPage() {
                                         border: `1px solid ${color}33`,
                                         borderRadius: 9999,
                                         letterSpacing: "0.02em",
-                                        fontFamily: "var(--font-geist-mono), monospace",
+                                        fontFamily:
+                                            "var(--font-geist-mono), monospace",
                                         lineHeight: 1.4,
                                     }}
                                 >
@@ -166,7 +179,8 @@ export default function BlogPage() {
                                         fontSize: 12,
                                         fontWeight: 500,
                                         color: "#bbb",
-                                        fontFamily: "var(--font-geist-mono), monospace",
+                                        fontFamily:
+                                            "var(--font-geist-mono), monospace",
                                         fontVariantNumeric: "tabular-nums",
                                     }}
                                 >
@@ -183,7 +197,8 @@ export default function BlogPage() {
                                     letterSpacing: "-0.02em",
                                     lineHeight: 1.25,
                                     margin: "0 0 8px",
-                                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                                    fontFamily:
+                                        "var(--font-geist-sans), system-ui, sans-serif",
                                 }}
                             >
                                 {article.title}
@@ -197,7 +212,8 @@ export default function BlogPage() {
                                     color: "#555",
                                     letterSpacing: "-0.008em",
                                     margin: "0 0 16px",
-                                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                                    fontFamily:
+                                        "var(--font-geist-sans), system-ui, sans-serif",
                                 }}
                             >
                                 {article.description}
@@ -213,11 +229,15 @@ export default function BlogPage() {
                                     fontSize: 13,
                                     fontWeight: 500,
                                     color: "#000",
-                                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                                    fontFamily:
+                                        "var(--font-geist-sans), system-ui, sans-serif",
                                 }}
                             >
                                 Read article
-                                <span className="writing-arrow" style={{ display: "inline-flex" }}>
+                                <span
+                                    className="writing-arrow"
+                                    style={{ display: "inline-flex" }}
+                                >
                                     →
                                 </span>
                             </span>

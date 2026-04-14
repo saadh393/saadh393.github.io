@@ -104,6 +104,7 @@ export default async function BlogPostPage({
             >
                 <Link
                     href="/blog"
+                    prefetch={true}
                     style={{
                         fontSize: 13,
                         fontFamily: "var(--font-geist-mono), monospace",
