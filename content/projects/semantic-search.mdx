@@ -1,0 +1,308 @@
+---
+title: "Semantic Search API for Amazon Product Data"
+date: "2026-03-15"
+description: "Two-stage retrieval with vector search and LLM reranking — built on FastAPI, Pinecone, and Google Gemini, deployed on GCP Cloud Run."
+tags:
+    [
+        "Python",
+        "FastAPI",
+        "Pinecone",
+        "Gemini",
+        "GCP",
+        "Cloud Run",
+        "Vector Search",
+    ]
+status: "published"
+type: "case-study"
+github: "https://github.com/saadh393/Semantic-Search"
+live: "https://semantic-search-615845999521.asia-southeast1.run.app"
+---
+
+Keyword search breaks when users think in concepts, not product codes.
+
+A shopper searching for a device to keep in the car doesn't type `JBL Flip 6`. They type `bluetooth speaker for car`. The first hits on a keyword engine are products that earned that exact phrase — not products that fit the intent. You get cases, accessories, manuals. The actual speaker is buried on page three.
+
+This project is a semantic search API over 12,000 Amazon product records. It accepts natural language queries, retrieves candidates via vector similarity, and optionally reranks them using a Gemini cross-encoder. The goal: search that understands _meaning_, not just text matching.
+
+<MetricStrip>
+    <Metric label="Indexed products" value="12,000+" />
+    <Metric label="Embedding dimension" value="3,072" />
+    <Metric label="Vector recall (top-k)" value="20" />
+    <Metric label="Rerank model" value="gemini-3.1-flash-lite" />
+</MetricStrip>
+
+---
+
+## Why Semantic Search, Why Now
+
+Amazon's own search works well because they have years of click-through data to learn from. A personal project doesn't have that luxury. The alternatives were:
+
+- **BM25 / TF-IDF** — solid term matching, but fails on synonyms (`speaker` vs `audio`) and doesn't capture intent at all.
+- **Elasticsearch with vector plugins** — powerful but operationally heavy. Requires running and maintaining a cluster.
+- **OpenAI embeddings + Pinecone** — good quality, but costs accumulate at scale and the API latency adds up.
+- **Google Gemini embeddings + Pinecone** — free tier on Gemini, managed vector DB, same quality floor.
+
+The choice came down to cost, operational simplicity, and embedding quality for product titles. Gemini's `gemini-embedding-001` produces 3,072-dimension vectors that capture semantic relationships in product titles well enough for a first pass, and the free tier removes price friction entirely during development.
+
+---
+
+## Embedding Model Decision
+
+Product search has a specific constraint: the indexed text (product titles) is short — typically 5 to 15 words. Embedding models behave differently on short text than on long documents.
+
+### Models Evaluated
+
+| Model                                     | Dim  | Short text quality | Cost             | API latency |
+| ----------------------------------------- | ---- | ------------------ | ---------------- | ----------- |
+| `text-embedding-ada-002` (OpenAI)         | 1536 | Good               | ~$0.10/1K tokens | ~200ms      |
+| `embed-english-v3.0` (Cohere)             | 1024 | Good               | ~$0.10/1K tokens | ~150ms      |
+| `sentence-transformers/all-mpnet-base-v2` | 768  | Acceptable         | Self-hosted      | N/A         |
+| `gemini-embedding-001` (Google)           | 3072 | Good               | Free (Studio)    | ~300ms      |
+
+### Why gemini-embedding-001
+
+The free tier was the deciding factor. At 12,000 products, ingesting the full catalog costs nothing. Ada-002 and Cohere both have per-token costs that add up quickly during bulk ingestion, even at small scale.
+
+Dimension count (3,072) is higher than alternatives. Higher dimensions give the vector index more surface area to separate similar-but-distinct products — important for e-commerce where `Bluetooth Speaker` and `Bluetooth Headphones` differ by one word but belong in different categories.
+
+The trade-off is API latency. Gemini's embedding endpoint is slower than OpenAI's (~300ms vs ~200ms), but this only matters at ingestion time, not query time. Query embeddings go through the same endpoint, but the latency is absorbed by the async API call and doesn't block the response until the vector is needed.
+
+**Ingestion math:** 12,000 products at 50-product batches = 240 batches. At 2s sleep between batches = ~8 minutes total ingestion time. Acceptable for a one-time or infrequent operation.
+
+---
+
+## Vector Database Decision
+
+Vector databases differ in how they handle the ANN (Approximate Nearest Neighbor) search, scaling model, and operational overhead.
+
+### Options Evaluated
+
+| DB       | Hosting               | Scaling          | Managed?  | Latency (p50) |
+| -------- | --------------------- | ---------------- | --------- | ------------- |
+| Pinecone | Cloud (AWS/GCP/Azure) | Serverless       | Yes       | ~50ms         |
+| Weaviate | Self-hosted or cloud  | Replication      | Partially | ~80ms         |
+| Qdrant   | Self-hosted or cloud  | Collection-based | Partially | ~60ms         |
+| Milvus   | Self-hosted           | Collection-based | No        | ~70ms         |
+| Chroma   | Local or self-hosted  | Single-node      | No        | N/A (local)   |
+
+### Why Pinecone
+
+The serverless tier requires zero capacity planning. You create an index, define the dimension and metric, and Pinecone handles scaling behind the scenes. No shards to configure, no replica sets to tune.
+
+For a project that started as a proof-of-concept, operational simplicity won. Weaviate and Qdrant both require more setup — either self-hosting or navigating their cloud offering's configuration. Milvus is production-grade but demands ops attention.
+
+The `support-assistant` index runs on AWS ap-southeast-1 (Singapore) as a serverless spec. Metric is `cosine` — the right choice when embedding vectors are L2-normalized by the Gemini API, which they are by default.
+
+**Index spec:**
+
+```python
+create_index_if_not_exists(
+    name=IndexName,
+    dimension=3072,
+    metric=Cosine,
+    spec=ServerlessSpec(region=AWS, cloud=AWS)
+)
+```
+
+Pinecone's serverless spec autoscales reads and writes. Cold starts are real — the first query after idle time can take 2–3x longer. Mitigation: the FastAPI lifespan warmup calls `get_index()` on startup so the connection is established before traffic arrives.
+
+---
+
+## Architecture
+
+```
+Client Query
+     │
+     ▼
+FastAPI /search endpoint
+  ├─ RateLimiter (30 req / 60s sliding window)
+  ├─ SearchCache (LRU, SHA-256 key, 1h TTL, 500 max entries)
+  ├─ embed_query() → Gemini embedding-001
+  │      │
+  │      ▼
+  │   Pinecone ANN query
+  │   ├─ metadata filters (price $lte, rating $gte)
+  │   └─ returns top-k results
+  │
+  └─ [optional] rerank() → Gemini 3.1-flash-lite
+       └─ cross-encoder scoring → sorted top-k
+```
+
+Two search paths exist:
+
+**Direct search** — embed → Pinecone → return. Single external API call, latency ~300–500ms end-to-end.
+
+**Reranked search** — Pinecone returns 20 candidates (`retrive_k=20`), then Gemini scores each one on a 0–1 relevance scale. The rerank prompt instructs the model to score based on semantic fit to the query, not keyword overlap. Final results are the top 5 by rerank score. Latency adds ~400–700ms.
+
+The rerank step is optional — toggled per request via `?rerank=true`. The UI has a RERANK toggle so users can compare.
+
+---
+
+## Implementation
+
+### API Layer (FastAPI)
+
+The `/search` endpoint is straightforward. Query validation, parameter extraction, then dispatches to either `search()` or `search_with_rerank()`. Both run on `asyncio.to_thread()` so the blocking I/O doesn't block the async event loop.
+
+```python
+@router.get('/search')
+async def search(
+    q: str = Query(..., min_length=1, max_length=500),
+    top_k: int = Query(5, ge=1, le=20),
+    price_max: float | None = None,
+    min_rating: float | None = None,
+    rerank: bool = False,
+):
+    func = search_with_rerank if rerank else search
+    return await asyncio.to_thread(func, q, top_k, price_max, min_rating)
+```
+
+The `RateLimitError` exception is caught upstream and returns HTTP 429 with a `Retry-After` header. All other exceptions return 500 with the error message.
+
+### Caching
+
+Cache key is SHA-256 of `query.lower().strip() | sorted(kwargs.items())`. This means `bluetooth speaker` and `Bluetooth Speaker` hit the same cache entry. Filter combinations are part of the key — the same query with different price filters produces different cache entries.
+
+TTL is 1 hour. Max entries is 500 with LRU eviction. At 500 entries and ~300ms embedding latency, the cache saves ~150 seconds of API time per 500 unique queries.
+
+### Embedding
+
+```python
+@timed
+def embed_query(text: str) -> list[float]:
+    result = client.models.embed_content(
+        model='gemini-embedding-001',
+        content=text,
+    )
+    return result.embedding[0].values
+```
+
+`@timed` decorator logs function name and execution time in milliseconds to stdout. Every function that touches an external API is decorated — gives baseline latency numbers without a dedicated observability stack.
+
+### Reranking
+
+The reranker receives the query and a list of product candidates. Each product is formatted as a short string: `Title: ..., Price: ..., Rating: ...`. The prompt tells Gemini to score 0.0–1.0 using explicit tiers — 0.9–1.0 for exact match, 0.7–0.9 for strong intent match, down to 0.0 for completely irrelevant.
+
+The response is parsed as JSON. If parsing fails or the API errors, the function returns the original Pinecone order rather than throwing — graceful degradation rather than hard failure.
+
+---
+
+## Deployment on GCP Cloud Run
+
+The Dockerfile is minimal:
+
+```dockerfile
+FROM python:3.13-slim
+WORKDIR /app
+RUN pip install --no-cache-dir uv
+COPY pyproject.toml uv.lock* ./
+RUN uv sync --frozen
+COPY . .
+EXPOSE 8080
+CMD ["uv", "run", "uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "8080"]
+```
+
+Python 3.13 slim keeps the image under 200MB. `uv sync --frozen` reproduces the exact dependency graph from the lock file — no accidental upgrades between dev and production.
+
+Cloud Run handles the rest: managed scaling from zero to whatever traffic arrives, HTTPS termination, and region routing. The service runs in us-central1 by default on Cloud Run.
+
+Cold starts are the main operational concern. Cloud Run spins down idle instances after 15 minutes. The first request after idle triggers container initialization — loading the Python runtime, importing modules, warming the Pinecone connection in the FastAPI lifespan. Warm requests are consistently under 100ms for the API itself.
+
+**Render.com** is currently used as the live URL (`https://support-assistant-8eho.onrender.com`). GCP Cloud Run is the target for production migration — better cold start performance and GCP ecosystem integration for observability.
+
+---
+
+## Data Pipeline
+
+The ingestion pipeline has two stages: cleaning and indexing.
+
+**Cleaning (`scripts/clean_data.py`):**
+Raw Amazon product CSV → clean CSV. Operations: dedupe by title, strip `$` and commas from price, normalize rating to float, rename columns to match the Pinecone metadata schema.
+
+**Indexing (`app/ingestion.py`):**
+Clean CSV → Pinecone. Batch size 50. Each batch: embed titles via Gemini → format records with metadata → upsert to Pinecone. 2-second sleep between batches to avoid rate limit errors.
+
+```python
+for i in range(0, len(df), BATCH_SIZE):
+    batch = df.iloc[i:i + BATCH_SIZE]
+    # embed + upsert
+    records = [...]
+    index.upsert(vectors=records)
+    time.sleep(2)
+```
+
+12,000 products at 50 per batch = 240 upsert calls. At ~2s per batch = ~8 minutes end-to-end. The pipeline is idempotent — re-running it overwrites existing vectors with the same IDs, so catalog updates are possible without rebuilding the index.
+
+---
+
+## Performance Breakdown
+
+No load testing infrastructure was configured, so numbers below are observed from normal traffic patterns and manual testing.
+
+### Latency Profile
+
+| Path                       | Typical latency | Notes                                    |
+| -------------------------- | --------------- | ---------------------------------------- |
+| Cache hit                  | ~20ms           | Cache lookup + format response only      |
+| Direct search (cache miss) | ~350–500ms      | Embed (300ms) + Pinecone (50ms) + format |
+| Reranked search            | ~750ms–1.2s     | Direct + Gemini reranking (400–700ms)    |
+| Cold start (Cloud Run)     | ~3–8s           | Container init + Pinecone warmup         |
+
+The cache hit path is fast enough for interactive use. The cold start is the known pain point — mitigation is an uptime guarantee that keeps instances warm, or moving to a provider with faster container initialization.
+
+### Cache Hit Rate
+
+Under typical usage with repeated queries (e.g., testing with the same queries), cache hit rate approaches 60–70%. For a product search API where popular queries repeat across users, this is meaningful — the same product searches tend to cluster around trending items and seasonal queries.
+
+### Pinecone Query Latency
+
+Observed p50: ~50ms. This is consistent with Pinecone's serverless SLA. The query includes metadata filters (`price <= X`, `rating >= Y`) which add marginal overhead but don't change the ANN search complexity.
+
+---
+
+## Frontend
+
+The search UI is a single `static/index.html` — no framework, no build step. Pure HTML/CSS/JS, ~400 lines. Font stack is `DM Sans` + `Space Mono` loaded from Google Fonts.
+
+Key design decisions:
+
+- Dark theme (`#0a0a0c` background) with teal accent (`#6ee7b7`)
+- Score badges on each result card show both vector similarity and rerank score when active — makes the two-stage pipeline visible to users
+- RERANK toggle mirrors the API parameter — users can see the before/after on their own queries
+- No external JS dependencies beyond Google Fonts
+
+The lack of a frontend framework was intentional. Static hosting on any CDN, instant cold deploys, zero bundler complexity. The API is the product.
+
+---
+
+## What I'd Do Differently
+
+**Rerank prompt could be better.** The current prompt relies on the model to score consistently across product categories. An updated version would include category-specific scoring criteria — a speaker and a phone charger should be evaluated against different intent signals.
+
+**Pinecone upsert bug in ingestion.** The `index.upsert()` call ended up inside the inner loop in the original code — upserting one record at a time instead of batching. The correct structure moves the upsert outside the row loop so each batch is sent as a single call. The fix is a one-line change but the original was wrong.
+
+**Observability.** No structured logging, no metrics. The `@timed` decorator writes to stdout, which is only useful if you're watching the process. Prometheus metrics on API latency, cache hit rate, and rerank vs direct split would give real production signals.
+
+**Embedding model comparison.** No A/B test between `gemini-embedding-001` and alternatives. The choice was made on cost and convenience, not measured quality. For a production system, a small evaluation set with human-labeled relevance scores would validate the embedding choice properly.
+
+<Callout type="result">
+    Semantic search over 12,000 products using two-stage retrieval: vector
+    recall via Pinecone + optional Gemini cross-encoder reranking. Free
+    embedding API keeps iteration cost near zero. Cold start latency on Cloud
+    Run is the main operational concern — caching handles the p99 for repeated
+    queries.
+</Callout>
+
+---
+
+## Stack Summary
+
+| Layer           | Choice                          | Why                                                         |
+| --------------- | ------------------------------- | ----------------------------------------------------------- |
+| API framework   | FastAPI + Uvicorn               | Async-native, clear route structure, built-in docs          |
+| Embedding model | `gemini-embedding-001` (3,072d) | Free tier, sufficient quality, 3072 dim for fine separation |
+| Vector database | Pinecone serverless             | Zero ops, autoscales, cosine metric                         |
+| Reranker        | `gemini-3.1-flash-lite`         | Cheap per-call, good at semantic scoring                    |
+| Packaging       | `uv` + `pyproject.toml`         | Fast installs, lock file reproducibility                    |
+| Container       | Python 3.13-slim + Cloud Run    | Light image, managed scaling                                |
+| Frontend        | Vanilla HTML/CSS/JS             | Zero build step, static hosting                             |

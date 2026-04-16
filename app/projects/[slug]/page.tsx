@@ -25,12 +25,14 @@ export async function generateMetadata({
     const { slug } = await params;
     try {
         const { frontmatter } = getContent("projects", slug);
-        const url = `https://saadhasan.dev/projects/${slug}`;
+        const url = `https://saadh393.github.io/projects/${slug}`;
         return {
             title: frontmatter.title,
             description: frontmatter.description,
             keywords: frontmatter.tags,
-            authors: [{ name: "Saad Hasan", url: "https://saadhasan.dev" }],
+            authors: [
+                { name: "Saad Hasan", url: "https://saadh393.github.io" },
+            ],
             alternates: { canonical: url },
             openGraph: {
                 type: "article",

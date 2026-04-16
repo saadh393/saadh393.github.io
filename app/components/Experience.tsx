@@ -8,7 +8,7 @@ const JOBS = [
         role: "Software Engineer & Product Lead",
         period: "2021 — Present",
         current: true,
-        logoPath: "/images/experience/lws.svg",
+        logoPath: "/learn-with-sumit.png",
         logoFallback: "L",
         bullets: [
             "End-to-end ownership of an LMS platform serving 10,000+ students and processing 1 Cr+ BDT/year in revenue — every feature decision had direct financial implications",
@@ -21,7 +21,7 @@ const JOBS = [
         role: "Software Engineer",
         period: "2022 — 2024",
         current: false,
-        logoPath: "/images/experience/analyzen.svg",
+        logoPath: "/analyzen.png",
         logoFallback: "A",
         bullets: [
             "Built and shipped production React interfaces for enterprise clients — translating high-fidelity Figma specs into pixel-accurate, accessible components across devices",
