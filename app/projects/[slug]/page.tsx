@@ -44,7 +44,7 @@ export async function generateMetadata({
                 tags: frontmatter.tags,
                 images: [
                     {
-                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&description=${encodeURIComponent(frontmatter.description)}`,
                         width: 1200,
                         height: 630,
                         alt: frontmatter.title,
@@ -56,7 +56,7 @@ export async function generateMetadata({
                 title: frontmatter.title,
                 description: frontmatter.description,
                 images: [
-                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&description=${encodeURIComponent(frontmatter.description)}`,
                 ],
             },
         };

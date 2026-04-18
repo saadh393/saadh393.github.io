@@ -25,12 +25,12 @@ export async function generateMetadata({
     const { slug } = await params;
     try {
         const { frontmatter } = getContent("blog", slug);
-        const url = `https://saadhasan.dev/blog/${slug}`;
+        const url = `https://saadh393.github.io/blog/${slug}`;
         return {
             title: frontmatter.title,
             description: frontmatter.description,
             keywords: frontmatter.tags,
-            authors: [{ name: "Saad Hasan", url: "https://saadhasan.dev" }],
+            authors: [{ name: "Saad Hasan", url: "https://saadh393.github.io" }],
             alternates: { canonical: url },
             openGraph: {
                 type: "article",
@@ -42,7 +42,7 @@ export async function generateMetadata({
                 tags: frontmatter.tags,
                 images: [
                     {
-                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&description=${encodeURIComponent(frontmatter.description)}`,
                         width: 1200,
                         height: 630,
                         alt: frontmatter.title,
@@ -54,7 +54,7 @@ export async function generateMetadata({
                 title: frontmatter.title,
                 description: frontmatter.description,
                 images: [
-                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&tags=${encodeURIComponent(frontmatter.tags.slice(0, 3).join(", "))}`,
+                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&description=${encodeURIComponent(frontmatter.description)}`,
                 ],
             },
         };

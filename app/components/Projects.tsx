@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 /* ─── Data ─── */
 const projects = [
@@ -167,18 +168,20 @@ function FeaturedCard({ project }: { project: Project }) {
                         </div>
 
                         {href && (
-                            <a
-                                href={href}
-                                className="proj-cta"
-                                {...(isExternal
-                                    ? {
-                                          target: "_blank",
-                                          rel: "noopener noreferrer",
-                                      }
-                                    : {})}
-                            >
-                                {project.linkLabel}
-                            </a>
+                            isExternal ? (
+                                <a
+                                    href={href}
+                                    className="proj-cta"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {project.linkLabel}
+                                </a>
+                            ) : (
+                                <Link href={href} className="proj-cta" prefetch={true}>
+                                    {project.linkLabel}
+                                </Link>
+                            )
                         )}
                     </div>
                 </div>
@@ -227,15 +230,20 @@ function ProjectCard({ project, delay }: { project: Project; delay: number }) {
                 </div>
 
                 {href && project.linkLabel !== "Enterprise" ? (
-                    <a
-                        href={href}
-                        className="proj-cta"
-                        {...(isExternal
-                            ? { target: "_blank", rel: "noopener noreferrer" }
-                            : {})}
-                    >
-                        {project.linkLabel}
-                    </a>
+                    isExternal ? (
+                        <a
+                            href={href}
+                            className="proj-cta"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {project.linkLabel}
+                        </a>
+                    ) : (
+                        <Link href={href} className="proj-cta" prefetch={true}>
+                            {project.linkLabel}
+                        </Link>
+                    )
                 ) : (
                     <span className="proj-cta-muted">{project.linkLabel}</span>
                 )}
