@@ -42,22 +42,24 @@ export async function generateMetadata({
                 publishedTime: frontmatter.date,
                 authors: ["Saad Hasan"],
                 tags: frontmatter.tags,
-                images: [
-                    {
-                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&description=${encodeURIComponent(frontmatter.description)}`,
-                        width: 1200,
-                        height: 630,
-                        alt: frontmatter.title,
-                    },
-                ],
+                ...(slug === "semantic-search" && {
+                    images: [
+                        {
+                            url: "/semantic_search.png",
+                            width: 1200,
+                            height: 630,
+                            alt: frontmatter.title,
+                        },
+                    ],
+                }),
             },
             twitter: {
                 card: "summary_large_image",
                 title: frontmatter.title,
                 description: frontmatter.description,
-                images: [
-                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=case-study&description=${encodeURIComponent(frontmatter.description)}`,
-                ],
+                ...(slug === "semantic-search" && {
+                    images: ["/semantic_search.png"],
+                }),
             },
         };
     } catch {

@@ -40,22 +40,11 @@ export async function generateMetadata({
                 publishedTime: frontmatter.date,
                 authors: ["Saad Hasan"],
                 tags: frontmatter.tags,
-                images: [
-                    {
-                        url: `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&description=${encodeURIComponent(frontmatter.description)}`,
-                        width: 1200,
-                        height: 630,
-                        alt: frontmatter.title,
-                    },
-                ],
             },
             twitter: {
                 card: "summary_large_image",
                 title: frontmatter.title,
                 description: frontmatter.description,
-                images: [
-                    `/api/og?title=${encodeURIComponent(frontmatter.title)}&type=article&description=${encodeURIComponent(frontmatter.description)}`,
-                ],
             },
         };
     } catch {
