@@ -22,6 +22,8 @@ import {
   QuizDynamic as Quiz,
   BezierPlaygroundDynamic as BezierPlayground,
   BezierSamplingDynamic as BezierSampling,
+  DeploySimulatorDynamic as DeploySimulator,
+  DecisionMatrixDynamic as DecisionMatrix,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -277,4 +279,8 @@ export const mdxComponents: MDXComponents = {
   // Bézier-specific interactive widgets
   BezierPlayground,
   BezierSampling,
+  // Deploy-strategy simulator
+  DeploySimulator,
+  // Multi-option decision matrix
+  DecisionMatrix,
 };

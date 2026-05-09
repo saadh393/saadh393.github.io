@@ -107,3 +107,13 @@ export const BezierSamplingDynamic = dynamic(
   () => import("./BezierSampling").then((m) => ({ default: m.BezierSampling })),
   { ssr: false, loading: placeholder(340) }
 );
+
+export const DeploySimulatorDynamic = dynamic(
+  () => import("./DeploySimulator").then((m) => ({ default: m.DeploySimulator })),
+  { ssr: false, loading: placeholder(420) }
+);
+
+export const DecisionMatrixDynamic = dynamic(
+  () => import("./DecisionMatrix").then((m) => ({ default: m.DecisionMatrix })),
+  { ssr: false, loading: placeholder(280) }
+);

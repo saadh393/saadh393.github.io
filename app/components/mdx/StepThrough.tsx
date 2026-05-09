@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
+  useNodesState,
+  useEdgesState,
   type Node,
   type Edge,
   type NodeTypes,
@@ -31,8 +33,8 @@ export interface StepEdge {
 export interface Step {
   label: string;
   description?: string;
-  active: string[];        // node IDs to highlight
-  activeEdges?: string[];  // "from→to" strings to animate
+  active: string[];
+  activeEdges?: string[];
 }
 
 /* Usage in MDX — all data as JSON strings:
@@ -60,9 +62,11 @@ function ServiceNode({ data }: { data: { label: string; active: boolean; type: s
         fontWeight: data.active ? 600 : 400,
         color: data.active ? "#0070f3" : "#333",
         fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-        transition: "all 0.25s ease",
+        transition: "border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease",
         boxShadow: data.active ? "0 0 0 3px rgba(0,112,243,0.12)" : "none",
         whiteSpace: "nowrap",
+        cursor: "grab",
+        userSelect: "none",
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
@@ -73,6 +77,11 @@ function ServiceNode({ data }: { data: { label: string; active: boolean; type: s
 }
 
 const nodeTypes: NodeTypes = { service: ServiceNode };
+
+const EDGE_STYLE_INACTIVE = { stroke: "rgba(0,0,0,0.18)", strokeWidth: 1, transition: "stroke 0.25s ease" };
+const EDGE_STYLE_ACTIVE = { stroke: "#0070f3", strokeWidth: 2, transition: "stroke 0.25s ease" };
+const EDGE_LABEL_STYLE = { fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", fill: "#888" };
+const EDGE_LABEL_BG_STYLE = { fill: "#fff" };
 
 /* ─── Main Component ─── */
 export function StepThrough({
@@ -87,18 +96,125 @@ export function StepThrough({
   steps: string;
 }) {
   const [current, setCurrent] = useState(0);
+  const [hasMoved, setHasMoved] = useState(false);
 
-  let nodesDef: StepNode[] = [];
-  let edgesDef: StepEdge[] = [];
-  let steps: Step[] = [];
+  const parsed = useMemo(() => {
+    try {
+      return {
+        nodesDef: JSON.parse(nodesJson) as StepNode[],
+        edgesDef: JSON.parse(edgesJson) as StepEdge[],
+        steps: JSON.parse(stepsJson) as Step[],
+        ok: true,
+      };
+    } catch {
+      return {
+        nodesDef: [] as StepNode[],
+        edgesDef: [] as StepEdge[],
+        steps: [] as Step[],
+        ok: false,
+      };
+    }
+  }, [nodesJson, edgesJson, stepsJson]);
 
-  try {
-    nodesDef = JSON.parse(nodesJson);
-    edgesDef = JSON.parse(edgesJson);
-    steps = JSON.parse(stepsJson);
-  } catch {
+  const { nodesDef, edgesDef, steps, ok } = parsed;
+
+  const initialNodes: Node[] = useMemo(
+    () =>
+      nodesDef.map((n) => ({
+        id: n.id,
+        type: "service",
+        position: { x: n.x, y: n.y },
+        data: { label: n.label, active: false, type: n.type ?? "service" },
+      })),
+    [nodesDef],
+  );
+
+  const initialEdges: Edge[] = useMemo(
+    () =>
+      edgesDef.map((e) => ({
+        id: `${e.from}-${e.to}`,
+        source: e.from,
+        target: e.to,
+        label: e.label,
+        animated: false,
+        style: EDGE_STYLE_INACTIVE,
+        labelStyle: EDGE_LABEL_STYLE,
+        labelBgStyle: EDGE_LABEL_BG_STYLE,
+      })),
+    [edgesDef],
+  );
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
+
+  // Track drag so the Reset Layout button only appears once it is useful
+  const handleNodesChange = useCallback(
+    (changes: Parameters<typeof onNodesChange>[0]) => {
+      onNodesChange(changes);
+      if (changes.some((c) => c.type === "position" && c.dragging === false)) {
+        setHasMoved(true);
+      }
+    },
+    [onNodesChange],
+  );
+
+  // Sync active node / edge styling when the step changes — without touching positions,
+  // so any drag the reader has done is preserved.
+  useEffect(() => {
+    const step = steps[current];
+    if (!step) return;
+
+    const activeNodeIds = new Set(step.active);
+    setNodes((prev) =>
+      prev.map((n) => {
+        const nextActive = activeNodeIds.has(n.id);
+        if (n.data?.active === nextActive) return n;
+        return { ...n, data: { ...n.data, active: nextActive } };
+      }),
+    );
+
+    const activeEdgeKeys = new Set(
+      (step.activeEdges ?? []).map((e) => {
+        const [from, to] = e.split("→").map((s) => s.trim());
+        return `${from}-${to}`;
+      }),
+    );
+    setEdges((prev) =>
+      prev.map((e) => {
+        const isActive = activeEdgeKeys.has(e.id);
+        if (e.animated === isActive) return e;
+        return {
+          ...e,
+          animated: isActive,
+          style: isActive ? EDGE_STYLE_ACTIVE : EDGE_STYLE_INACTIVE,
+        };
+      }),
+    );
+  }, [current, steps, setNodes, setEdges]);
+
+  // Reset positions back to the JSON-defined layout, keeping current step's active state.
+  const resetLayout = useCallback(() => {
+    const step = steps[current];
+    const activeNodeIds = new Set(step?.active ?? []);
+    setNodes(
+      initialNodes.map((n) => ({
+        ...n,
+        data: { ...n.data, active: activeNodeIds.has(n.id) },
+      })),
+    );
+    setHasMoved(false);
+  }, [initialNodes, setNodes, steps, current]);
+
+  if (!ok) {
     return (
-      <div style={{ padding: 16, color: "#d00", fontSize: 13, fontFamily: "var(--font-geist-mono), monospace" }}>
+      <div
+        style={{
+          padding: 16,
+          color: "#d00",
+          fontSize: 13,
+          fontFamily: "var(--font-geist-mono), monospace",
+        }}
+      >
         StepThrough: invalid JSON in nodes, edges, or steps prop.
       </div>
     );
@@ -106,47 +222,6 @@ export function StepThrough({
 
   const step = steps[current];
   if (!step) return null;
-
-  const activeEdgeKeys = new Set(
-    (step.activeEdges ?? []).map((e) => {
-      const [from, to] = e.split("→").map((s) => s.trim());
-      return `${from}-${to}`;
-    })
-  );
-
-  const rfNodes: Node[] = nodesDef.map((n) => ({
-    id: n.id,
-    type: "service",
-    position: { x: n.x, y: n.y },
-    data: {
-      label: n.label,
-      active: step.active.includes(n.id),
-      type: n.type ?? "service",
-    },
-  }));
-
-  const rfEdges: Edge[] = edgesDef.map((e) => {
-    const key = `${e.from}-${e.to}`;
-    const isActive = activeEdgeKeys.has(key);
-    return {
-      id: key,
-      source: e.from,
-      target: e.to,
-      label: e.label,
-      animated: isActive,
-      style: {
-        stroke: isActive ? "#0070f3" : "rgba(0,0,0,0.18)",
-        strokeWidth: isActive ? 2 : 1,
-        transition: "stroke 0.25s ease",
-      },
-      labelStyle: {
-        fontSize: 11,
-        fontFamily: "var(--font-geist-mono), monospace",
-        fill: "#888",
-      },
-      labelBgStyle: { fill: "#fff" },
-    };
-  });
 
   const canPrev = current > 0;
   const canNext = current < steps.length - 1;
@@ -169,6 +244,7 @@ export function StepThrough({
           display: "flex",
           alignItems: "center",
           gap: 10,
+          flexWrap: "wrap",
         }}
       >
         <span
@@ -195,21 +271,62 @@ export function StepThrough({
         >
           {title}
         </span>
+        <span
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontFamily: "var(--font-geist-mono), monospace",
+              color: "#aaa",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            drag nodes · drag canvas to pan
+          </span>
+          {hasMoved && (
+            <button
+              onClick={resetLayout}
+              style={{
+                fontSize: 11,
+                fontFamily: "var(--font-geist-mono), monospace",
+                fontWeight: 600,
+                color: "#0070f3",
+                background: "rgba(0,112,243,0.07)",
+                border: "1px solid rgba(0,112,243,0.35)",
+                borderRadius: 6,
+                padding: "3px 9px",
+                cursor: "pointer",
+                letterSpacing: "0.02em",
+              }}
+            >
+              ↺ Reset layout
+            </button>
+          )}
+        </span>
       </div>
 
       {/* React Flow canvas */}
       <div style={{ height: 280, background: "#fafafa" }}>
         <ReactFlow
-          nodes={rfNodes}
-          edges={rfEdges}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           fitView
           fitViewOptions={{ padding: 0.3 }}
-          panOnDrag={false}
+          panOnDrag={true}
           zoomOnScroll={false}
-          zoomOnPinch={false}
+          zoomOnPinch={true}
           zoomOnDoubleClick={false}
-          nodesDraggable={false}
+          nodesDraggable={true}
           nodesConnectable={false}
           elementsSelectable={false}
           proOptions={{ hideAttribution: true }}
@@ -229,7 +346,6 @@ export function StepThrough({
           gap: 14,
         }}
       >
-        {/* Counter */}
         <span
           style={{
             fontSize: 11,
@@ -241,7 +357,6 @@ export function StepThrough({
           {current + 1} / {steps.length}
         </span>
 
-        {/* Dots */}
         <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
           {steps.map((_, i) => (
             <button
@@ -261,7 +376,6 @@ export function StepThrough({
           ))}
         </div>
 
-        {/* Label */}
         <span
           style={{
             fontSize: 13,
@@ -279,7 +393,6 @@ export function StepThrough({
           )}
         </span>
 
-        {/* Nav */}
         <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
           <button
             onClick={() => setCurrent((c) => c - 1)}

@@ -1,0 +1,634 @@
+---
+title: "Zero-Downtime Frontend Deploys with Blue-Green on a Single EC2"
+date: "2026-05-09"
+description: "A real blue-green setup on one AWS EC2 instance with Docker and Nginx that removed the downtime caused by rebuilds and container restarts."
+tags: ["Docker", "Nginx", "AWS", "Next.js", "Bash", "DevOps", "Blue-Green"]
+status: "published"
+type: "case-study"
+---
+
+The frontend team shipped fast. Some weeks we pushed three releases in a day. Every deploy created the same support message: "the site is down again."
+
+It was not down. It was rebuilding.
+
+<MetricStrip>
+    <Metric label="Downtime per deploy (before)" value="~2-4 min" />
+    <Metric label="Downtime per deploy (after)" value="0s" />
+    <Metric label="Deploys per day" value="up to 3" />
+    <Metric label="Infra cost change" value="$0" />
+</MetricStrip>
+
+---
+
+## The Problem
+
+The app is a Next.js frontend running on a single AWS EC2 instance inside Docker. The deployment looked simple enough:
+
+```bash
+git pull
+docker build -t web:latest .
+docker stop web && docker rm web
+docker run -d --name web -p 3000:3000 web:latest
+```
+
+That script works. It also creates the outage.
+
+The build step takes a while, especially on a cold cache. The old container gets stopped. Nginx loses its backend and starts returning 502s. Then the new container starts, binds the port, and warms up. That whole sequence usually cost us 2 to 4 minutes of downtime.
+
+Users felt it most when they were already in the middle of something, like a form submission or checkout flow.
+
+<Callout type="warning">
+    "We deploy at night" is not a fix. It just changes who gets to see the
+    outage. The deploy itself was the outage.
+</Callout>
+
+---
+
+## What I Picked, and Why
+
+Three real options were on the table. Click any column header to see what changes if that option had been picked instead — the verdict at the bottom updates.
+
+<DecisionMatrix
+    title="Choosing the deploy strategy"
+    options='[
+    {
+      "id":"rolling",
+      "name":"Rolling restart",
+      "summary":"Two replicas, restart one at a time"
+    },
+    {
+      "id":"bluegreen",
+      "name":"Blue-Green behind Nginx",
+      "summary":"Two containers, flip the upstream",
+      "chosen":true,
+      "verdict":"Smallest possible change. The reverse proxy was already in front of the app, so the deploy script becomes a build, a sed, and an nginx reload. No new infrastructure, no new bill, no orchestrator to learn."
+    },
+    {
+      "id":"managed",
+      "name":"Managed platform",
+      "summary":"ECS, App Runner, or Vercel",
+      "verdict":"Solves the deploy problem out of the box, but breaks two real constraints: the static IP is already whitelisted by partners, and the custom Nginx config sits next to the app. Worth the migration eventually — not worth it just to fix downtime."
+    }
+  ]'
+    criteria='[
+    {
+      "label":"Zero user-visible downtime",
+      "hint":"The whole reason we are doing this.",
+      "scores":{
+        "rolling":   {"rating":"ok",  "note":"Possible, but only if you build the health-check + traffic-shift logic by hand."},
+        "bluegreen": {"rating":"good","note":"Health-check then atomic Nginx reload — users never see a 502."},
+        "managed":   {"rating":"good","note":"Built in. The platform handles it."}
+      }
+    },
+    {
+      "label":"No new infra cost",
+      "hint":"Same EC2 box, same monthly bill.",
+      "scores":{
+        "rolling":   {"rating":"good","note":"Runs on the existing host."},
+        "bluegreen": {"rating":"good","note":"Two containers on the same instance — RAM cost only."},
+        "managed":   {"rating":"bad", "note":"New control plane, new pricing model, finance has to re-approve."}
+      }
+    },
+    {
+      "label":"Keeps the static IP partners whitelisted",
+      "scores":{
+        "rolling":   {"rating":"good","note":"Same EC2 instance, same public IP."},
+        "bluegreen": {"rating":"good","note":"Same EC2 instance, same public IP."},
+        "managed":   {"rating":"bad", "note":"Most managed platforms hand out floating IPs or DNS. Re-doing partner whitelists is a months-long process."}
+      }
+    },
+    {
+      "label":"Works on a single host without an orchestrator",
+      "scores":{
+        "rolling":   {"rating":"ok",  "note":"You either run an orchestrator (k8s, ECS) or hand-roll one. Both are heavy for a single box."},
+        "bluegreen": {"rating":"good","note":"Nginx is the orchestrator. The script is plain Bash."},
+        "managed":   {"rating":"na",  "note":"You no longer have a single host."}
+      }
+    },
+    {
+      "label":"Implementation effort",
+      "scores":{
+        "rolling":   {"rating":"ok",  "note":"Custom health-check loop, traffic-shift logic, race-condition handling. Days of work."},
+        "bluegreen": {"rating":"good","note":"~80-line Bash script and one extra Nginx include file."},
+        "managed":   {"rating":"bad", "note":"Platform migration: rewrite CI, port the Nginx config, redo SSL, repaper partner whitelists. Months."}
+      }
+    },
+    {
+      "label":"Rollback speed when something breaks",
+      "scores":{
+        "rolling":   {"rating":"ok",  "note":"Stop the new container, restart with the old image. Tens of seconds, plus the same downtime risk."},
+        "bluegreen": {"rating":"good","note":"Flip the upstream back. Under five seconds; no rebuild."},
+        "managed":   {"rating":"ok",  "note":"Platform-dependent. Usually fast, but you give up control of the mechanism."}
+      }
+    }
+  ]'
+/>
+
+<Callout type="tradeoff">
+    Blue-Green means two copies of the app are alive at once. On a single
+    instance with limited RAM, you need enough headroom for both containers. For
+    this Next.js app, around 350 MB per container was fine. For something
+    heavier, it might not be.
+</Callout>
+
+---
+
+## What Blue-Green Actually Is
+
+Two identical environments, side by side. One handles traffic. The other sits there waiting for the next release. Build the new version in the idle slot, check it, then flip the proxy. The old slot stays around long enough to make rollback easy.
+
+<StepThrough
+    title="Blue-Green deployment lifecycle"
+    nodes='[
+    {"id":"users","label":"Users","x":0,"y":140,"type":"client"},
+    {"id":"nginx","label":"Nginx","x":220,"y":140},
+    {"id":"blue","label":"Blue (v1)","x":460,"y":40},
+    {"id":"green","label":"Green (v2)","x":460,"y":240}
+  ]'
+    edges='[
+    {"from":"users","to":"nginx"},
+    {"from":"nginx","to":"blue","label":"active"},
+    {"from":"nginx","to":"green","label":"idle"}
+  ]'
+    steps='[
+    {
+      "label":"Steady state - Blue is live",
+      "description":"Nginx points to Blue on port 3001. Green is not running yet, so users just keep hitting the old version.",
+      "active":["users","nginx","blue"],
+      "activeEdges":["users→nginx","nginx→blue"]
+    },
+    {
+      "label":"Build and start Green",
+      "description":"The deploy script builds the new image and starts Green on port 3002. Green is live on its own port, but Nginx still sends traffic to Blue.",
+      "active":["users","nginx","blue","green"],
+      "activeEdges":["users→nginx","nginx→blue"]
+    },
+    {
+      "label":"Health-check Green",
+      "description":"The script curls Green until /api/health returns 200. If that never happens, the deploy stops here and Blue keeps serving.",
+      "active":["green"],
+      "activeEdges":[]
+    },
+    {
+      "label":"Flip the Nginx upstream",
+      "description":"The upstream file is rewritten and nginx -s reload is called. New requests go to Green, while old connections finish on Blue.",
+      "active":["users","nginx","green"],
+      "activeEdges":["users→nginx","nginx→green"]
+    },
+    {
+      "label":"Stop and recycle Blue",
+      "description":"After a short drain period, Blue is stopped and removed. The roles swap, so the next deploy uses the free slot.",
+      "active":["users","nginx","green"],
+      "activeEdges":["users→nginx","nginx→green"]
+    }
+  ]'
+/>
+
+The important bit is the reload. Nginx is not restarted. It rereads the config, starts new workers, and lets the old workers finish their in-flight requests before they exit. That is why the switch feels atomic from the outside.
+
+<Accordion>
+    <AccordionItem title="What is an Nginx upstream, and why use one?">
+        An `upstream` block is Nginx's way of naming a backend pool. Instead of
+        hard-coding `proxy_pass http://localhost:3001` everywhere, I point Nginx
+        at a named upstream and change that one place during deploys. That keeps
+        the flip simple.
+    </AccordionItem>
+    <AccordionItem title="What does it mean to reload Nginx?">
+        `nginx -s reload` tells Nginx to reread its config without dropping live
+        traffic. The master process starts a new set of workers with the updated
+        config, then tells the old workers to stop accepting new connections and
+        finish what they already have.
+    </AccordionItem>
+    <AccordionItem title="Why keep a reverse proxy on a single-app box?">
+        Nginx is doing three jobs the Next.js server is not great at: TLS
+        termination, compression, and being the stable front door for the public
+        IP. The app can move between ports or even containers without changing
+        what the outside world sees.
+    </AccordionItem>
+</Accordion>
+
+---
+
+## The Implementation
+
+This section walks through every change you need to turn a single-container Docker deploy into a blue-green deploy. By the end of it, the host will run two container slots on fixed ports, the Nginx config will be split into a stable file and a swappable file, and a single Bash script will orchestrate every release.
+
+Throughout the steps, replace `app.example.com`, the image name `web`, and the route `/api/health` with the names that match your own application.
+
+<Callout type="insight">
+  Read the whole section before changing anything in production. The pieces depend on each other — the Nginx split (Step 2) has to be in place before the deploy script (Step 4) will work, and the script will only succeed once the application exposes a health endpoint (Step 3).
+</Callout>
+
+### Step 1 — Reserve a fixed port for each color
+
+Choose two unused ports on the host: one for the **blue** slot, one for the **green** slot. Any pair of high ports works. The rest of this guide uses `3001` for blue and `3002` for green.
+
+Update your `docker run` command so the container can be started against either port. The application keeps listening on its standard internal port (Next.js defaults to `3000`); only the host-side mapping changes:
+
+```bash
+# blue slot
+docker run -d --name web-blue  -p 3001:3000 web:current
+
+# green slot — started later by the deploy script
+docker run -d --name web-green -p 3002:3000 web:next
+```
+
+Pinning one port per color removes a whole class of race conditions. The script never has to discover or allocate a free port, and the Nginx config always knows where each color lives.
+
+### Step 2 — Split the Nginx config into two files
+
+The deploy needs to change one line of Nginx config and reload — nothing more. To make that possible, separate the parts of the config that change every release from the parts that never do.
+
+**Create the swappable file.** Add a new file at `/etc/nginx/conf.d/upstream.conf`. This is the only file the deploy script will ever rewrite:
+
+```nginx
+upstream app {
+    server 127.0.0.1:3001;     # blue (currently live)
+#   server 127.0.0.1:3002;     # green (idle)
+}
+```
+
+**Update the server block.** Open your existing site config (commonly `/etc/nginx/sites-available/app.conf` or `/etc/nginx/conf.d/app.conf`). Replace any hard-coded `proxy_pass http://127.0.0.1:3000` with a reference to the upstream defined above (the highlighted line is the only one that has to change):
+
+```nginx {10}
+include /etc/nginx/conf.d/upstream.conf;
+
+server {
+    listen 443 ssl http2;
+    server_name app.example.com;
+
+    # SSL certs, gzip, and security headers omitted for brevity.
+
+    location / {
+        proxy_pass http://app;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_read_timeout 60s;
+        proxy_connect_timeout 5s;
+    }
+}
+```
+
+**Validate the new layout.** Run the following on the host and confirm both commands succeed and the site still serves traffic:
+
+```bash
+sudo nginx -t
+sudo nginx -s reload
+```
+
+From this point on, the server block never changes. The deploy only ever touches `upstream.conf`.
+
+### Step 3 — Expose a meaningful health endpoint
+
+The deploy script promotes the new container only after `/api/health` returns 200. That endpoint must therefore answer one question precisely: *can this container serve real user traffic right now?*
+
+A health endpoint that returns 200 the moment the process starts is worse than no endpoint at all — it promotes containers that cannot actually serve users. Make the endpoint exercise every dependency a real request would touch (the database, the cache, any required outbound API). If any of those fail, return a 5xx.
+
+Add the route to your application. The example below uses Next.js App Router; adapt the imports to match your framework:
+
+```ts
+// app/api/health/route.ts
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+
+export async function GET() {
+    try {
+        await db.raw("SELECT 1");
+        return NextResponse.json({ ok: true });
+    } catch {
+        return NextResponse.json({ ok: false }, { status: 503 });
+    }
+}
+```
+
+Verify the endpoint behaves correctly **before** wiring it into the deploy script. Run the application locally, stop the database, and confirm that `/api/health` returns 503 — not 200, and not an uncaught 500.
+
+### Step 4 — Build the deploy script in stages
+
+Create a new file at `deploy/deploy.sh` in your repository. This section walks through the script one stage at a time so you understand each block before you commit the whole thing. The full, ready-to-run version follows at the end.
+
+Open the file with this header:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+UPSTREAM_FILE=/etc/nginx/conf.d/upstream.conf
+HEALTH_PATH=/api/health
+HEALTH_TIMEOUT=90
+DRAIN_SECONDS=30
+```
+
+`set -euo pipefail` makes the script abort on the first failure, refuse to read undefined variables, and surface errors anywhere in a pipeline. Without it, a partial config rewrite could quietly continue and leave the system in a broken state.
+
+#### 4.1 Detect which color is currently live
+
+Read `upstream.conf` and determine which port is uncommented. The live color is the deployment source; the other color is the deployment target.
+
+```bash
+if grep -q "^    server 127.0.0.1:3001;" "$UPSTREAM_FILE"; then
+    LIVE_COLOR=blue;  LIVE_PORT=3001
+    NEXT_COLOR=green; NEXT_PORT=3002
+else
+    LIVE_COLOR=green; LIVE_PORT=3002
+    NEXT_COLOR=blue;  NEXT_PORT=3001
+fi
+
+echo "Live: $LIVE_COLOR  →  Deploying: $NEXT_COLOR"
+```
+
+The `echo` line gives you confidence at a glance that the script picked the right slot before it does anything destructive.
+
+#### 4.2 Build the image and start the idle container
+
+Build the image once and tag it `web:next`. Then remove any leftover container in the idle slot from a prior failed deploy and start the new one:
+
+```bash
+docker build -t web:next .
+docker rm -f "web-$NEXT_COLOR" 2>/dev/null || true
+docker run -d --name "web-$NEXT_COLOR" -p "$NEXT_PORT:3000" web:next
+```
+
+The live color is untouched throughout this stage. Users continue to receive 200s from the previous version.
+
+#### 4.3 Probe the health endpoint until the new container is ready
+
+Poll the new container directly on its host port. Stop the deploy if the container never goes healthy:
+
+```bash
+for i in $(seq 1 "$HEALTH_TIMEOUT"); do
+    if curl -fsS "http://127.0.0.1:$NEXT_PORT$HEALTH_PATH" >/dev/null; then
+        echo "Healthy after ${i}s"
+        break
+    fi
+    sleep 1
+    if [ "$i" -eq "$HEALTH_TIMEOUT" ]; then
+        echo "Health check failed — aborting deploy"
+        docker rm -f "web-$NEXT_COLOR"
+        exit 1
+    fi
+done
+```
+
+Two properties matter here. First, the script polls the new container *directly*, not through Nginx, so the live color stays untouched even while the new container is still warming up. Second, on timeout, the script removes the failing container and exits non-zero — Nginx is never reloaded, and users never see anything.
+
+#### 4.4 Swap the upstream and validate the new config
+
+Back up the live config, then rewrite it. Validate the new file with `nginx -t` *before* you signal the running master process:
+
+```bash
+cp "$UPSTREAM_FILE" "${UPSTREAM_FILE}.bak"
+
+sed -i \
+    -e "s|^    server 127.0.0.1:$LIVE_PORT;|#    server 127.0.0.1:$LIVE_PORT;|" \
+    -e "s|^#    server 127.0.0.1:$NEXT_PORT;|    server 127.0.0.1:$NEXT_PORT;|" \
+    "$UPSTREAM_FILE"
+
+if ! nginx -t; then
+    mv "${UPSTREAM_FILE}.bak" "$UPSTREAM_FILE"
+    docker rm -f "web-$NEXT_COLOR"
+    exit 1
+fi
+```
+
+If `nginx -t` reports any error, the script restores the backup, removes the new container, and exits. The system is now in exactly the state it was in before the deploy started.
+
+#### 4.5 Reload Nginx — the actual flip
+
+Tell the running Nginx master process to reread its config:
+
+```bash
+nginx -s reload
+```
+
+This is the only line in the entire script that changes user-visible behaviour. The master spawns new worker processes that read the rewritten upstream and signals the old workers to stop accepting new connections. In-flight requests on the old workers complete normally; new requests route to the new color from the moment the reload returns.
+
+#### 4.6 Drain the old color, then recycle it
+
+Wait for the old workers to finish, then stop the previous container and re-tag the image so a rollback is one command away:
+
+```bash
+sleep "$DRAIN_SECONDS"
+docker stop "web-$LIVE_COLOR" && docker rm "web-$LIVE_COLOR"
+docker tag web:next web:current
+echo "Deploy complete — $NEXT_COLOR is live"
+```
+
+Set `DRAIN_SECONDS` to a value comfortably above the slowest response your application produces. Thirty seconds is a safe default for typical web apps; raise it for endpoints that stream long responses or hold open WebSocket-style connections.
+
+#### The full script
+
+Save the whole file as `deploy/deploy.sh`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+UPSTREAM_FILE=/etc/nginx/conf.d/upstream.conf
+HEALTH_PATH=/api/health
+HEALTH_TIMEOUT=90
+DRAIN_SECONDS=30
+
+# 1. Detect which color is currently live.
+if grep -q "^    server 127.0.0.1:3001;" "$UPSTREAM_FILE"; then
+    LIVE_COLOR=blue;  LIVE_PORT=3001
+    NEXT_COLOR=green; NEXT_PORT=3002
+else
+    LIVE_COLOR=green; LIVE_PORT=3002
+    NEXT_COLOR=blue;  NEXT_PORT=3001
+fi
+echo "Live: $LIVE_COLOR  →  Deploying: $NEXT_COLOR"
+
+# 2. Build and start the idle color.
+docker build -t web:next .
+docker rm -f "web-$NEXT_COLOR" 2>/dev/null || true
+docker run -d --name "web-$NEXT_COLOR" -p "$NEXT_PORT:3000" web:next
+
+# 3. Wait for the new container to go healthy.
+for i in $(seq 1 "$HEALTH_TIMEOUT"); do
+    if curl -fsS "http://127.0.0.1:$NEXT_PORT$HEALTH_PATH" >/dev/null; then
+        echo "Healthy after ${i}s"
+        break
+    fi
+    sleep 1
+    if [ "$i" -eq "$HEALTH_TIMEOUT" ]; then
+        echo "Health check failed — aborting deploy"
+        docker rm -f "web-$NEXT_COLOR"
+        exit 1
+    fi
+done
+
+# 4. Swap the upstream and validate.
+cp "$UPSTREAM_FILE" "${UPSTREAM_FILE}.bak"
+sed -i \
+    -e "s|^    server 127.0.0.1:$LIVE_PORT;|#    server 127.0.0.1:$LIVE_PORT;|" \
+    -e "s|^#    server 127.0.0.1:$NEXT_PORT;|    server 127.0.0.1:$NEXT_PORT;|" \
+    "$UPSTREAM_FILE"
+
+if ! nginx -t; then
+    mv "${UPSTREAM_FILE}.bak" "$UPSTREAM_FILE"
+    docker rm -f "web-$NEXT_COLOR"
+    exit 1
+fi
+
+# 5. Reload Nginx — the actual flip.
+nginx -s reload
+
+# 6. Drain the old color, then recycle it.
+sleep "$DRAIN_SECONDS"
+docker stop "web-$LIVE_COLOR" && docker rm "web-$LIVE_COLOR"
+docker tag web:next web:current
+echo "Deploy complete — $NEXT_COLOR is live"
+```
+
+Mark the script executable so the host can run it directly:
+
+```bash
+chmod +x deploy/deploy.sh
+```
+
+A single deploy is now `sudo ./deploy/deploy.sh`.
+
+### Step 5 — Walk the script visually before you run it
+
+Use the diagram below to follow the script end-to-end, including the two abort branches. Drag the canvas to pan around the long flow; click any step in the timeline to jump there.
+
+<StepThrough
+    title="deploy.sh — execution flow with abort branches"
+    nodes='[
+    {"id":"start","label":"./deploy.sh","x":240,"y":0,"type":"client"},
+    {"id":"detect","label":"Detect live color","x":240,"y":80},
+    {"id":"build","label":"docker build","x":240,"y":160},
+    {"id":"run","label":"Start idle container","x":240,"y":240},
+    {"id":"health","label":"Health probe (loop)","x":240,"y":330},
+    {"id":"abort_h","label":"Abort · kill new","x":500,"y":330,"type":"store"},
+    {"id":"backup","label":"Backup upstream.conf","x":240,"y":420},
+    {"id":"rewrite","label":"sed swap upstream","x":240,"y":500},
+    {"id":"validate","label":"nginx -t","x":240,"y":580},
+    {"id":"abort_v","label":"Restore · kill new","x":500,"y":580,"type":"store"},
+    {"id":"reload","label":"nginx -s reload","x":240,"y":660},
+    {"id":"drain","label":"sleep · drain","x":240,"y":740},
+    {"id":"stop_old","label":"Stop old · tag :current","x":240,"y":820},
+    {"id":"done","label":"Deploy complete","x":240,"y":900,"type":"client"}
+  ]'
+    edges='[
+    {"from":"start","to":"detect"},
+    {"from":"detect","to":"build"},
+    {"from":"build","to":"run"},
+    {"from":"run","to":"health"},
+    {"from":"health","to":"abort_h","label":"timeout"},
+    {"from":"health","to":"backup","label":"200 OK"},
+    {"from":"backup","to":"rewrite"},
+    {"from":"rewrite","to":"validate"},
+    {"from":"validate","to":"abort_v","label":"invalid"},
+    {"from":"validate","to":"reload","label":"valid"},
+    {"from":"reload","to":"drain"},
+    {"from":"drain","to":"stop_old"},
+    {"from":"stop_old","to":"done"}
+  ]'
+    steps='[
+    {"label":"Invoke","description":"You run ./deploy.sh on the host. set -euo pipefail is now in effect.","active":["start"],"activeEdges":[]},
+    {"label":"Detect the active color","description":"Grep upstream.conf to identify the live port and the deployment target.","active":["start","detect"],"activeEdges":["start→detect"]},
+    {"label":"Build the new image","description":"docker build runs against the current code and tags the result web:next.","active":["detect","build"],"activeEdges":["detect→build"]},
+    {"label":"Start the idle container","description":"The new container starts on its fixed port. The live color keeps serving the entire time.","active":["build","run"],"activeEdges":["build→run"]},
+    {"label":"Health probe — happy path","description":"Curl the new containers /api/health up to 90 times. The first 200 ends the loop and the script moves on.","active":["run","health"],"activeEdges":["run→health"]},
+    {"label":"Health probe — abort branch","description":"If 90 seconds pass without a 200, the new container is removed and the deploy exits. Nginx is never touched.","active":["health","abort_h"],"activeEdges":["health→abort_h"]},
+    {"label":"Backup upstream.conf","description":"Copy the live config aside so an invalid rewrite is recoverable without git.","active":["health","backup"],"activeEdges":["health→backup"]},
+    {"label":"Rewrite the upstream","description":"sed swaps which server line is uncommented. The file is written atomically.","active":["backup","rewrite"],"activeEdges":["backup→rewrite"]},
+    {"label":"Validate the config — happy path","description":"nginx -t parses the new config without applying it. Cheap insurance.","active":["rewrite","validate"],"activeEdges":["rewrite→validate"]},
+    {"label":"Validate the config — abort branch","description":"If nginx -t fails, the backup is restored and the new container is removed. The system is back to the pre-deploy state.","active":["validate","abort_v"],"activeEdges":["validate→abort_v"]},
+    {"label":"Reload Nginx","description":"The master spawns new workers that read the updated upstream and signals the old workers to drain. New connections route to the new color.","active":["validate","reload"],"activeEdges":["validate→reload"]},
+    {"label":"Drain the old color","description":"Sleep for the drain window so any in-flight request finishes on the old workers.","active":["reload","drain"],"activeEdges":["reload→drain"]},
+    {"label":"Stop and recycle","description":"Stop the previous container and re-tag the just-deployed image as web:current so rollback is one command away.","active":["drain","stop_old"],"activeEdges":["drain→stop_old"]},
+    {"label":"Done","description":"Script exits 0. Total wall-clock time: build + warm + drain. User-visible downtime: zero.","active":["stop_old","done"],"activeEdges":["stop_old→done"]}
+  ]'
+/>
+
+### Step 6 — Test the deploy on a non-production host first
+
+Run the full script on a staging host before you point real traffic at it. At minimum, exercise three scenarios and confirm each behaves as expected:
+
+- **Happy path.** Run `./deploy/deploy.sh`. Confirm that the live color flips, that no requests fail during the run, and that the previous container is removed after the drain window.
+- **Health failure.** Temporarily break a dependency the new image needs (for example, point the database URL at an unreachable host). Run the script. Confirm that the health probe times out, that the new container is removed, and that Nginx still routes to the old color.
+- **Config validation failure.** Introduce a typo into the server block. Run the script. Confirm that `nginx -t` fails, that `upstream.conf` is restored from its backup, and that the new container is removed.
+
+Once those three pass on staging, schedule the first production deploy for a low-traffic window and watch the logs without pressure. After that, return to your normal release schedule.
+
+### Common questions
+
+<Accordion>
+    <AccordionItem title="Why use `set -euo pipefail` at the top of the script?">
+        Each flag closes a different gap. `-e` exits the script on the first
+        non-zero command, so a failed `cp` cannot lead to a half-rewritten config.
+        `-u` aborts when an undefined variable is read, which catches typos
+        in environment names. `-o pipefail` propagates failures from any stage
+        of a pipeline, not just the last one. Together they make the script fail
+        loudly and early instead of leaving production in a broken state.
+    </AccordionItem>
+    <AccordionItem title="Why drain for thirty seconds instead of stopping the old container immediately?">
+        A user who is mid-request when the flip happens is still connected to the
+        old container's worker. Killing that container immediately drops the
+        response. The drain window is a deliberate buffer that lets in-flight
+        requests finish on the old workers before the container is stopped.
+        Tune the value to the slowest response your application produces.
+    </AccordionItem>
+    <AccordionItem title="What does the health endpoint actually need to verify?">
+        Anything a real request would depend on. At a minimum that means the
+        process has bound its port, has loaded its config, and can reach the
+        primary database. If the application requires a cache, an external API,
+        or a feature flag service to serve real traffic, the health endpoint
+        should fail when those are unavailable. A green light from `/api/health`
+        is a promise that this container can serve users right now.
+    </AccordionItem>
+    <AccordionItem title="Where should the deploy script run from?">
+        The simplest setup is to keep `deploy.sh` in the repository and run it
+        directly on the host as a privileged user (it needs to call
+        `nginx -s reload`). For teams that prefer not to give CI servers SSH
+        access, wrap the script in a small webhook receiver on the host that
+        triggers it on a push to `main`.
+    </AccordionItem>
+</Accordion>
+
+---
+
+## The Request Path, Before and After
+
+Press play, or drag the cursor along the timeline. The single-container lane goes red the moment the build window ends; the blue-green lane stays green the whole way through.
+
+<DeploySimulator
+    buildSeconds={90}
+    warmSeconds={15}
+    swapSeconds={1}
+    drainSeconds={30}
+    totalSeconds={150}
+/>
+
+The difference is not that the deploy got a little faster. The difference is that the user never sees the handoff at all. Deploy and service stopped being the same event.
+
+---
+
+## Rollback
+
+Rollback is basically the same flip in reverse, only without the rebuild. Because the old container stays alive during the drain window, the fastest rollback is usually just pointing Nginx back at the previous color. That takes less than a second.
+
+After the drain window, the old image is still tagged `web:current`. So if I need the previous version back later, it is still one `docker run` plus one `nginx -s reload`. No rebuild, no waiting for the cache, no hunting through old commits.
+
+<Callout type="result">
+    After two months in production, there were no user-reported deploy outages.
+    When rollback was needed, it usually took under 5 seconds. Same EC2
+    instance, same monthly bill.
+</Callout>
+
+---
+
+## What I Would Do Differently
+
+- Move the upstream switch off the file system. Rewriting `upstream.conf` with `sed` works, but it is the weakest part of the setup. A tiny key-value store would make the flip a single write instead of a file rewrite plus reload.
+- Add a real smoke test before the flip. Health checks tell me the container started. They do not tell me the homepage renders or the important routes still work. A few HTTP checks would catch more bad builds.
+- Build in CI instead of on the EC2 box. Right now the production host is also paying for the build. That is acceptable for a small app, but a prebuilt image would take pressure off the live machine.
+
+I would keep the strategy itself. For a single-host Next.js app that needed zero downtime without moving platforms, blue-green behind Nginx was the smallest fix that actually solved the problem.
