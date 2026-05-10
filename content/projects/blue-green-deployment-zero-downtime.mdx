@@ -1,7 +1,7 @@
 ---
-title: "Zero-Downtime Frontend Deploys with Blue-Green on a Single EC2"
+title: "Zero Downtime Frontend Deploys with Blue-Green on a Single EC2"
 date: "2026-05-09"
-description: "A real blue-green setup on one AWS EC2 instance with Docker and Nginx that removed the downtime caused by rebuilds and container restarts."
+description: "A real blue green setup on one AWS EC2 instance with Docker and Nginx that removed the downtime caused by rebuilds and container restarts."
 tags: ["Docker", "Nginx", "AWS", "Next.js", "Bash", "DevOps", "Blue-Green"]
 status: "published"
 type: "case-study"
@@ -216,7 +216,10 @@ This section walks through every change you need to turn a single-container Dock
 Throughout the steps, replace `app.example.com`, the image name `web`, and the route `/api/health` with the names that match your own application.
 
 <Callout type="insight">
-  Read the whole section before changing anything in production. The pieces depend on each other — the Nginx split (Step 2) has to be in place before the deploy script (Step 4) will work, and the script will only succeed once the application exposes a health endpoint (Step 3).
+    Read the whole section before changing anything in production. The pieces
+    depend on each other — the Nginx split (Step 2) has to be in place before
+    the deploy script (Step 4) will work, and the script will only succeed once
+    the application exposes a health endpoint (Step 3).
 </Callout>
 
 ### Step 1 — Reserve a fixed port for each color
@@ -284,7 +287,7 @@ From this point on, the server block never changes. The deploy only ever touches
 
 ### Step 3 — Expose a meaningful health endpoint
 
-The deploy script promotes the new container only after `/api/health` returns 200. That endpoint must therefore answer one question precisely: *can this container serve real user traffic right now?*
+The deploy script promotes the new container only after `/api/health` returns 200. That endpoint must therefore answer one question precisely: _can this container serve real user traffic right now?_
 
 A health endpoint that returns 200 the moment the process starts is worse than no endpoint at all — it promotes containers that cannot actually serve users. Make the endpoint exercise every dependency a real request would touch (the database, the cache, any required outbound API). If any of those fail, return a 5xx.
 
@@ -374,11 +377,11 @@ for i in $(seq 1 "$HEALTH_TIMEOUT"); do
 done
 ```
 
-Two properties matter here. First, the script polls the new container *directly*, not through Nginx, so the live color stays untouched even while the new container is still warming up. Second, on timeout, the script removes the failing container and exits non-zero — Nginx is never reloaded, and users never see anything.
+Two properties matter here. First, the script polls the new container _directly_, not through Nginx, so the live color stays untouched even while the new container is still warming up. Second, on timeout, the script removes the failing container and exits non-zero — Nginx is never reloaded, and users never see anything.
 
 #### 4.4 Swap the upstream and validate the new config
 
-Back up the live config, then rewrite it. Validate the new file with `nginx -t` *before* you signal the running master process:
+Back up the live config, then rewrite it. Validate the new file with `nginx -t` _before_ you signal the running master process:
 
 ```bash
 cp "$UPSTREAM_FILE" "${UPSTREAM_FILE}.bak"
@@ -563,18 +566,19 @@ Once those three pass on staging, schedule the first production deploy for a low
 <Accordion>
     <AccordionItem title="Why use `set -euo pipefail` at the top of the script?">
         Each flag closes a different gap. `-e` exits the script on the first
-        non-zero command, so a failed `cp` cannot lead to a half-rewritten config.
-        `-u` aborts when an undefined variable is read, which catches typos
-        in environment names. `-o pipefail` propagates failures from any stage
-        of a pipeline, not just the last one. Together they make the script fail
-        loudly and early instead of leaving production in a broken state.
+        non-zero command, so a failed `cp` cannot lead to a half-rewritten
+        config. `-u` aborts when an undefined variable is read, which catches
+        typos in environment names. `-o pipefail` propagates failures from any
+        stage of a pipeline, not just the last one. Together they make the
+        script fail loudly and early instead of leaving production in a broken
+        state.
     </AccordionItem>
     <AccordionItem title="Why drain for thirty seconds instead of stopping the old container immediately?">
-        A user who is mid-request when the flip happens is still connected to the
-        old container's worker. Killing that container immediately drops the
+        A user who is mid-request when the flip happens is still connected to
+        the old container's worker. Killing that container immediately drops the
         response. The drain window is a deliberate buffer that lets in-flight
-        requests finish on the old workers before the container is stopped.
-        Tune the value to the slowest response your application produces.
+        requests finish on the old workers before the container is stopped. Tune
+        the value to the slowest response your application produces.
     </AccordionItem>
     <AccordionItem title="What does the health endpoint actually need to verify?">
         Anything a real request would depend on. At a minimum that means the
@@ -586,10 +590,10 @@ Once those three pass on staging, schedule the first production deploy for a low
     </AccordionItem>
     <AccordionItem title="Where should the deploy script run from?">
         The simplest setup is to keep `deploy.sh` in the repository and run it
-        directly on the host as a privileged user (it needs to call
-        `nginx -s reload`). For teams that prefer not to give CI servers SSH
-        access, wrap the script in a small webhook receiver on the host that
-        triggers it on a push to `main`.
+        directly on the host as a privileged user (it needs to call `nginx -s
+        reload`). For teams that prefer not to give CI servers SSH access, wrap
+        the script in a small webhook receiver on the host that triggers it on a
+        push to `main`.
     </AccordionItem>
 </Accordion>
 

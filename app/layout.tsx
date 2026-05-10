@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import PageTransition from "./components/PageTransition";
 import SmoothScroll from "./components/SmoothScroll";
 import "./globals.css";
+import Head from "next/head";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -81,10 +83,17 @@ export default function RootLayout({
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+            <Head>
+                <meta
+                    name="google-site-verification"
+                    content="BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY"
+                />
+            </Head>
             <body>
                 <SmoothScroll />
                 <PageTransition>{children}</PageTransition>
             </body>
+            <GoogleAnalytics gaId="G-YYYV093E1F" />
         </html>
     );
 }

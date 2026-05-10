@@ -52,6 +52,16 @@ export async function generateMetadata({
                         },
                     ],
                 }),
+                ...(slug === "blue-green-deployment-zero-downtime" && {
+                    images: [
+                        {
+                            url: "/zero-downtime-deployment.png",
+                            width: 1200,
+                            height: 630,
+                            alt: frontmatter.title,
+                        },
+                    ],
+                }),
             },
             twitter: {
                 card: "summary_large_image",
@@ -59,6 +69,9 @@ export async function generateMetadata({
                 description: frontmatter.description,
                 ...(slug === "semantic-search" && {
                     images: ["/semantic_search.png"],
+                }),
+                ...(slug === "blue-green-deployment-zero-downtime" && {
+                    images: ["/zero-downtime-deployment.png"],
                 }),
             },
         };

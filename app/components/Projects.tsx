@@ -61,6 +61,17 @@ const projects = [
         linkLabel: "GitHub →",
     },
     {
+        id: "zero-downtime-deployment",
+        title: "Zero Downtime Frontend Deploys with Blue-Green on a Single EC2",
+        category: "DevOps · AWS",
+        year: "2026",
+        description:
+            "A real blue green setup on one AWS EC2 instance with Docker and Nginx that removed the downtime caused by rebuilds and container restarts",
+        stack: ["Next.js", "TypeScript", "AWS", "Docker", "Nginx"],
+        caseStudy: "/projects/blue-green-deployment-zero-downtime",
+        linkLabel: "Case Study →",
+    },
+    {
         id: "unilever",
         title: "Unilever Frontline Academy",
         category: "Enterprise · Bangladesh",
@@ -167,8 +178,8 @@ function FeaturedCard({ project }: { project: Project }) {
                             ))}
                         </div>
 
-                        {href && (
-                            isExternal ? (
+                        {href &&
+                            (isExternal ? (
                                 <a
                                     href={href}
                                     className="proj-cta"
@@ -178,11 +189,14 @@ function FeaturedCard({ project }: { project: Project }) {
                                     {project.linkLabel}
                                 </a>
                             ) : (
-                                <Link href={href} className="proj-cta" prefetch={true}>
+                                <Link
+                                    href={href}
+                                    className="proj-cta"
+                                    prefetch={true}
+                                >
                                     {project.linkLabel}
                                 </Link>
-                            )
-                        )}
+                            ))}
                     </div>
                 </div>
             </div>
