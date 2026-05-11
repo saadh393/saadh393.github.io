@@ -1,31 +1,34 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import PageTransition from "./components/PageTransition";
 import SmoothScroll from "./components/SmoothScroll";
 import "./globals.css";
-import Head from "next/head";
+import {
+    DEFAULT_OG_IMAGE,
+    GOOGLE_SITE_VERIFICATION,
+    SITE_DESCRIPTION,
+    SITE_LOCALE,
+    SITE_NAME,
+    SITE_TITLE,
+    SITE_URL,
+} from "@/lib/site";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
 });
 
-const BASE_URL = "https://saadh393.github.io";
-
 export const metadata: Metadata = {
-    metadataBase: new URL(BASE_URL),
+    metadataBase: new URL(SITE_URL),
+    applicationName: SITE_NAME,
     title: {
-        default: "Saad Hasan — Frontend Engineer",
+        default: SITE_TITLE,
         template: "%s — Saad Hasan",
     },
-    description:
-        "Frontend engineer specializing in React and Next.js. Building production apps at scale — LMS for 10k+ students, distributed streaming, semantic search.",
+    description: SITE_DESCRIPTION,
     keywords: [
         "Saad Hasan",
         "Frontend Engineer",
@@ -34,43 +37,62 @@ export const metadata: Metadata = {
         "JavaScript",
         "TypeScript",
         "Bangladesh",
+        "Portfolio",
+        "Software Engineer",
     ],
-    authors: [{ name: "Saad Hasan", url: BASE_URL }],
+    authors: [{ name: "Saad Hasan", url: SITE_URL }],
     creator: "Saad Hasan",
+    publisher: "Saad Hasan",
+    category: "technology",
+    formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+    },
+    manifest: "/manifest.webmanifest",
+    verification: {
+        google: GOOGLE_SITE_VERIFICATION,
+    },
     openGraph: {
         type: "website",
-        locale: "en_US",
-        url: BASE_URL,
-        siteName: "Saad Hasan",
-        title: "Saad Hasan — Frontend Engineer",
-        description:
-            "Frontend engineer specializing in React and Next.js. Building production apps at scale — LMS for 10k+ students, distributed streaming, semantic search.",
-        images: [
-            {
-                url: "/og-image.png",
-                width: 1200,
-                height: 630,
-                alt: "Saad Hasan — Frontend Engineer",
-            },
-        ],
+        locale: SITE_LOCALE,
+        url: SITE_URL,
+        siteName: SITE_NAME,
+        title: SITE_TITLE,
+        description: SITE_DESCRIPTION,
+        images: [DEFAULT_OG_IMAGE],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Saad Hasan — Frontend Engineer",
-        description:
-            "Frontend engineer specializing in React and Next.js. Building production apps at scale.",
-        images: ["/og-image.png"],
+        title: SITE_TITLE,
+        description: SITE_DESCRIPTION,
+        images: [DEFAULT_OG_IMAGE.url],
     },
     robots: {
         index: true,
         follow: true,
-        googleBot: { index: true, follow: true, "max-snippet": -1 },
+        googleBot: {
+            index: true,
+            follow: true,
+            noimageindex: false,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
     },
     icons: {
-        icon: "/favicon.ico",
-        shortcut: "/favicon-16x16.png",
-        apple: "/apple-touch-icon.png",
+        icon: [
+            { url: "/favicon.ico", sizes: "any" },
+            { url: "/favicon.png", type: "image/png", sizes: "100x100" },
+        ],
+        shortcut: ["/favicon.ico"],
+        apple: [{ url: "/favicon.png", sizes: "100x100", type: "image/png" }],
     },
+};
+
+export const viewport: Viewport = {
+    themeColor: "#ffffff",
+    colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -83,12 +105,6 @@ export default function RootLayout({
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-            <Head>
-                <meta
-                    name="google-site-verification"
-                    content="BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY"
-                />
-            </Head>
             <body>
                 <SmoothScroll />
                 <PageTransition>{children}</PageTransition>

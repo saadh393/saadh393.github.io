@@ -1,11 +1,19 @@
 import { mdxComponents } from "@/app/components/mdx";
 import { CaseStudyFooter } from "@/app/components/mdx/CaseStudyFooter";
-import { getContent, getSlugs } from "@/lib/content";
+import { getContent, getPublishedSlugs } from "@/lib/content";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
+import {
+    DEFAULT_OG_IMAGE,
+    SITE_NAME,
+    SITE_URL,
+    absoluteUrl,
+    isoDate,
+} from "@/lib/site";
 
 const prettyCodeOptions = {
     theme: "github-light",
@@ -13,7 +21,7 @@ const prettyCodeOptions = {
 } as const;
 
 export async function generateStaticParams() {
-    const slugs = getSlugs("blog");
+    const slugs = getPublishedSlugs("blog");
     return slugs.map((slug) => ({ slug }));
 }
 
@@ -21,30 +29,32 @@ export async function generateMetadata({
     params,
 }: {
     params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
     const { slug } = await params;
     try {
         const { frontmatter } = getContent("blog", slug);
-        const url = `https://saadh393.github.io/blog/${slug}`;
+        const url = absoluteUrl(`/blog/${slug}`);
         return {
             title: frontmatter.title,
             description: frontmatter.description,
             keywords: frontmatter.tags,
-            authors: [{ name: "Saad Hasan", url: "https://saadh393.github.io" }],
+            authors: [{ name: SITE_NAME, url: SITE_URL }],
             alternates: { canonical: url },
             openGraph: {
                 type: "article",
                 url,
                 title: frontmatter.title,
                 description: frontmatter.description,
-                publishedTime: frontmatter.date,
-                authors: ["Saad Hasan"],
+                publishedTime: isoDate(frontmatter.date),
+                authors: [SITE_NAME],
                 tags: frontmatter.tags,
+                images: [DEFAULT_OG_IMAGE],
             },
             twitter: {
                 card: "summary_large_image",
                 title: frontmatter.title,
                 description: frontmatter.description,
+                images: [DEFAULT_OG_IMAGE.url],
             },
         };
     } catch {
@@ -67,6 +77,24 @@ export default async function BlogPostPage({
     }
 
     const { frontmatter, content } = item;
+    const url = absoluteUrl(`/blog/${slug}`);
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: frontmatter.title,
+        description: frontmatter.description,
+        datePublished: isoDate(frontmatter.date),
+        dateModified: isoDate(frontmatter.date),
+        author: {
+            "@type": "Person",
+            name: SITE_NAME,
+            url: SITE_URL,
+        },
+        mainEntityOfPage: url,
+        url,
+        image: [DEFAULT_OG_IMAGE.url],
+        keywords: frontmatter.tags.join(", "),
+    };
 
     return (
         <main
@@ -76,6 +104,12 @@ export default async function BlogPostPage({
                 paddingBottom: 120,
             }}
         >
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(structuredData),
+                }}
+            />
             {/* Top bar */}
             <div
                 style={{

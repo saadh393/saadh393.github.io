@@ -1,11 +1,19 @@
 import { mdxComponents } from "@/app/components/mdx";
 import { CaseStudyFooter } from "@/app/components/mdx/CaseStudyFooter";
-import { getContent, getSlugs } from "@/lib/content";
+import { getContent, getPublishedSlugs } from "@/lib/content";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
+import {
+    SITE_NAME,
+    SITE_URL,
+    absoluteUrl,
+    isoDate,
+    projectSocialImage,
+} from "@/lib/site";
 
 const prettyCodeOptions = {
     theme: "github-light",
@@ -13,7 +21,7 @@ const prettyCodeOptions = {
 } as const;
 
 export async function generateStaticParams() {
-    const slugs = getSlugs("projects");
+    const slugs = getPublishedSlugs("projects");
     return slugs.map((slug) => ({ slug }));
 }
 
@@ -21,58 +29,33 @@ export async function generateMetadata({
     params,
 }: {
     params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
     const { slug } = await params;
     try {
         const { frontmatter } = getContent("projects", slug);
-        const url = `https://saadh393.github.io/projects/${slug}`;
+        const url = absoluteUrl(`/projects/${slug}`);
+        const socialImage = projectSocialImage(slug);
         return {
             title: frontmatter.title,
             description: frontmatter.description,
             keywords: frontmatter.tags,
-            authors: [
-                { name: "Saad Hasan", url: "https://saadh393.github.io" },
-            ],
+            authors: [{ name: SITE_NAME, url: SITE_URL }],
             alternates: { canonical: url },
             openGraph: {
                 type: "article",
                 url,
                 title: frontmatter.title,
                 description: frontmatter.description,
-                publishedTime: frontmatter.date,
-                authors: ["Saad Hasan"],
+                publishedTime: isoDate(frontmatter.date),
+                authors: [SITE_NAME],
                 tags: frontmatter.tags,
-                ...(slug === "semantic-search" && {
-                    images: [
-                        {
-                            url: "/semantic_search.png",
-                            width: 1200,
-                            height: 630,
-                            alt: frontmatter.title,
-                        },
-                    ],
-                }),
-                ...(slug === "blue-green-deployment-zero-downtime" && {
-                    images: [
-                        {
-                            url: "/zero-downtime-deployment.png",
-                            width: 1200,
-                            height: 630,
-                            alt: frontmatter.title,
-                        },
-                    ],
-                }),
+                images: [socialImage],
             },
             twitter: {
                 card: "summary_large_image",
                 title: frontmatter.title,
                 description: frontmatter.description,
-                ...(slug === "semantic-search" && {
-                    images: ["/semantic_search.png"],
-                }),
-                ...(slug === "blue-green-deployment-zero-downtime" && {
-                    images: ["/zero-downtime-deployment.png"],
-                }),
+                images: [socialImage.url],
             },
         };
     } catch {
@@ -95,6 +78,25 @@ export default async function CaseStudyPage({
     }
 
     const { frontmatter, content } = item;
+    const url = absoluteUrl(`/projects/${slug}`);
+    const socialImage = projectSocialImage(slug);
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: frontmatter.title,
+        description: frontmatter.description,
+        datePublished: isoDate(frontmatter.date),
+        dateModified: isoDate(frontmatter.date),
+        author: {
+            "@type": "Person",
+            name: SITE_NAME,
+            url: SITE_URL,
+        },
+        mainEntityOfPage: url,
+        url,
+        image: [socialImage.url],
+        keywords: frontmatter.tags.join(", "),
+    };
 
     return (
         <main
@@ -104,6 +106,12 @@ export default async function CaseStudyPage({
                 paddingBottom: 120,
             }}
         >
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(structuredData),
+                }}
+            />
             {/* Top bar */}
             <div
                 style={{

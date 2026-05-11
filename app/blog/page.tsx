@@ -1,14 +1,54 @@
 import { articles, tagColors } from "@/lib/articles";
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+    DEFAULT_OG_IMAGE,
+    SITE_DESCRIPTION,
+    SITE_TITLE,
+    SITE_URL,
+    absoluteUrl,
+} from "@/lib/site";
 
 export const metadata: Metadata = {
     title: "Writing",
     description:
         "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+    alternates: {
+        canonical: "/blog",
+    },
+    openGraph: {
+        type: "website",
+        url: absoluteUrl("/blog"),
+        title: `Writing — ${SITE_TITLE}`,
+        description:
+            "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+        images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: `Writing — ${SITE_TITLE}`,
+        description:
+            "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+        images: [DEFAULT_OG_IMAGE.url],
+    },
 };
 
 export default function BlogPage() {
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Writing",
+        url: absoluteUrl("/blog"),
+        description:
+            "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+        isPartOf: {
+            "@type": "WebSite",
+            name: SITE_TITLE,
+            url: SITE_URL,
+            description: SITE_DESCRIPTION,
+        },
+    };
+
     return (
         <main
             style={{
@@ -17,6 +57,12 @@ export default function BlogPage() {
                 paddingBottom: 120,
             }}
         >
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(structuredData),
+                }}
+            />
             {/* Top bar */}
             <div
                 style={{

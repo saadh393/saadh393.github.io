@@ -53,3 +53,7 @@ export function getAllContent(type: ContentType): ContentItem[] {
         new Date(a.frontmatter.date).getTime()
     );
 }
+
+export function getPublishedSlugs(type: ContentType): string[] {
+  return getAllContent(type).map((item) => item.slug);
+}
