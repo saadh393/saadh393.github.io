@@ -1,8 +1,5 @@
 export const DEFAULT_SITE_URL = "https://saadh393.github.io";
-
-export const SITE_URL = (
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || DEFAULT_SITE_URL
-).replace(/\/+$/, "");
+export const SITE_URL = DEFAULT_SITE_URL;
 
 export const SITE_NAME = "Saad Hasan";
 export const SITE_TITLE = "Saad Hasan — Frontend Engineer";

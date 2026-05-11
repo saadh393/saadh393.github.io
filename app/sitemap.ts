@@ -8,6 +8,8 @@ import {
     projectSocialImage,
 } from "@/lib/site";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
     const blogPosts = getAllContent("blog");
     const projects = getAllContent("projects");
