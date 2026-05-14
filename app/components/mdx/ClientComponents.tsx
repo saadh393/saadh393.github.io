@@ -117,3 +117,41 @@ export const DecisionMatrixDynamic = dynamic(
   () => import("./DecisionMatrix").then((m) => ({ default: m.DecisionMatrix })),
   { ssr: false, loading: placeholder(280) }
 );
+
+// ── Inline / overlay UI ───────────────────────────────────────────────────────
+
+// Tooltip is used inline inside paragraphs, so it must render as a <span>.
+// Skip the dynamic-with-div placeholder (it would nest <div> inside <p>).
+export { Tooltip as TooltipDynamic } from "./Tooltip";
+
+export const ReferenceLinkDynamic = dynamic(
+  () => import("./ReferenceLink").then((m) => ({ default: m.ReferenceLink })),
+  { ssr: false, loading: placeholder(60) }
+);
+
+export const ReferenceListDynamic = dynamic(
+  () => import("./ReferenceLink").then((m) => ({ default: m.ReferenceList })),
+  { ssr: false, loading: placeholder(60) }
+);
+
+// ── Data viz ─────────────────────────────────────────────────────────────────
+
+export const BarChartDynamic = dynamic(
+  () => import("./BarChart").then((m) => ({ default: m.BarChart })),
+  { ssr: false, loading: placeholder(220) }
+);
+
+export const LineChartDynamic = dynamic(
+  () => import("./LineChart").then((m) => ({ default: m.LineChart })),
+  { ssr: false, loading: placeholder(260) }
+);
+
+export const BuyMeCoffeeDynamic = dynamic(
+  () => import("./BuyMeCoffee").then((m) => ({ default: m.BuyMeCoffee })),
+  { ssr: false, loading: placeholder(100) }
+);
+
+export const ShareArticleDynamic = dynamic(
+  () => import("./ShareArticle").then((m) => ({ default: m.ShareArticle })),
+  { ssr: false, loading: placeholder(90) }
+);

@@ -25,6 +25,25 @@ export async function generateStaticParams() {
     return slugs.map((slug) => ({ slug }));
 }
 
+function resolveOgImage(frontmatter: {
+    ogImage?: string;
+    ogImageAlt?: string;
+    ogImageWidth?: number;
+    ogImageHeight?: number;
+    title: string;
+}) {
+    if (!frontmatter.ogImage) return DEFAULT_OG_IMAGE;
+    const url = frontmatter.ogImage.startsWith("http")
+        ? frontmatter.ogImage
+        : `${SITE_URL}${frontmatter.ogImage.startsWith("/") ? "" : "/"}${frontmatter.ogImage}`;
+    return {
+        url,
+        width: frontmatter.ogImageWidth ?? 1200,
+        height: frontmatter.ogImageHeight ?? 630,
+        alt: frontmatter.ogImageAlt ?? frontmatter.title,
+    } as const;
+}
+
 export async function generateMetadata({
     params,
 }: {
@@ -34,32 +53,82 @@ export async function generateMetadata({
     try {
         const { frontmatter } = getContent("blog", slug);
         const url = absoluteUrl(`/blog/${slug}`);
+        const ogImage = resolveOgImage(frontmatter);
+        const title = frontmatter.seoTitle || frontmatter.title;
+        const published = isoDate(frontmatter.date);
+        const modified = frontmatter.updated
+            ? isoDate(frontmatter.updated)
+            : published;
+
         return {
-            title: frontmatter.title,
+            metadataBase: new URL(SITE_URL),
+            title,
             description: frontmatter.description,
             keywords: frontmatter.tags,
             authors: [{ name: SITE_NAME, url: SITE_URL }],
-            alternates: { canonical: url },
+            creator: SITE_NAME,
+            publisher: SITE_NAME,
+            category: frontmatter.category,
+            alternates: {
+                canonical: url,
+                types: {
+                    "application/rss+xml": `${SITE_URL}/rss.xml`,
+                },
+            },
+            robots: frontmatter.noindex
+                ? { index: false, follow: false }
+                : {
+                      index: true,
+                      follow: true,
+                      googleBot: {
+                          index: true,
+                          follow: true,
+                          "max-snippet": -1,
+                          "max-image-preview": "large",
+                          "max-video-preview": -1,
+                      },
+                  },
             openGraph: {
                 type: "article",
                 url,
-                title: frontmatter.title,
+                title,
                 description: frontmatter.description,
-                publishedTime: isoDate(frontmatter.date),
-                authors: [SITE_NAME],
+                siteName: SITE_NAME,
+                locale: "en_US",
+                publishedTime: published,
+                modifiedTime: modified,
+                authors: [`${SITE_URL}/about`],
+                section: frontmatter.category,
                 tags: frontmatter.tags,
-                images: [DEFAULT_OG_IMAGE],
+                images: [ogImage],
             },
             twitter: {
                 card: "summary_large_image",
-                title: frontmatter.title,
+                title,
                 description: frontmatter.description,
-                images: [DEFAULT_OG_IMAGE.url],
+                images: [ogImage.url],
+                creator: "@saadh393",
+                site: "@saadh393",
+            },
+            other: {
+                "article:published_time": published,
+                "article:modified_time": modified,
+                "article:author": SITE_NAME,
+                "article:section": frontmatter.category ?? "Engineering",
+                "article:tag": frontmatter.tags.join(","),
             },
         };
     } catch {
-        return { title: "Not Found" };
+        return { title: "Not Found", robots: { index: false, follow: false } };
     }
+}
+
+function countWords(s: string): number {
+    return (s.match(/\b[\p{L}\p{N}'’-]+\b/gu) || []).length;
+}
+
+function readingTimeMinutes(words: number): number {
+    return Math.max(1, Math.round(words / 220));
 }
 
 export default async function BlogPostPage({
@@ -78,22 +147,77 @@ export default async function BlogPostPage({
 
     const { frontmatter, content } = item;
     const url = absoluteUrl(`/blog/${slug}`);
-    const structuredData = {
+    const ogImage = resolveOgImage(frontmatter);
+    const wordCount = countWords(content);
+    const readingTime = readingTimeMinutes(wordCount);
+    const published = isoDate(frontmatter.date);
+    const modified = frontmatter.updated
+        ? isoDate(frontmatter.updated)
+        : published;
+
+    const blogPostingLd = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
+        "@id": `${url}#article`,
         headline: frontmatter.title,
+        name: frontmatter.title,
         description: frontmatter.description,
-        datePublished: isoDate(frontmatter.date),
-        dateModified: isoDate(frontmatter.date),
+        datePublished: published,
+        dateModified: modified,
+        inLanguage: "en-US",
+        articleSection: frontmatter.category ?? "Engineering",
+        wordCount,
+        timeRequired: `PT${readingTime}M`,
+        keywords: frontmatter.tags.join(", "),
+        url,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        image: [
+            {
+                "@type": "ImageObject",
+                url: ogImage.url,
+                width: ogImage.width,
+                height: ogImage.height,
+            },
+        ],
         author: {
             "@type": "Person",
             name: SITE_NAME,
             url: SITE_URL,
         },
-        mainEntityOfPage: url,
-        url,
-        image: [DEFAULT_OG_IMAGE.url],
-        keywords: frontmatter.tags.join(", "),
+        publisher: {
+            "@type": "Person",
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: {
+                "@type": "ImageObject",
+                url: `${SITE_URL}/favicon.png`,
+            },
+        },
+    };
+
+    const breadcrumbLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: SITE_URL,
+            },
+            {
+                "@type": "ListItem",
+                position: 2,
+                name: "Writing",
+                item: `${SITE_URL}/blog`,
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
+                name: frontmatter.title,
+                item: url,
+            },
+        ],
     };
 
     return (
@@ -107,7 +231,13 @@ export default async function BlogPostPage({
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(structuredData),
+                    __html: JSON.stringify(blogPostingLd),
+                }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(breadcrumbLd),
                 }}
             />
             {/* Top bar */}
@@ -270,7 +400,7 @@ export default async function BlogPostPage({
                     style={{
                         marginTop: 32,
                         borderTop: "1px solid rgba(0,0,0,0.07)",
-                        marginBottom: 48,
+                        // marginBottom: 48,
                     }}
                 />
             </div>

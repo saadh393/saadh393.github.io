@@ -32,13 +32,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: "weekly",
             priority: 0.9,
         },
-        ...blogPosts.map((post) => ({
-            url: absoluteUrl(`/blog/${post.slug}`),
-            lastModified: new Date(post.frontmatter.date),
-            changeFrequency: "monthly" as const,
-            priority: 0.8,
-            images: [DEFAULT_OG_IMAGE.url],
-        })),
+        ...blogPosts.map((post) => {
+            const lastMod = post.frontmatter.updated || post.frontmatter.date;
+            const ogImage = post.frontmatter.ogImage
+                ? post.frontmatter.ogImage.startsWith("http")
+                    ? post.frontmatter.ogImage
+                    : `${SITE_URL}${
+                          post.frontmatter.ogImage.startsWith("/") ? "" : "/"
+                      }${post.frontmatter.ogImage}`
+                : DEFAULT_OG_IMAGE.url;
+            return {
+                url: absoluteUrl(`/blog/${post.slug}`),
+                lastModified: new Date(lastMod),
+                changeFrequency: "monthly" as const,
+                priority: 0.8,
+                images: [ogImage],
+            };
+        }),
         ...projects.map((project) => ({
             url: absoluteUrl(`/projects/${project.slug}`),
             lastModified: new Date(project.frontmatter.date),

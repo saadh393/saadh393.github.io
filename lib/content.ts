@@ -13,6 +13,15 @@ export interface FrontMatter {
   type: "case-study" | "blog";
   github?: string;
   live?: string;
+  // SEO overrides (all optional, sensible fallbacks elsewhere)
+  seoTitle?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  updated?: string;
+  category?: string;
+  noindex?: boolean;
 }
 
 export interface ContentItem {

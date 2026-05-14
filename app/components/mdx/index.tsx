@@ -24,6 +24,13 @@ import {
   BezierSamplingDynamic as BezierSampling,
   DeploySimulatorDynamic as DeploySimulator,
   DecisionMatrixDynamic as DecisionMatrix,
+  TooltipDynamic as Tooltip,
+  ReferenceLinkDynamic as ReferenceLink,
+  ReferenceListDynamic as ReferenceList,
+  BarChartDynamic as BarChart,
+  LineChartDynamic as LineChart,
+  BuyMeCoffeeDynamic as BuyMeCoffee,
+  ShareArticleDynamic as ShareArticle,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -283,4 +290,16 @@ export const mdxComponents: MDXComponents = {
   DeploySimulator,
   // Multi-option decision matrix
   DecisionMatrix,
+  // NEW: inline term tooltip
+  Tooltip,
+  // NEW: external reference cards
+  ReferenceLink,
+  ReferenceList,
+  // NEW: charts
+  BarChart,
+  LineChart,
+  // NEW: support link
+  BuyMeCoffee,
+  // NEW: share CTA
+  ShareArticle,
 };
