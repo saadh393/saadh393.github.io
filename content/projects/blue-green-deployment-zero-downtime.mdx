@@ -613,6 +613,11 @@ Press play, or drag the cursor along the timeline. The single-container lane goe
 
 The difference is not that the deploy got a little faster. The difference is that the user never sees the handoff at all. Deploy and service stopped being the same event.
 
+<ShareArticle
+    hook="If the red lane convinced you, share it with the team."
+    via="saadh393"
+/>
+
 ---
 
 ## Rollback
@@ -636,3 +641,8 @@ After the drain window, the old image is still tagged `web:current`. So if I nee
 - Build in CI instead of on the EC2 box. Right now the production host is also paying for the build. That is acceptable for a small app, but a prebuilt image would take pressure off the live machine.
 
 I would keep the strategy itself. For a single-host Next.js app that needed zero downtime without moving platforms, blue-green behind Nginx was the smallest fix that actually solved the problem.
+
+<BuyMeCoffee
+    username="saadh393"
+    message="If this write-up saved your team a Friday afternoon outage, a small coffee keeps the next case study coming."
+/>

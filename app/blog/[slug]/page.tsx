@@ -286,7 +286,7 @@ export default async function BlogPostPage({
             {/* Hero */}
             <div
                 style={{
-                    maxWidth: 720,
+                    maxWidth: 1000,
                     margin: "0 auto",
                     padding: "64px clamp(20px, 4vw, 48px) 48px",
                 }}
@@ -408,7 +408,7 @@ export default async function BlogPostPage({
             {/* MDX Content */}
             <article
                 style={{
-                    maxWidth: 720,
+                    maxWidth: 1000,
                     margin: "0 auto",
                     padding: "0 clamp(20px, 4vw, 48px)",
                 }}

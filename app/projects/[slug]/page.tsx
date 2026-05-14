@@ -158,7 +158,7 @@ export default async function CaseStudyPage({
             {/* Hero */}
             <div
                 style={{
-                    maxWidth: 1200,
+                    maxWidth: 1000,
                     margin: "0 auto",
                     padding: "64px clamp(20px, 4vw, 48px) 48px",
                 }}
@@ -268,7 +268,7 @@ export default async function CaseStudyPage({
                 {/* Divider */}
                 <div
                     style={{
-                        maxWidth: 1200,
+                        maxWidth: 1000,
                         margin: "0 auto",
                         marginTop: 32,
                         padding: "0 clamp(20px, 4vw, 48px)",

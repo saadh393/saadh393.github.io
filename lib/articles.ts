@@ -9,6 +9,15 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    title: "Why AI Coding Agents Cost So Much (And How to Cut the Bill)",
+    date: "May 14, 2026",
+    readTime: "9 min",
+    tag: "AI",
+    description:
+      "Claude Code and Codex can burn $50–$100 in an afternoon. Here's where the tokens actually go, why the math is the way it is, and the levers that cut bills by 80%.",
+    link: "/blog/balance-ai-optimize-token-usage",
+  },
+  {
     title: "Bézier Curves in JavaScript — From the Math to the Canvas",
     date: "Apr 14, 2026",
     readTime: "10 min",
@@ -71,4 +80,5 @@ export const tagColors: Record<string, string> = {
   Security: "#7c3aed",
   Graphics: "#0891b2",
   Backend: "#888888",
+  AI: "#dc2626",
 };
