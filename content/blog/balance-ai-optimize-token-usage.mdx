@@ -1,0 +1,124 @@
+---
+title: "Why AI Coding Agents Cost So Much (And How to Cut the Bill)"
+date: "2026-05-14"
+description: "A productive afternoon with Claude Code or Codex can hit $50–$100. Here's exactly where the tokens go and how to stop the bleed."
+tags: ["AI", "Developer Tools", "Claude", "Cost Optimization", "LLMs"]
+status: "published"
+type: "blog"
+---
+
+I checked my API billing dashboard recently and the numbers were rough. Plenty of developers on Reddit are hitting the same wall: if you run Claude Code or OpenAI Codex on GPT-5.5, you are likely burning credits faster than you push commits. A productive afternoon can easily rack up $50 to $100 in API fees.
+
+The culprit is not the model. It is the history tax.
+
+## The History Tax
+
+Every message you send, the agent bundles your prompt with its own system instructions, the current file tree, and your entire conversation history. By message 30, it is re-reading your previous failed attempts and the full project tree for the 31st time.
+
+<MetricStrip>
+    <Metric label="Tokens on re-reading history" value="98.5%" />
+    <Metric label="Tokens that are new output" value="1.5%" />
+    <Metric label="Tool calls just to orient in a project" value="15–17" />
+    <Metric label="Budget eaten before writing code" value="~60%" />
+</MetricStrip>
+
+The math is brutal: nearly all compute goes to re-reading context, not producing value. Here is how to fix it.
+
+## 1. Match the Model to the Task
+
+Using GPT-5.5 Pro or Claude Opus for every task is a 16× to 50× cost multiplier for identical results on simple work. Output tokens cost 4–8× more than input tokens because they require sequential computation so the model choice compounds on the output side too.
+
+<Pipeline
+    steps='[
+  {"label":"Haiku / mini","detail":"Linting, repo crawls, grep-style lookups  fast and cheap"},
+  {"label":"Sonnet","detail":"Standard coding tasks, refactors, and PR reviews"},
+  {"label":"Opus / Pro","detail":"Deep reasoning, architecture design, complex debugging only"}
+]'
+    layout="vertical"
+/>
+
+<Callout type="warning">
+    Do not switch models mid-session. Caches are model-scoped dropping to Haiku
+    forces a cold-start re-read that costs more than staying on Opus.
+</Callout>
+
+## 2. Engineer Context, Not Prompts
+
+Stop thinking about writing better prompts. Start thinking about context architecture.
+
+Letting an agent blindly explore your codebase is expensive noise. Andrej Karpathy's LLM Wiki pattern works here: maintain a persistent `CLAUDE.md` or `index.md` that pre-compiles a map of symbols and entry points. You hand the agent signal instead of making it generate signal from scratch.
+
+<Callout type="insight">
+    Stop asking "find a bug in the login flow." Point to specific file paths and
+    line ranges. Vague questions make the agent poke around in the dark at full
+    token cost.
+</Callout>
+
+## 3. Use Prompt Caching
+
+Prompt caching is the biggest unlock, but it is fragile.
+
+<MetricStrip>
+    <Metric label="Cached read cost" value="$0.30/M" />
+    <Metric label="Uncached input cost" value="$3.00/M" />
+    <Metric label="Cache hit rate target" value="90%" />
+    <Metric label="Session cost at 90% hit rate" value="~$19 vs $100" />
+</MetricStrip>
+
+The catch: changing even one byte in your prefix like inserting a dynamic timestamp triggers a cache invalidation. Keep system instructions static. A single dynamic field in your prefix means the model re-reads everything at full price on every turn.
+
+<Comparison
+    beforeLabel="Cache-busting prefix (full price every turn)"
+    afterLabel="Cache-stable prefix (10% cost on cache hits)"
+    language="yaml"
+    before={`system: |
+  You are a coding assistant. Current time: {{timestamp}}.
+  Here are the project conventions: [2000 tokens of rules]`}
+    after={`system: |
+  You are a coding assistant.
+  Here are the project conventions: [2000 tokens of rules]`}
+/>
+
+## 4. Compress Prompts and Force Terse Output
+
+LLMs are trained to be polite. That politeness costs you. Conversational bloat recaps, pleasantries, filler accounts for 30–50% of output cost on conversational turns.
+
+Force the model into a terse mode: tell it explicitly to skip pleasantries, recaps, and transition phrases. This cuts output tokens without hurting code quality.
+
+You can also use draft-thinking: force the model into a planning state before executing. This reduces the reasoning budget significantly while losing minimal accuracy.
+
+## 5. Break Quadratic History Growth
+
+The most expensive action in a long session is sending a follow-up correction. That stacks your mistake into history, which the model reads on every subsequent turn.
+
+<Pipeline
+    steps='[
+  {"label":"Bad: follow-up correction","detail":"Adds to history. Model re-reads mistake + correction on every future turn."},
+  {"label":"Better: edit original message","detail":"Keeps history flat. No compounding tax."},
+  {"label":"Best: clear session when task is done","detail":"Wipes conversational baggage entirely. Start next task clean."}
+]'
+    layout="vertical"
+/>
+
+Combining related tasks also helps: batching three related requests into one prompt can result in 3× fewer context loads.
+
+## 6. Keep Context Files Lean
+
+Treating your `CLAUDE.md` as a brain dump is a mistake. It loads at the start of every message a bloated file is a permanent per-turn tax.
+
+<Callout type="tradeoff">
+    Anthropic recommends keeping the global CLAUDE.md under 200 lines. Use it as
+    a lookup table for build commands and entry points not an implementation
+    guide. Every extra token in that file is a token you pay on every single
+    message.
+</Callout>
+
+Keep structural files under 2,000 tokens. The value of the file comes from being a fast-index signal, not from being comprehensive.
+
+## The Lever That Moves the Most
+
+<Callout type="result">
+    90% cache hit rate + terse output mode + task batching is the combination
+    that actually moves cost. Each lever alone is marginal. Together they can
+    drop a $100 session to under $20 without changing what you build.
+</Callout>
