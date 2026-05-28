@@ -9,6 +9,15 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    title: "Adapter Port Architecture In Two Real Codebases",
+    date: "May 28, 2026",
+    readTime: "12 min",
+    tag: "Architecture",
+    description:
+      "How adapter port architecture turned a 30-file email provider swap and a six-week API delay into boring one-line changes, with the concept explained from scratch.",
+    link: "/blog/adapter-port-architecture-two-cases",
+  },
+  {
     title: "Why AI Coding Agents Cost So Much (And How to Cut the Bill)",
     date: "May 14, 2026",
     readTime: "9 min",
@@ -40,8 +49,7 @@ export const articles: Article[] = [
     date: "Mar 23, 2024",
     readTime: "6 min",
     tag: "JavaScript",
-    description:
-      "You can't debug what you don't understand. This is how the JS engine actually runs your code.",
+    description: "You can't debug what you don't understand. This is how the JS engine actually runs your code.",
     link: "/blog/javascript-execution-context",
   },
   {
@@ -49,8 +57,7 @@ export const articles: Article[] = [
     date: "Apr 14, 2026",
     readTime: "8 min",
     tag: "Node.js",
-    description:
-      "Most Node.js apps skip HTTP caching entirely. Here's how to do it properly with Undici v7.",
+    description: "Most Node.js apps skip HTTP caching entirely. Here's how to do it properly with Undici v7.",
     link: "/blog/http-caching-nodejs-undici",
   },
   {
@@ -58,8 +65,7 @@ export const articles: Article[] = [
     date: "Sep 7, 2023",
     readTime: "5 min",
     tag: "React",
-    description:
-      "Memoization isn't magic. Here's when it actually helps and when it's just noise.",
+    description: "Memoization isn't magic. Here's when it actually helps and when it's just noise.",
     link: "https://saadh393.hashnode.dev/react-usememo-hook",
   },
   {
@@ -67,8 +73,7 @@ export const articles: Article[] = [
     date: "Jul 2, 2023",
     readTime: "7 min",
     tag: "React",
-    description:
-      "Extracting reusable stateful logic into custom hooks — the pattern that changed how I write React.",
+    description: "Extracting reusable stateful logic into custom hooks — the pattern that changed how I write React.",
     link: "https://saadh393.hashnode.dev/building-react-custom-hooks-from-scratch",
   },
 ];
@@ -81,4 +86,5 @@ export const tagColors: Record<string, string> = {
   Graphics: "#0891b2",
   Backend: "#888888",
   AI: "#dc2626",
+  Architecture: "#0891b2",
 };
