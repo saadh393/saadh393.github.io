@@ -1,0 +1,410 @@
+---
+title: "Adapter Port Architecture In Two Real Codebases"
+date: "2026-05-28"
+description: "How adapter port architecture turned a 30-file email provider swap and a six-week API delay into boring one-line changes, with the concept explained from scratch."
+tags:
+    - "Architecture"
+    - "Hexagonal Architecture"
+    - "Adapter Pattern"
+    - "Design Patterns"
+    - "TypeScript"
+    - "Node.js"
+category: "Software Architecture"
+status: "published"
+type: "blog"
+---
+
+Picture this. You're on a Tuesday standup and someone from finance says the email bill is too high. We're moving to a cheaper provider by the end of the month. You nod, go back to your desk, and run a grep for the old SDK import. Twenty-eight files. Order confirmations live in the order service. Password resets live in auth. Refund notices live in the admin panel. Weekly digests live in a cron worker nobody has touched in a year. Each one calls the email SDK directly, in its own way, with its own retry logic and quirky template handling.
+
+You sit with that number for a minute. Twenty-eight files to read, twenty-eight files to change, twenty-eight places where you could quietly break a production email flow because the new provider returns errors in a slightly different shape.
+
+If you've felt that moment, this post is for you. It's also for you if you've ever looked at a payment integration and thought "we'll never need to swap this, right?" while quietly knowing the company will probably want a second provider in six months. Or if you've ever had a frontend team blocked for weeks because the backend wasn't ready. All three are the same problem wearing different clothes. There's a pattern that fixes it, and it isn't complicated once you see it.
+
+We'll walk through the concept first, then go through two projects where we used it. One backend, one frontend.
+
+## Why this pattern exists
+
+Most code that talks to the outside world ends up tangled with whatever it's talking to. We import the Stripe SDK and now Stripe-specific words are sprinkled through checkout, refunds, webhook handlers. We import the SendGrid SDK and the same thing happens to every place that sends mail.
+
+For a while this is fine. There's one provider. The code works. Then the world changes. A cheaper option appears. A region needs a local provider. A vendor raises prices. A vendor goes down. A vendor changes their API. And suddenly the cost of that change is proportional to how many files know about the vendor by name.
+
+The problem isn't really about vendors. It's about coupling. When our business logic knows the specific shape of an external thing, every change to that external thing ripples through our business logic.
+
+<Callout type="insight">
+    The pain isn't writing the integration. It's everywhere the integration
+    leaks. A clean integration in one file is fine. The same integration
+    sprinkled across thirty files is what hurts.
+</Callout>
+
+## How the pattern works
+
+Put an interface between business logic and the outside world. Make business logic depend only on the interface.
+
+That's it. The rest is naming.
+
+The interface is called a **port**. It describes what our code wants to do in our own words. "Send an email." "Charge a card." "Get the list of standings." It doesn't mention Stripe or SendGrid or HTTP or fetch. It's a contract.
+
+The implementations of that interface are called **adapters**. Each one wraps a specific provider and translates between our language and the provider's language. The Stripe adapter knows about Stripe. The bKash adapter knows about bKash. Our business logic doesn't know about either.
+
+A small file decides which adapter our business logic actually receives at runtime. That file is usually called a **registry** or a factory. It's the only place in the codebase that knows the wiring.
+
+<Pipeline
+    steps='[
+  {"label":"Port","detail":"Interface in our domain language. No SDK names. No HTTP. Pure contract."},
+  {"label":"Adapter","detail":"Concrete implementation. Wraps one provider. Translates to and from the port shape."},
+  {"label":"Registry","detail":"The only file that knows which adapter is active. Business logic never imports adapters directly."}
+]'
+    layout="vertical"
+/>
+
+It helps to play with it. The hexagon below is our business logic. The six dots on its edges are ports. Click any of the adapter buttons on the right to wire a different one into a port. Watch the registry at the bottom update.
+
+<HexagonalPlayground
+    title="Ports and adapters, wired live"
+    ports='[
+  {"id":"payments","label":"Payments","method":"createCharge()","adapters":[
+    {"id":"bkash","label":"bKash"},
+    {"id":"stripe","label":"Stripe"},
+    {"id":"sslcommerz","label":"SSLCommerz"}
+  ]},
+  {"id":"mailer","label":"Mailer","method":"send()","adapters":[
+    {"id":"resend","label":"Resend"},
+    {"id":"sendgrid","label":"SendGrid"},
+    {"id":"ses","label":"SES"}
+  ]},
+  {"id":"sms","label":"SMS","method":"sendSms()","adapters":[
+    {"id":"twilio","label":"Twilio"},
+    {"id":"infobip","label":"Infobip"}
+  ]},
+  {"id":"storage","label":"Storage","method":"putObject()","adapters":[
+    {"id":"s3","label":"S3"},
+    {"id":"r2","label":"R2"},
+    {"id":"gcs","label":"GCS"}
+  ]},
+  {"id":"search","label":"Search","method":"query()","adapters":[
+    {"id":"meili","label":"Meilisearch"},
+    {"id":"algolia","label":"Algolia"},
+    {"id":"pg","label":"Postgres FTS"}
+  ]},
+  {"id":"queue","label":"Queue","method":"enqueue()","adapters":[
+    {"id":"sqs","label":"SQS"},
+    {"id":"redis","label":"Redis"},
+    {"id":"rabbit","label":"RabbitMQ"}
+  ]}
+]'
+/>
+
+Notice what changes in the registry and what doesn't. Swapping a payment provider only changes one line of wiring. The hexagon, which is everything calling those ports, never moves.
+
+This is what the books call hexagonal architecture, or ports and adapters, or onion architecture. The names point at the same idea drawn slightly differently. Stuff inside doesn't know about stuff outside.
+
+## The shape on disk
+
+Three folders. That's most of what we need to remember.
+
+<FileTree
+    title="A real backend project skeleton"
+    tree='[
+  {"name":"app","type":"dir","children":[
+    {"name":"checkout.ts","type":"file","note":"business logic, imports ports only","highlight":true},
+    {"name":"webhooks.ts","type":"file","note":"business logic","highlight":true},
+    {"name":"refunds.ts","type":"file","note":"business logic","highlight":true}
+  ]},
+  {"name":"lib","type":"dir","children":[
+    {"name":"ports","type":"dir","note":"interfaces only","children":[
+      {"name":"payments.ts","type":"file","note":"PaymentGateway"},
+      {"name":"mailer.ts","type":"file","note":"Mailer"}
+    ]},
+    {"name":"adapters","type":"dir","note":"one file per provider","children":[
+      {"name":"bkash.ts","type":"file"},
+      {"name":"stripe.ts","type":"file"},
+      {"name":"sslcommerz.ts","type":"file"},
+      {"name":"resend.ts","type":"file"},
+      {"name":"sendgrid.ts","type":"file"}
+    ]},
+    {"name":"registry.ts","type":"file","note":"runtime wiring"}
+  ]}
+]'
+/>
+
+The rule that holds it together is simple. Files inside `app/` can import from `lib/ports`. They cannot import from `lib/adapters`. If we keep that one rule, the rest works.
+
+Arrows always point inward, toward the port. Business logic doesn't reach out to adapters. Adapters fit into a shape the business logic already defined. This inversion is the whole trick. It's why books call it "dependency inversion" when they want to sound formal.
+
+The best way to feel that inversion is to run a request through it. Below is a small order. A customer has just clicked Pay Now on a $42 charge. The business logic needs to do two things — charge the card, then send a receipt. For each step, pick which adapter the registry should hand back. Watch the call travel from business logic, through the port, into the adapter, out to the provider, and back. Then change the adapter and run it again. The business logic above doesn't move.
+
+<UserJourneySimulator
+    title="Same business logic, swappable adapters"
+    scenario="Order #1042 — $42.00 — customer@example.com"
+    steps='[
+  {
+    "id":"charge",
+    "title":"Charge the card",
+    "description":"Business logic calls gateway.createCharge(). The registry decides which provider answers.",
+    "call":"gateway.createCharge({ amount: 4200, currency: \"USD\" })",
+    "portLabel":"PaymentGateway",
+    "adapters":[
+      {"id":"stripe","label":"Stripe","provider":"stripe.com","hint":"International cards"},
+      {"id":"bkash","label":"bKash","provider":"bkash.com","hint":"Local BD payments"},
+      {"id":"sslcommerz","label":"SSLCommerz","provider":"sslcommerz.com","hint":"Fallback gateway"}
+    ],
+    "successLine":"charge #ch_3Nz9 succeeded via {adapter}"
+  },
+  {
+    "id":"receipt",
+    "title":"Send the receipt",
+    "description":"Same business logic calls mailer.sendTemplate(). The provider behind it is whatever the registry picked.",
+    "call":"mailer.sendTemplate(\"order_receipt\", { orderId: 1042 })",
+    "portLabel":"Mailer",
+    "adapters":[
+      {"id":"resend","label":"Resend","provider":"resend.com","hint":"Newer, dev-friendly"},
+      {"id":"sendgrid","label":"SendGrid","provider":"sendgrid.com","hint":"The old default"},
+      {"id":"ses","label":"SES","provider":"aws.amazon.com/ses","hint":"Cheap at scale"}
+    ],
+    "successLine":"receipt queued and delivered via {adapter}"
+  },
+  {
+    "id":"sms",
+    "title":"Text the confirmation",
+    "description":"Order over $40 also fires an SMS. The business logic is one line. The provider is a registry choice.",
+    "call":"sms.send(phone, \"Your order is confirmed.\")",
+    "portLabel":"SmsSender",
+    "adapters":[
+      {"id":"twilio","label":"Twilio","provider":"twilio.com","hint":"Global coverage"},
+      {"id":"infobip","label":"Infobip","provider":"infobip.com","hint":"Cheaper in APAC"}
+    ],
+    "successLine":"sms message_sid #SM7a delivered via {adapter}"
+  }
+]'
+/>
+
+Run it once with Stripe and Resend. Then reset and run it with bKash and SES. The call lines, the business logic, every word above the registry stays identical. Only the registry resolves a different adapter on each run. That's the whole pitch in motion.
+
+## Adding Stripe to a codebase that only knew bKash
+
+We were running a Node.js backend for a marketplace in Bangladesh. bKash was the primary payment provider. Six months in, the product team wanted Stripe for international cards, with SSLCommerz as a fallback. When we joined, every checkout route, every webhook handler, every refund script imported the bKash SDK directly.
+
+The first thing we did was sketch the port. No code yet, just the interface. What does our business logic want to do with a payment provider? Four things.
+
+Open the editor below. The sidebar shows the whole shape of the project. `ports/payments.ts` is the contract, `checkout.ts` is the only business logic file the rest of the app cares about, and the three adapters in `adapters/` each wrap one SDK behind that same contract. Click any tab to read the file. Notice how the port has no provider names in it, and the business logic has no SDK imports.
+
+<CodeEditor
+    title="lws-marketplace · payment refactor"
+    files='[
+  {
+    "path": "app/checkout.ts",
+    "language": "typescript",
+    "badge": "business logic",
+    "code": "import { getPaymentGateway } from \"@/lib/registry\";\nimport { markOrderFailed } from \"@/lib/orders\";\nimport type { Order } from \"@/lib/types\";\n\nexport async function checkout(order: Order) {\n  // business logic\n  const gateway = getPaymentGateway(order.region);\n\n  const charge = await gateway.createCharge({\n    amount: order.total,\n    currency: order.currency,\n    reference: order.id,\n    customerEmail: order.email,\n  });\n\n  // business logic continues\n  if (charge.status === \"failed\") {\n    await markOrderFailed(order.id);\n    return null;\n  }\n  return charge.id;\n}\n"
+  },
+  {
+    "path": "app/lib/ports/payments.ts",
+    "language": "typescript",
+    "badge": "port",
+    "code": "// Pure interface. No SDK imports. No HTTP. No env vars.\n// Business logic only ever sees these shapes.\n\nexport interface ChargeInput {\n  amount: number;\n  currency: string;\n  reference: string;\n  customerEmail?: string;\n}\n\nexport interface Charge {\n  id: string;\n  status: \"pending\" | \"succeeded\" | \"failed\";\n  providerRef: string;\n}\n\nexport interface PaymentGateway {\n  createCharge(input: ChargeInput): Promise<Charge>;\n  verifyWebhook(rawBody: string, signature: string): boolean;\n  refund(chargeId: string, amount?: number): Promise<Charge>;\n  getStatus(chargeId: string): Promise<Charge>;\n}\n"
+  },
+  {
+    "path": "app/lib/adapters/bkash.ts",
+    "language": "typescript",
+    "badge": "adapter",
+    "code": "import type { PaymentGateway } from \"../ports/payments\";\nimport { bkashSdk } from \"bkash-sdk\";\n\nexport const bkash: PaymentGateway = {\n  async createCharge(input) {\n    // call bKash SDK with their field names\n    // map bKash response.statusCode to our status union\n    // throw our error types on failure\n    return { id: \"\", status: \"pending\", providerRef: \"\" };\n  },\n\n  verifyWebhook(rawBody, signature) {\n    // bKash signature scheme\n    return true;\n  },\n\n  async refund(chargeId, amount) {\n    // bKash refund call, partial or full\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n\n  async getStatus(chargeId) {\n    // bKash status lookup by paymentID\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n};\n"
+  },
+  {
+    "path": "app/lib/adapters/stripe.ts",
+    "language": "typescript",
+    "badge": "adapter",
+    "code": "import type { PaymentGateway } from \"../ports/payments\";\nimport Stripe from \"stripe\";\n\nconst client = new Stripe(process.env.STRIPE_KEY!);\n\nexport const stripe: PaymentGateway = {\n  async createCharge(input) {\n    // create PaymentIntent on Stripe\n    // map their charge.status to our union\n    // throw our error types on failure\n    return { id: \"\", status: \"pending\", providerRef: \"\" };\n  },\n\n  verifyWebhook(rawBody, signature) {\n    // client.webhooks.constructEvent(...)\n    return true;\n  },\n\n  async refund(chargeId, amount) {\n    // client.refunds.create({ payment_intent, amount })\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n\n  async getStatus(chargeId) {\n    // client.paymentIntents.retrieve(...)\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n};\n"
+  },
+  {
+    "path": "app/lib/adapters/sslcommerz.ts",
+    "language": "typescript",
+    "badge": "adapter",
+    "code": "import type { PaymentGateway } from \"../ports/payments\";\nimport { SslCommerzPayment } from \"sslcommerz-lts\";\n\nexport const sslcommerz: PaymentGateway = {\n  async createCharge(input) {\n    // SSLCommerz init session call\n    // map their tran_status to our union\n    return { id: \"\", status: \"pending\", providerRef: \"\" };\n  },\n\n  verifyWebhook(rawBody, signature) {\n    // SSLCommerz IPN validation\n    return true;\n  },\n\n  async refund(chargeId, amount) {\n    // SSLCommerz refund endpoint\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n\n  async getStatus(chargeId) {\n    // SSLCommerz transaction query\n    return { id: chargeId, status: \"succeeded\", providerRef: \"\" };\n  },\n};\n"
+  },
+  {
+    "path": "app/lib/registry.ts",
+    "language": "typescript",
+    "badge": "wiring",
+    "code": "import type { PaymentGateway } from \"./ports/payments\";\nimport { bkash } from \"./adapters/bkash\";\nimport { stripe } from \"./adapters/stripe\";\nimport { sslcommerz } from \"./adapters/sslcommerz\";\n\nexport function getPaymentGateway(region: string): PaymentGateway {\n  if (region === \"BD\") return bkash;\n  if (region === \"INTL\") return stripe;\n  return sslcommerz;\n}\n"
+  }
+]'
+/>
+
+Notice what's missing from the port. No bKash, no Stripe, no `paymentID`, no `statusCode`. Just our words. The adapters carry the SDK weight. The business logic file stays the same whether bKash, Stripe, or SSLCommerz is on the other end.
+
+The payoff lives in what we didn't have to write. When Stripe finally landed in production, the change was one new file in `adapters/` plus one line in `registry.ts`. Checkout didn't move. Webhook handlers didn't move. The refund flow didn't move. We shipped it on a Tuesday afternoon and went home.
+
+<Callout type="result">
+    Adding Stripe took about a day, including writing the adapter, mapping its
+    error codes, and adding a feature flag in the registry. The original bKash
+    integration had taken roughly a week. The difference is everything that
+    didn't need to move.
+</Callout>
+
+A few months later bKash changed one field in their response shape during a minor SDK update. The fix was four lines, all of them in `adapters/bkash.ts`. The rest of the codebase didn't notice.
+
+This is where the pattern actually pays back. Not in the first integration, where it costs a bit more than a direct SDK call. In the second integration, the third, and every silent SDK change after that.
+
+## Forty places that sent emails, all written differently
+
+Same codebase, different mess. About forty places sent emails. Order confirmations, password resets, refund notices, two-factor codes, weekly digests, admin alerts. Each one called the email SDK its own way. Some passed raw HTML. Some used template IDs. The signup flow had a retry loop. The refund flow had no retry at all. The audit log was inconsistent at best.
+
+When the company wanted to switch providers for cost reasons, engineering quietly avoided the topic for three weeks. Nobody wanted to read forty files and change forty things.
+
+The fix was the same shape. A `Mailer` port with two methods. Adapters for the old provider and the new one. A registry to switch between them.
+
+```typescript
+// app/lib/ports/mailer.ts
+export interface Mailer {
+  send(to: string, subject: string, body: string): Promise<void>;
+  sendTemplate(
+    to: string,
+    templateId: string,
+    vars: Record<string, unknown>
+  ): Promise<void>;
+}
+```
+
+The interesting part was the migration path. We didn't rip everything out at once. We added the port and an adapter for the existing provider, then migrated calling sites one at a time over a couple of weeks. Each PR replaced one direct SDK call with `mailer.send(...)`. Small, boring, easy to review. When the last calling site was migrated, switching the provider was a one-line change.
+
+<Timeline>
+    <Event date="Week 1" label="Port and first adapter" note="Defined Mailer interface. Wrote adapter for current provider. Added registry. Zero calling sites migrated yet." />
+    <Event date="Weeks 2-3" label="Migrate calling sites" note="One PR per file. Replaced direct SDK calls with mailer.send. Added retry and audit log behind the port for free." />
+    <Event date="Week 4" label="Second adapter" note="Wrote adapter for the new provider against the same port. Tested in staging." />
+    <Event date="Week 4" label="Flip the registry" note="One-line change. Production traffic moved to the new provider. No calling site touched." />
+</Timeline>
+
+The bigger win turned out to be the retry and audit log added behind the port. Once there was one place to do those things, doing them consistently was free. Before the migration, only some emails had retries. After, every email did. Nobody wrote any retry code in calling sites. It just happened inside the adapter.
+
+## Three weeks of frontend work with no backend
+
+Different project, different pain. We were building a sports tracking dashboard. Standings, player ranks, live matches, upcoming fixtures. Designs were approved. The frontend team had three weeks to ship before launch. The backend team had six weeks of work ahead of them.
+
+The reflex move would have been mocking. Stub fetch with hardcoded data, ship the UI, swap to real APIs later. That works fine for one or two endpoints. We had a couple dozen and they were going to land at different times over six weeks. We needed something more disciplined than mocks.
+
+So we did adapter port on the frontend. Components called functions like `getStandingsRepo().listGroups()`. Whether that came back from an in-memory array or a real fetch was the registry's problem, not the component's.
+
+<FileTree
+    title="app/lib in the frontend project"
+    tree='[
+  {"name":"app","type":"dir","children":[
+    {"name":"lib","type":"dir","children":[
+      {"name":"ports","type":"dir","note":"interfaces only","children":[
+        {"name":"standings.ts","type":"file","note":"StandingsRepo, GroupStandings"},
+        {"name":"player-ranks.ts","type":"file","note":"PlayerRanksRepo"},
+        {"name":"matches.ts","type":"file","note":"MatchesRepo (getCurrent, listPast)"},
+        {"name":"fixtures.ts","type":"file","note":"FixturesRepo (listUpcoming)"}
+      ]},
+      {"name":"adapters","type":"dir","children":[
+        {"name":"static","type":"dir","note":"in-memory adapter","children":[
+          {"name":"standings.ts","type":"file"},
+          {"name":"player-ranks.ts","type":"file"},
+          {"name":"matches.ts","type":"file"},
+          {"name":"fixtures.ts","type":"file"}
+        ]},
+        {"name":"api","type":"dir","note":"real http calls","children":[
+          {"name":"standings.ts","type":"file"},
+          {"name":"player-ranks.ts","type":"file"},
+          {"name":"matches.ts","type":"file"},
+          {"name":"fixtures.ts","type":"file"}
+        ]}
+      ]},
+      {"name":"registry.ts","type":"file","note":"per-resource toggle"}
+    ]}
+  ]}
+]'
+/>
+
+The key move was that the static adapters returned the exact shape the real APIs would later return. We sat with the backend team for two afternoons before any code got written and agreed on response shapes. The frontend team built against those shapes using hardcoded data. The backend team built the real endpoints to match.
+
+When backend shipped the standings endpoint first, we flipped one toggle in the registry. The standings page started running on real data. No component changed. Player ranks shipped two weeks later. Same flip. Fixtures shipped last. By launch every page was on real data and not a single component file got touched during the migration.
+
+<Callout type="insight">
+    Mocking is for temporary stubs. Adapter port is for when "temporary" lasts
+    six weeks and the swap will happen one endpoint at a time.
+</Callout>
+
+There was a side effect we didn't plan. The static adapters stayed in the repo, kept around for tests and storybook. Anyone running a component test gets predictable data without spinning up an API. That came for free.
+
+Know a frontend engineer who's about to spend three weeks waiting on a backend that isn't ready? Send them this story before they start mocking.
+
+<ShareArticle hook="Pass this to the next engineer staring down a vendor swap or a backend that isn't ready." via="saadh393" />
+
+## What we actually gain
+
+The headline benefit is the obvious one. We can swap implementations without touching calling code. The pattern delivers on that, repeatedly.
+
+The less obvious benefits are usually bigger.
+
+<MetricStrip>
+    <Metric label="Files changed when adding the second payment provider" value="2" />
+    <Metric label="Files changed when switching email providers" value="1" />
+    <Metric label="Component files touched during frontend API migration" value="0" />
+    <Metric label="Lines changed to fix a bKash response shape regression" value="4" />
+</MetricStrip>
+
+Tests get simpler. We hand the test a fake adapter that implements the port. No `jest.mock()`, no module patching, no clever spies. The test just gets a different implementation.
+
+Parallel work unblocks. Frontend builds against a static adapter while backend designs the real API. Backend ships endpoints in any order. Neither side blocks the other.
+
+The calling code gets cleaner whether we ever swap or not. When the only way to talk to a provider is through a port, provider-specific weirdness stops leaking everywhere. The codebase reads better even before the first swap.
+
+## What it costs us
+
+It's more files. A direct SDK call lives in one file. The same thing through a port lives in three. On small projects that overhead is real and not worth it.
+
+The port has to be designed well. A bad port leaks the provider into the interface and gives us none of the benefit. If our port has a method called `createBkashPayment`, we didn't write a port. We wrote a wrapper. A real port speaks in our domain language. This is the part beginners get wrong most often, and the part worth slowing down on.
+
+There's a small tax on debugging. When we read `mailer.send(...)` in a stack trace, we have to jump to the registry to see which adapter is active. IDE jump-to-definition handles this, but it's an extra hop.
+
+The first port we design will probably be wrong. We'll learn the right shape by writing the second adapter and feeling where the first one's assumptions break. Plan for one refactor of the port after the second adapter exists.
+
+<Accordion>
+    <AccordionItem title="What if two adapters have very different capabilities?">
+        Stripe supports partial refunds. A local provider only supports full refunds. Two options. Either the port models the lowest common denominator and we give up the Stripe-only feature, or the port exposes the richer surface and the local adapter throws "not supported" for what it can't do. Lean toward the lowest common denominator when the feature isn't core, and a capabilities flag on the port when it is.
+    </AccordionItem>
+    <AccordionItem title="Should we do this for the database?">
+        Usually no. The database is unlikely to change and the ORM already gives us a layer. If we genuinely expect to swap databases, a repository port helps. If we don't, we're paying for an abstraction we'll never use.
+    </AccordionItem>
+    <AccordionItem title="How big should a port be?">
+        Small. Three to seven methods is a healthy range. Fifteen methods usually means we're wrapping the SDK instead of designing a contract. Strip it down to what business logic actually needs. Anything extra can live inside the adapter.
+    </AccordionItem>
+    <AccordionItem title="What's the difference between this and a wrapper?">
+        A wrapper hides one provider behind our own function names. A port is an interface that more than one adapter can implement. The wrapper tidies code. The port enables swaps. If only one implementation will ever exist, it's a wrapper, not a port, and that's fine.
+    </AccordionItem>
+</Accordion>
+
+## When to reach for it
+
+Reach for this when the dependency is one we expect to swap or extend, and the calling code is spread across many files. Payments, email, SMS, search, file storage, queues, third-party APIs, anything billed per call, anything regulated, anything where a vendor change is a realistic six-month possibility.
+
+Also reach for it when we can't yet build the real thing but need to start building against it. Frontend with no backend. A new feature that depends on a service that doesn't exist yet. A migration where the old and new systems both need to run for a while.
+
+## When to skip it
+
+Most of the time. Most code doesn't have this problem. If we're calling a library that's stable, that won't be replaced, that lives in one or two files, we should just call the library. Premature ports cost more than premature optimization because the cost gets paid on every read, not just on the day they're written.
+
+A rule of thumb that's served us well is the rule of two. One implementation and no real plan for a second, don't build the port. Two implementations or a real conversation about adding one, build it. Three, it should already exist.
+
+<Callout type="tradeoff">
+    Cost of a port is paid on day one and every read after. Benefit is paid
+    the day we swap or extend. No swap, no extension, no benefit. The math
+    is harsh on speculative abstractions.
+</Callout>
+
+## What we'd do differently
+
+Two things stand out across all three projects.
+
+First, design the port before writing the first adapter. Both backend times we wrote the bKash code first and the port second, and the port came out shaped like bKash. That's backwards. The port should be shaped like what business logic wants to say, not like what the first provider happens to expose. Writing the port first forces us to think in our own words instead of the vendor's.
+
+Second, keep the fake adapter alive after the real one ships. On the frontend project we almost deleted the static adapters once the real APIs landed. We didn't, and that turned out to be one of the better decisions in the project. Deterministic test data without spinning up an API is too useful to throw away.
+
+Past that, the pattern earns its keep. Two backends and one frontend, three boring migrations that would have been ugly without it, and a team that never had to wait on another team for data. That's the case for it. Nothing more dramatic to add.
+
+If reading this saved you a thirty-file rewrite, a panicked Tuesday-afternoon Stripe swap, or three weeks of waiting on a backend that wasn't ready — that's about the price of a coffee in saved suffering.
+
+<BuyMeCoffee
+    username="saadh393"
+    message="Saved you from a thirty-file migration or a six-week wait on a backend team? That's the math that earns a coffee. Thanks for reading."
+/>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 
 interface PipelineStep {
   label: string;
@@ -12,9 +12,8 @@ interface PipelineProps {
   layout?: "horizontal" | "vertical";
 }
 
-export function Pipeline({ steps: stepsRaw, layout = "horizontal" }: PipelineProps) {
-  const steps: PipelineStep[] =
-    typeof stepsRaw === "string" ? JSON.parse(stepsRaw) : stepsRaw;
+export function Pipeline({steps: stepsRaw, layout = "horizontal"}: PipelineProps) {
+  const steps: PipelineStep[] = typeof stepsRaw === "string" ? JSON.parse(stepsRaw) : stepsRaw;
 
   if (layout === "vertical") {
     return <VerticalPipeline steps={steps} />;
@@ -25,7 +24,7 @@ export function Pipeline({ steps: stepsRaw, layout = "horizontal" }: PipelinePro
 
 /* ─── Horizontal (original, used in case studies) ─── */
 
-function HorizontalPipeline({ steps }: { steps: PipelineStep[] }) {
+function HorizontalPipeline({steps}: {steps: PipelineStep[]}) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
@@ -33,16 +32,17 @@ function HorizontalPipeline({ steps }: { steps: PipelineStep[] }) {
       style={{
         margin: "24px 0",
         padding: "18px 20px",
-        background: "#fafafa",
-        border: "1px solid rgba(0,0,0,0.07)",
+        // background: "#fafafa",
+        // border: "1px solid rgba(0,0,0,0.07)",
         borderRadius: 10,
-        overflowX: "auto",
+        // overflowX: "auto",
       }}
     >
       <div
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           gap: 0,
           flexWrap: "nowrap",
           minWidth: "max-content",
@@ -95,8 +95,7 @@ function HorizontalPipeline({ steps }: { steps: PipelineStep[] }) {
                     background: "#1a1a1a",
                     color: "#fff",
                     fontSize: 11,
-                    fontFamily:
-                      "var(--font-geist-sans), system-ui, sans-serif",
+                    fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
                     padding: "6px 10px",
                     borderRadius: 6,
                     whiteSpace: "nowrap",
@@ -146,7 +145,7 @@ function HorizontalPipeline({ steps }: { steps: PipelineStep[] }) {
 
 /* ─── Vertical (for multi-line explanations like two-phase breakdown) ─── */
 
-function VerticalPipeline({ steps }: { steps: PipelineStep[] }) {
+function VerticalPipeline({steps}: {steps: PipelineStep[]}) {
   const [active, setActive] = useState<number | null>(null);
 
   return (
@@ -222,7 +221,7 @@ function VerticalPipeline({ steps }: { steps: PipelineStep[] }) {
             </div>
 
             {/* Content */}
-            <div style={{ flex: 1, padding: "18px 20px 18px 0" }}>
+            <div style={{flex: 1, padding: "18px 20px 18px 0"}}>
               <div
                 style={{
                   fontSize: 13,

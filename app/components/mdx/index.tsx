@@ -24,6 +24,9 @@ import {
   BezierSamplingDynamic as BezierSampling,
   DeploySimulatorDynamic as DeploySimulator,
   DecisionMatrixDynamic as DecisionMatrix,
+  HexagonalPlaygroundDynamic as HexagonalPlayground,
+  UserJourneySimulatorDynamic as UserJourneySimulator,
+  CodeEditorDynamic as CodeEditor,
   TooltipDynamic as Tooltip,
   ReferenceLinkDynamic as ReferenceLink,
   ReferenceListDynamic as ReferenceList,
@@ -290,6 +293,12 @@ export const mdxComponents: MDXComponents = {
   DeploySimulator,
   // Multi-option decision matrix
   DecisionMatrix,
+  // Interactive hexagonal architecture playground
+  HexagonalPlayground,
+  // Animated user-journey simulator across ports and adapters
+  UserJourneySimulator,
+  // Multi-file code editor with sidebar, tabs, gutter, status bar
+  CodeEditor,
   // NEW: inline term tooltip
   Tooltip,
   // NEW: external reference cards

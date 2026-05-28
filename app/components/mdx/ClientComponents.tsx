@@ -118,6 +118,21 @@ export const DecisionMatrixDynamic = dynamic(
   { ssr: false, loading: placeholder(280) }
 );
 
+export const HexagonalPlaygroundDynamic = dynamic(
+  () => import("./HexagonalPlayground").then((m) => ({ default: m.HexagonalPlayground })),
+  { ssr: false, loading: placeholder(420) }
+);
+
+export const UserJourneySimulatorDynamic = dynamic(
+  () => import("./UserJourneySimulator").then((m) => ({ default: m.UserJourneySimulator })),
+  { ssr: false, loading: placeholder(520) }
+);
+
+export const CodeEditorDynamic = dynamic(
+  () => import("./CodeEditor").then((m) => ({ default: m.CodeEditor })),
+  { ssr: false, loading: placeholder(380) }
+);
+
 // ── Inline / overlay UI ───────────────────────────────────────────────────────
 
 // Tooltip is used inline inside paragraphs, so it must render as a <span>.
