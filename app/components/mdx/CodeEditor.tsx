@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const FONT_MONO = "var(--font-geist-mono), monospace";
 const FONT_SANS = "var(--font-geist-sans), system-ui, sans-serif";
+const EDITOR_HEIGHT = 460;
 
 interface CodeFile {
   path: string;
@@ -191,13 +192,13 @@ function TreeRow({
           padding: "3px 8px",
           paddingLeft: 8 + depth * 14,
           cursor: "pointer",
-          background: isActive ? "rgba(0,112,243,0.10)" : "transparent",
+          background: isActive ? "rgba(0,112,243,0.08)" : "transparent",
           borderLeft: isActive
             ? "2px solid #0070f3"
             : "2px solid transparent",
           fontSize: 12.5,
           fontFamily: FONT_MONO,
-          color: isActive ? "#0070f3" : "#cbd5e1",
+          color: isActive ? "#0070f3" : "#555",
           transition: "background 0.12s",
         }}
       >
@@ -225,11 +226,11 @@ function Crumbs({ path }: { path: string }) {
         alignItems: "center",
         gap: 6,
         padding: "6px 14px",
-        background: "#1e293b",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "#fafafa",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
         fontSize: 11.5,
         fontFamily: FONT_MONO,
-        color: "#94a3b8",
+        color: "#999",
         overflowX: "auto",
         whiteSpace: "nowrap",
       }}
@@ -238,8 +239,8 @@ function Crumbs({ path }: { path: string }) {
         const isLast = i === parts.length - 1;
         return (
           <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ color: isLast ? "#e5e7eb" : "#94a3b8" }}>{p}</span>
-            {!isLast && <span style={{ color: "#475569" }}>›</span>}
+            <span style={{ color: isLast ? "#333" : "#999" }}>{p}</span>
+            {!isLast && <span style={{ color: "#ccc" }}>›</span>}
           </span>
         );
       })}
@@ -309,6 +310,20 @@ export function CodeEditor({
   const [rendered, setRendered] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const tabBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = tabBarRef.current;
+    if (!el) return;
+    function onWheel(e: WheelEvent) {
+      if (!el || el.scrollWidth <= el.clientWidth) return;
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    }
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -322,7 +337,7 @@ export function CodeEditor({
           try {
             const html = await shiki.codeToHtml(f.code, {
               lang,
-              theme: "github-dark-dimmed",
+              theme: "github-light",
             });
             out[f.path] = highlightedToBlock(html);
           } catch {
@@ -385,11 +400,11 @@ export function CodeEditor({
       ref={containerRef}
       style={{
         margin: "32px 0",
-        border: "1px solid rgba(0,0,0,0.12)",
+        border: "1px solid rgba(0,0,0,0.1)",
         borderRadius: 10,
         overflow: "hidden",
-        background: "#0d1117",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08)",
+        background: "#ffffff",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
         fontFamily: FONT_SANS,
       }}
     >
@@ -400,8 +415,8 @@ export function CodeEditor({
           alignItems: "center",
           gap: 10,
           padding: "9px 14px",
-          background: "#161b22",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "#fafafa",
+          borderBottom: "1px solid rgba(0,0,0,0.06)",
         }}
       >
         <div style={{ display: "flex", gap: 6 }}>
@@ -423,7 +438,7 @@ export function CodeEditor({
             marginLeft: 8,
             fontSize: 12,
             fontFamily: FONT_MONO,
-            color: "#8b949e",
+            color: "#666",
             letterSpacing: "0.01em",
           }}
         >
@@ -434,7 +449,7 @@ export function CodeEditor({
             marginLeft: "auto",
             fontSize: 11,
             fontFamily: FONT_MONO,
-            color: "#6b7280",
+            color: "#999",
           }}
         >
           {currentFile.path}
@@ -446,17 +461,17 @@ export function CodeEditor({
         style={{
           display: "grid",
           gridTemplateColumns: showSidebar ? "200px 1fr" : "1fr",
-          minHeight: 280,
+          height: EDITOR_HEIGHT,
         }}
       >
         {showSidebar && (
           <div
             style={{
-              background: "#0f1620",
-              borderRight: "1px solid rgba(255,255,255,0.05)",
+              background: "#fafafa",
+              borderRight: "1px solid rgba(0,0,0,0.06)",
               padding: "8px 0",
               overflowY: "auto",
-              maxHeight: 520,
+              minHeight: 0,
             }}
           >
             <div
@@ -464,7 +479,7 @@ export function CodeEditor({
                 padding: "4px 12px 8px",
                 fontSize: 10.5,
                 fontFamily: FONT_MONO,
-                color: "#475569",
+                color: "#999",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
               }}
@@ -483,13 +498,21 @@ export function CodeEditor({
         )}
 
         {/* Editor pane */}
-        <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+            minHeight: 0,
+          }}
+        >
           {/* Tab bar */}
           <div
+            ref={tabBarRef}
             style={{
               display: "flex",
-              background: "#0b1018",
-              borderBottom: "1px solid rgba(255,255,255,0.05)",
+              background: "#f0f0f0",
+              borderBottom: "1px solid rgba(0,0,0,0.06)",
               overflowX: "auto",
               scrollbarWidth: "none",
             }}
@@ -506,13 +529,13 @@ export function CodeEditor({
                     alignItems: "center",
                     gap: 7,
                     padding: "8px 14px",
-                    background: isActive ? "#0d1117" : "transparent",
+                    background: isActive ? "#ffffff" : "transparent",
                     border: "none",
-                    borderRight: "1px solid rgba(255,255,255,0.05)",
+                    borderRight: "1px solid rgba(0,0,0,0.06)",
                     borderTop: isActive
                       ? "1.5px solid #0070f3"
                       : "1.5px solid transparent",
-                    color: isActive ? "#e5e7eb" : "#6b7280",
+                    color: isActive ? "#000" : "#888",
                     fontFamily: FONT_MONO,
                     fontSize: 12,
                     cursor: "pointer",
@@ -527,9 +550,9 @@ export function CodeEditor({
                       style={{
                         fontSize: 9,
                         padding: "1px 5px",
-                        background: "rgba(0,112,243,0.18)",
-                        color: "#60a5fa",
-                        border: "1px solid rgba(96,165,250,0.3)",
+                        background: "rgba(0,112,243,0.10)",
+                        color: "#0070f3",
+                        border: "1px solid rgba(0,112,243,0.25)",
                         borderRadius: 4,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
@@ -550,7 +573,7 @@ export function CodeEditor({
                 padding: "0 14px",
                 background: "transparent",
                 border: "none",
-                color: copied ? "#86efac" : "#6b7280",
+                color: copied ? "#16a34a" : "#888",
                 fontFamily: FONT_MONO,
                 fontSize: 11,
                 cursor: "pointer",
@@ -568,8 +591,11 @@ export function CodeEditor({
             style={{
               display: "grid",
               gridTemplateColumns: "auto 1fr",
-              background: "#0d1117",
-              minHeight: 180,
+              background: "#ffffff",
+              flex: 1,
+              minHeight: 0,
+              overflowY: "auto",
+              overflowX: "hidden",
             }}
           >
             <Gutter lineCount={lineCount} />
@@ -592,12 +618,12 @@ function Gutter({ lineCount }: { lineCount: number }) {
     <div
       style={{
         padding: "14px 10px 14px 14px",
-        background: "#0d1117",
-        borderRight: "1px solid rgba(255,255,255,0.04)",
+        background: "#ffffff",
+        borderRight: "1px solid rgba(0,0,0,0.05)",
         fontFamily: FONT_MONO,
         fontSize: 12.5,
         lineHeight: 1.75,
-        color: "#3b4252",
+        color: "#bbb",
         textAlign: "right",
         userSelect: "none",
         minWidth: 36,
@@ -626,10 +652,12 @@ function CodePane({
           fontFamily: FONT_MONO,
           fontSize: 12.5,
           lineHeight: 1.75,
-          color: "#c9d1d9",
-          background: "#0d1117",
+          color: "#24292f",
+          background: "#ffffff",
           overflowX: "auto",
+          overflowY: "hidden",
           whiteSpace: "pre",
+          minWidth: 0,
         }}
       >
         {fallback}
@@ -641,7 +669,9 @@ function CodePane({
       className="codeeditor-pane"
       style={{
         overflowX: "auto",
-        background: "#0d1117",
+        overflowY: "hidden",
+        background: "#ffffff",
+        minWidth: 0,
       }}
       dangerouslySetInnerHTML={{ __html: html }}
     />

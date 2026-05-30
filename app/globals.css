@@ -1398,7 +1398,9 @@ body {
     font-family: var(--font-geist-mono), ui-monospace, monospace !important;
     font-size: 12.5px !important;
     line-height: 1.75 !important;
-    overflow-x: auto;
+    overflow: visible !important;
+    width: max-content;
+    min-width: 100%;
     white-space: pre;
 }
 

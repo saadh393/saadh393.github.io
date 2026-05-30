@@ -1,34 +1,42 @@
 ---
 title: "Adapter Port Architecture In Two Real Codebases"
+seoTitle: "Ports and Adapters (Hexagonal Architecture), Explained with Two Real Codebases"
 date: "2026-05-28"
-description: "How adapter port architecture turned a 30-file email provider swap and a six-week API delay into boring one-line changes, with the concept explained from scratch."
+updated: "2026-05-30"
+description: "A plain-English guide to ports and adapters (hexagonal architecture) in TypeScript, shown through a 30-file email provider swap and a six-week API delay turned into one-line changes."
 tags:
-    - "Architecture"
     - "Hexagonal Architecture"
+    - "Ports and Adapters"
     - "Adapter Pattern"
+    - "Software Architecture"
     - "Design Patterns"
+    - "Dependency Inversion"
     - "TypeScript"
     - "Node.js"
 category: "Software Architecture"
+ogImage: "/og/adapter-port-architecture.png"
+ogImageAlt: "Adapter port architecture diagram showing business logic connected through ports to swappable provider adapters"
+ogImageWidth: 1672
+ogImageHeight: 941
 status: "published"
 type: "blog"
 ---
 
-Picture this. You're on a Tuesday standup and someone from finance says the email bill is too high. We're moving to a cheaper provider by the end of the month. You nod, go back to your desk, and run a grep for the old SDK import. Twenty-eight files. Order confirmations live in the order service. Password resets live in auth. Refund notices live in the admin panel. Weekly digests live in a cron worker nobody has touched in a year. Each one calls the email SDK directly, in its own way, with its own retry logic and quirky template handling.
+Imagine you're in a standup and finance says the email bill is too high. The plan is to move to a cheaper provider by the end of the month. Easy enough, you think. Then you search the codebase for the old email SDK and find twenty-eight files using it. Order confirmations sit in the order service. Password resets are in auth. Refund notices live in the admin panel. Weekly digests run in a cron job nobody has opened in a year. Every one of them calls the email SDK directly, in its own way, with its own retry logic and its own template quirks.
 
-You sit with that number for a minute. Twenty-eight files to read, twenty-eight files to change, twenty-eight places where you could quietly break a production email flow because the new provider returns errors in a slightly different shape.
+Now the small task isn't small. Twenty-eight files to read, twenty-eight to change, and twenty-eight chances to quietly break a real email flow because the new provider reports errors in a slightly different shape.
 
-If you've felt that moment, this post is for you. It's also for you if you've ever looked at a payment integration and thought "we'll never need to swap this, right?" while quietly knowing the company will probably want a second provider in six months. Or if you've ever had a frontend team blocked for weeks because the backend wasn't ready. All three are the same problem wearing different clothes. There's a pattern that fixes it, and it isn't complicated once you see it.
+If that feeling is familiar, this post is for you. So is the moment you look at a payment integration and tell yourself "we'll never swap this," while knowing the company will probably ask for a second provider in six months. Or the time a frontend team sat blocked for weeks because the backend wasn't ready. These look like three different problems, but they're the same one underneath. There's a simple pattern that solves all three.
 
-We'll walk through the concept first, then go through two projects where we used it. One backend, one frontend.
+We'll start with the idea itself, then walk through two real projects that used it. One backend, one frontend.
 
 ## Why this pattern exists
 
-Most code that talks to the outside world ends up tangled with whatever it's talking to. We import the Stripe SDK and now Stripe-specific words are sprinkled through checkout, refunds, webhook handlers. We import the SendGrid SDK and the same thing happens to every place that sends mail.
+Most code that talks to the outside world slowly gets tangled with whatever it's talking to. You import the Stripe SDK, and before long Stripe-specific words show up in checkout, in refunds, in the webhook handlers. You import the SendGrid SDK, and the same thing spreads to every spot that sends mail.
 
-For a while this is fine. There's one provider. The code works. Then the world changes. A cheaper option appears. A region needs a local provider. A vendor raises prices. A vendor goes down. A vendor changes their API. And suddenly the cost of that change is proportional to how many files know about the vendor by name.
+For a while none of this hurts. There's one provider, the code works, you move on. Then something shifts. A cheaper option shows up. A new region needs a local provider. A vendor raises prices, or goes down, or changes their API without much warning. The moment you have to react, the cost of reacting is tied to one number: how many files mention that vendor by name.
 
-The problem isn't really about vendors. It's about coupling. When our business logic knows the specific shape of an external thing, every change to that external thing ripples through our business logic.
+So the real problem isn't the vendor. It's coupling. When your business logic knows the exact shape of an outside thing, every change to that outside thing leaks back into your business logic.
 
 <Callout type="insight">
     The pain isn't writing the integration. It's everywhere the integration
@@ -38,15 +46,17 @@ The problem isn't really about vendors. It's about coupling. When our business l
 
 ## How the pattern works
 
-Put an interface between business logic and the outside world. Make business logic depend only on the interface.
+The fix is one move. Put an interface between your business logic and the outside world, and let the business logic depend only on that interface, never on the provider directly.
 
-That's it. The rest is naming.
+Think of a wall socket. Your charger doesn't care which power company is behind the wall. It plugs into a standard socket and pulls power. The power company can change, but your charger keeps working because it only ever talked to the socket.
 
-The interface is called a **port**. It describes what our code wants to do in our own words. "Send an email." "Charge a card." "Get the list of standings." It doesn't mention Stripe or SendGrid or HTTP or fetch. It's a contract.
+That's the whole pattern. Business logic is the charger. The provider is the power company. The socket is the piece we add in the middle, and it has three parts.
 
-The implementations of that interface are called **adapters**. Each one wraps a specific provider and translates between our language and the provider's language. The Stripe adapter knows about Stripe. The bKash adapter knows about bKash. Our business logic doesn't know about either.
+The **port** is the socket. It's an interface that says what our code wants to do in our own words. "Send an email." "Charge a card." "Get the standings." No Stripe, no SendGrid, no HTTP. Just a contract.
 
-A small file decides which adapter our business logic actually receives at runtime. That file is usually called a **registry** or a factory. It's the only place in the codebase that knows the wiring.
+An **adapter** is the plug that fits the socket. Each one wraps a single provider and translates between our words and theirs. The Stripe adapter knows Stripe. The bKash adapter knows bKash. The business logic knows neither.
+
+The **registry** is the switch that decides which plug is in the socket at runtime. It's the one file that knows the wiring, usually a registry or a factory.
 
 <Pipeline
     steps='[
@@ -96,7 +106,7 @@ It helps to play with it. The hexagon below is our business logic. The six dots 
 
 Notice what changes in the registry and what doesn't. Swapping a payment provider only changes one line of wiring. The hexagon, which is everything calling those ports, never moves.
 
-This is what the books call hexagonal architecture, or ports and adapters, or onion architecture. The names point at the same idea drawn slightly differently. Stuff inside doesn't know about stuff outside.
+This is what the books call [hexagonal architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_%28software%29), or ports and adapters, or onion architecture. The names point at the same idea drawn slightly differently. Stuff inside doesn't know about stuff outside.
 
 ## The shape on disk
 
