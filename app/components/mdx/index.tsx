@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import React from "react";
+import { withArtifactTracking } from "../analytics/withArtifactTracking";
 import { Callout } from "./Callout";
 import { CodeBlock } from "./CodeBlock";
 import { ProseList, ProseListItem } from "./ProseList";
@@ -34,6 +35,7 @@ import {
   LineChartDynamic as LineChart,
   BuyMeCoffeeDynamic as BuyMeCoffee,
   ShareArticleDynamic as ShareArticle,
+  GuestPassDynamic as GuestPass,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -269,36 +271,36 @@ export const mdxComponents: MDXComponents = {
   // Diagrams & flow
   Diagram,
   FlowMap,
-  StepThrough,
+  StepThrough: withArtifactTracking("StepThrough", StepThrough),
   Pipeline,
   // Interactive calculators / tables
-  VideoMath,
+  VideoMath: withArtifactTracking("VideoMath", VideoMath),
   RenditionTable,
   // File system
   FileTree,
   // NEW: tabbed content
-  Tabs,
+  Tabs: withArtifactTracking("Tabs", Tabs),
   Tab,
   // NEW: side-by-side comparison
   Comparison,
   // NEW: collapsible sections
-  Accordion,
+  Accordion: withArtifactTracking("Accordion", Accordion),
   AccordionItem,
   // NEW: knowledge check
-  Quiz,
+  Quiz: withArtifactTracking("Quiz", Quiz),
   // Bézier-specific interactive widgets
-  BezierPlayground,
-  BezierSampling,
+  BezierPlayground: withArtifactTracking("BezierPlayground", BezierPlayground),
+  BezierSampling: withArtifactTracking("BezierSampling", BezierSampling),
   // Deploy-strategy simulator
-  DeploySimulator,
+  DeploySimulator: withArtifactTracking("DeploySimulator", DeploySimulator),
   // Multi-option decision matrix
-  DecisionMatrix,
+  DecisionMatrix: withArtifactTracking("DecisionMatrix", DecisionMatrix),
   // Interactive hexagonal architecture playground
-  HexagonalPlayground,
+  HexagonalPlayground: withArtifactTracking("HexagonalPlayground", HexagonalPlayground),
   // Animated user-journey simulator across ports and adapters
-  UserJourneySimulator,
+  UserJourneySimulator: withArtifactTracking("UserJourneySimulator", UserJourneySimulator),
   // Multi-file code editor with sidebar, tabs, gutter, status bar
-  CodeEditor,
+  CodeEditor: withArtifactTracking("CodeEditor", CodeEditor),
   // NEW: inline term tooltip
   Tooltip,
   // NEW: external reference cards
@@ -308,7 +310,9 @@ export const mdxComponents: MDXComponents = {
   BarChart,
   LineChart,
   // NEW: support link
-  BuyMeCoffee,
+  BuyMeCoffee: withArtifactTracking("BuyMeCoffee", BuyMeCoffee),
   // NEW: share CTA
-  ShareArticle,
+  ShareArticle: withArtifactTracking("ShareArticle", ShareArticle),
+  // NEW: Claude Code guest pass referral
+  GuestPass: withArtifactTracking("GuestPass", GuestPass),
 };

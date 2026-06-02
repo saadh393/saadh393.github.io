@@ -170,3 +170,8 @@ export const ShareArticleDynamic = dynamic(
   () => import("./ShareArticle").then((m) => ({ default: m.ShareArticle })),
   { ssr: false, loading: placeholder(90) }
 );
+
+export const GuestPassDynamic = dynamic(
+  () => import("./GuestPass").then((m) => ({ default: m.GuestPass })),
+  { ssr: false, loading: placeholder(220) }
+);

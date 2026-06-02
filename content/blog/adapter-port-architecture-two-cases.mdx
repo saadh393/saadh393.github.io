@@ -251,6 +251,11 @@ The payoff lives in what we didn't have to write. When Stripe finally landed in 
     didn't need to move.
 </Callout>
 
+<BuyMeCoffee
+    username="saadh393"
+    message="If a one-day Stripe swap instead of a week-long one sounds worth it, that's about the price of a coffee in saved suffering. Thanks for reading."
+/>
+
 A few months later bKash changed one field in their response shape during a minor SDK update. The fix was four lines, all of them in `adapters/bkash.ts`. The rest of the codebase didn't notice.
 
 This is where the pattern actually pays back. Not in the first integration, where it costs a bit more than a direct SDK call. In the second integration, the third, and every silent SDK change after that.
@@ -411,10 +416,3 @@ First, design the port before writing the first adapter. Both backend times we w
 Second, keep the fake adapter alive after the real one ships. On the frontend project we almost deleted the static adapters once the real APIs landed. We didn't, and that turned out to be one of the better decisions in the project. Deterministic test data without spinning up an API is too useful to throw away.
 
 Past that, the pattern earns its keep. Two backends and one frontend, three boring migrations that would have been ugly without it, and a team that never had to wait on another team for data. That's the case for it. Nothing more dramatic to add.
-
-If reading this saved you a thirty-file rewrite, a panicked Tuesday-afternoon Stripe swap, or three weeks of waiting on a backend that wasn't ready — that's about the price of a coffee in saved suffering.
-
-<BuyMeCoffee
-    username="saadh393"
-    message="Saved you from a thirty-file migration or a six-week wait on a backend team? That's the math that earns a coffee. Thanks for reading."
-/>

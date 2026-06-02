@@ -1,4 +1,5 @@
 import { mdxComponents } from "@/app/components/mdx";
+import { ReadTracker } from "@/app/components/analytics/ReadTracker";
 import { CaseStudyFooter } from "@/app/components/mdx/CaseStudyFooter";
 import { getContent, getPublishedSlugs } from "@/lib/content";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -228,6 +229,7 @@ export default async function BlogPostPage({
                 paddingBottom: 120,
             }}
         >
+            <ReadTracker slug={slug} />
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{

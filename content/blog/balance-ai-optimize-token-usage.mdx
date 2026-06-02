@@ -5,15 +5,15 @@ date: "2026-05-14"
 updated: "2026-05-14"
 description: "A practical breakdown of why Claude Code and Codex burn $50–$100 a day, how prompt caching and context shape actually work, and the levers that cut bills by 80%."
 tags:
-    - "AI"
-    - "LLM Cost Optimization"
-    - "Prompt Caching"
-    - "Claude Code"
-    - "OpenAI Codex"
-    - "GPT-5.5"
-    - "Token Optimization"
-    - "Anthropic API"
-    - "Developer Tools"
+  - "AI"
+  - "LLM Cost Optimization"
+  - "Prompt Caching"
+  - "Claude Code"
+  - "OpenAI Codex"
+  - "GPT-5.5"
+  - "Token Optimization"
+  - "Anthropic API"
+  - "Developer Tools"
 category: "AI Engineering"
 ogImage: "/og/balance-ai-optimize-token-usage.png"
 ogImageAlt: "Why AI coding agents cost so much — a breakdown of where the tokens go"
@@ -36,10 +36,10 @@ Every turn, the agent ships your new message plus a stack of things you didn't t
 Anthropic publishes a metric called _cache read input tokens_ in the API response. If you log it, the ratio is brutal.
 
 <MetricStrip>
-    <Metric label="Tokens spent re-reading prior context" value="~95%" />
-    <Metric label="Tokens that are new input or output" value="~5%" />
-    <Metric label="Tool calls before any code gets written" value="10–20" />
-    <Metric label="Context budget consumed by orientation" value="~50%" />
+  <Metric label="Tokens spent re-reading prior context" value="~95%" />
+  <Metric label="Tokens that are new input or output" value="~5%" />
+  <Metric label="Tool calls before any code gets written" value="10–20" />
+  <Metric label="Context budget consumed by orientation" value="~50%" />
 </MetricStrip>
 
 Numbers above are from logging a week of my own Claude Code sessions plus a [thread from Simon Willison](https://simonwillison.net/) where he ran the same analysis. Your mileage will vary, but the shape is consistent across everyone who has bothered to instrument it.
@@ -49,15 +49,15 @@ Why does this happen at the architecture level? Transformers don't have memory. 
 And the <Tooltip term="attention mechanism">The part of a transformer that lets each token "look at" every other token in the prompt. Cost grows roughly with the square of the sequence length because every token attends to every other.</Tooltip> that does the re-reading is roughly quadratic in sequence length. Doubling your context doesn't double the compute, it closer to quadruples it. That's the bill.
 
 <BarChart
-    title="Where a typical agent turn's tokens go"
-    unit="%"
-    data='[
+  title="Where a typical agent turn's tokens go"
+  unit="%"
+  data='[
   {"label":"Replayed history + system prompt","value":78},
   {"label":"Tool call outputs from earlier turns","value":15},
   {"label":"Your new message","value":2},
   {"label":"Model output","value":5}
 ]'
-    caption="Averaged across 28 Claude Code sessions I logged in April 2026. New input + output is rarely more than 10% of the bill on long sessions."
+  caption="Averaged across 28 Claude Code sessions I logged in April 2026. New input + output is rarely more than 10% of the bill on long sessions."
 />
 
 ## Match the model to the task
@@ -67,28 +67,26 @@ Using Opus or GPT-5.5 Pro for everything is the easiest mistake to make because 
 A grep across a repo doesn't need a frontier reasoning model. Neither does renaming a variable, fixing a TypeScript error, or writing a basic test. Those are tasks where Haiku or GPT-5-mini will produce the same diff as Opus, just cheaper and faster.
 
 <Pipeline
-    steps='[
+  steps='[
   {"label":"Haiku / mini","detail":"Lints, repo crawls, grep-style lookups, mechanical edits"},
   {"label":"Sonnet","detail":"Day-to-day coding, refactors, PR review, most debugging"},
   {"label":"Opus / Pro","detail":"Architecture, hard debugging, anything where you would ask a senior engineer"}
 ]'
-    layout="vertical"
+  layout="vertical"
 />
 
 Output tokens are where the model choice really stings. Decoding is <Tooltip term="autoregressive">The model emits one token at a time, then feeds its own output back in to predict the next. Each token needs a full forward pass, so decode can't be parallelized along the sequence the way input processing can.</Tooltip>: the model produces one token, feeds it back into itself, produces the next. It can't be parallelized across the sequence. So output tokens cost 4x to 5x more than input tokens on most providers, and that ratio gets worse on larger models because each forward pass is heavier.
 
 <ReferenceLink
-    url="https://www.metacto.com/blogs/unlocking-the-true-cost-of-openai-api-a-deep-dive-into-usage-integration-and-maintenance"
-    title="The true cost of the OpenAI API in 2026"
-    source="MetaCTO"
-    note="Per-million input/output pricing for GPT-5.5 tiers and where the multipliers actually come from."
+  url="https://www.metacto.com/blogs/unlocking-the-true-cost-of-openai-api-a-deep-dive-into-usage-integration-and-maintenance"
+  title="The true cost of the OpenAI API in 2026"
+  source="MetaCTO"
+  note="Per-million input/output pricing for GPT-5.5 tiers and where the multipliers actually come from."
 />
 
 <Callout type="warning">
-    Don't switch models mid-session. The prefix cache is keyed to the model.
-    Drop from Opus to Haiku halfway through and Haiku has to cold-read your
-    entire history at full price. You'll often pay more than if you'd just
-    finished on Opus.
+  Don't switch models mid-session. The prefix cache is keyed to the model. Drop from Opus to Haiku halfway through and
+  Haiku has to cold-read your entire history at full price. You'll often pay more than if you'd just finished on Opus.
 </Callout>
 
 ## Give the agent a map, not a search task
@@ -100,26 +98,28 @@ The reason this works isn't motivational. It's mechanical. When you ask an agent
 A `CLAUDE.md` that says "auth lives in `app/api/auth/`, the session check is in `lib/session.ts:checkSession`" replaces all of that with about 40 tokens. The agent stops exploring and starts working.
 
 <Callout type="insight">
-    Vague questions are expensive twice. They burn tool calls now, and they
-    pollute the prefix that every later turn has to re-read.
+  Vague questions are expensive twice. They burn tool calls now, and they pollute the prefix that every later turn has
+  to re-read.
 </Callout>
 
 <ReferenceLink
-    url="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
-    title="LLM wiki pattern"
-    source="Andrej Karpathy"
-    note="The original write-up on persistent, hand-curated index files for codebases."
+  url="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
+  title="LLM wiki pattern"
+  source="Andrej Karpathy"
+  note="The original write-up on persistent, hand-curated index files for codebases."
 />
+
+<GuestPass url="https://claude.ai/referral/MWMyo_1MJg" />
 
 ## Prompt caching, and why it's so easy to break
 
 This is the biggest single lever. Anthropic, OpenAI, and Google all support some form of prefix caching now. The pricing on Anthropic looks like this:
 
 <MetricStrip>
-    <Metric label="Sonnet input, uncached" value="$3.00/M" />
-    <Metric label="Sonnet input, cache read" value="$0.30/M" />
-    <Metric label="Cache write surcharge" value="+25%" />
-    <Metric label="Cache TTL (default)" value="5 minutes" />
+  <Metric label="Sonnet input, uncached" value="$3.00/M" />
+  <Metric label="Sonnet input, cache read" value="$0.30/M" />
+  <Metric label="Cache write surcharge" value="+25%" />
+  <Metric label="Cache TTL (default)" value="5 minutes" />
 </MetricStrip>
 
 Mechanically, what's cached is the attention <Tooltip term="KV tensors">Key and value tensors. The transformer needs both to attend over prior tokens. Recomputing them for the prefix is the bulk of input-processing cost — caching them is the entire trick behind prompt caching.</Tooltip> for your stable prefix. Computing those tensors is the expensive part of a forward pass. When the provider sees the same prefix bytes on a later request, it skips that computation and reads the precomputed tensors from a memory cache. You pay 10% of the input price instead of 100% for that prefix.
@@ -130,35 +130,35 @@ Here's the kind of thing that quietly costs you full price on every turn:
 
 ```yaml
 system: |
-    You are a coding assistant. Current time: {{timestamp}}.
-    Project conventions: [2000 tokens of rules]
+  You are a coding assistant. Current time: {{timestamp}}.
+  Project conventions: [2000 tokens of rules]
 ```
 
 Drop the timestamp out of the system prompt and move it into the user message instead. The 2,000 tokens of rules then sit in a stable prefix and hit the cache from turn two onward. Dynamic stuff at the tail of the prompt is fine. Dynamic stuff at the head of the prompt is a tax.
 
 <LineChart
-    title="Cumulative session cost across 30 turns"
-    xLabel="Turn"
-    yLabel="Cost ($)"
-    series='[
+  title="Cumulative session cost across 30 turns"
+  xLabel="Turn"
+  yLabel="Cost ($)"
+  series='[
   {"name":"No cache","points":[[1,0.10],[5,0.85],[10,2.40],[15,4.60],[20,7.30],[25,10.40],[30,14.20]]},
   {"name":"90% cache hit","points":[[1,0.10],[5,0.20],[10,0.45],[15,0.78],[20,1.20],[25,1.70],[30,2.30]]}
 ]'
-    caption="Same conversation, same model. The only difference is whether the prefix bytes stay stable enough to hit the cache. Modeled from the published Sonnet pricing."
+  caption="Same conversation, same model. The only difference is whether the prefix bytes stay stable enough to hit the cache. Modeled from the published Sonnet pricing."
 />
 
 <ReferenceLink
-    url="https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
-    title="Prompt caching"
-    source="Anthropic Docs"
-    note="Authoritative pricing for cache reads/writes, the 5-minute and 1-hour TTL options, and the cache-breakpoint mechanics."
+  url="https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  title="Prompt caching"
+  source="Anthropic Docs"
+  note="Authoritative pricing for cache reads/writes, the 5-minute and 1-hour TTL options, and the cache-breakpoint mechanics."
 />
 
 <ReferenceLink
-    url="https://redis.io/blog/llm-token-optimization-speed-up-apps/"
-    title="LLM token optimization, in practice"
-    source="Redis Blog"
-    note="Semantic caching layered on top of prompt caching, with measured latency drops on repeat queries."
+  url="https://redis.io/blog/llm-token-optimization-speed-up-apps/"
+  title="LLM token optimization, in practice"
+  source="Redis Blog"
+  note="Semantic caching layered on top of prompt caching, with measured latency drops on repeat queries."
 />
 
 <ShareArticle hook="If the cache math just clicked, share it." via="saadh393" />
@@ -172,10 +172,10 @@ Telling the model "skip preambles and recaps, output the diff only" reliably cut
 This works because decode is sequential. The model can't think faster by being parallel. Every token saved on output is a forward pass you didn't run. Compare that to input, where the prefix gets processed in one big parallel chunk and then cached. Trimming output is structurally cheaper than trimming input on a per-token basis.
 
 <ReferenceLink
-    url="https://www.reddit.com/r/whaaat_ai/comments/1sscrs1/8_tokensaving_hacks_for_claude_code_ranked_by/"
-    title="Eight token-saving hacks for Claude Code, ranked"
-    source="r/whaaat_ai"
-    note="Where the 'caveman prompt' style and batching tricks originally came from. The replies are more interesting than the post."
+  url="https://www.reddit.com/r/whaaat_ai/comments/1sscrs1/8_tokensaving_hacks_for_claude_code_ranked_by/"
+  title="Eight token-saving hacks for Claude Code, ranked"
+  source="r/whaaat_ai"
+  note="Where the 'caveman prompt' style and batching tricks originally came from. The replies are more interesting than the post."
 />
 
 ## The follow-up correction trap
@@ -185,12 +185,12 @@ The single most expensive thing you can do in a long session is reply with "no, 
 What that follow-up does is append your correction _and the original wrong attempt_ into history. From this turn forward, every request re-sends both. If you do this five times in a session, you've now baked five wrong attempts into the prefix that the model re-reads on every single subsequent turn. With quadratic attention scaling, the cost of each new turn keeps climbing.
 
 <Pipeline
-    steps='[
+  steps='[
   {"label":"Worst: reply with a correction","detail":"Wrong attempt + correction live in history forever. Cost compounds turn over turn."},
   {"label":"Better: edit your original message and resend","detail":"In tools that support it (Cursor, some Claude Code workflows), this rewrites history instead of appending to it."},
   {"label":"Best: finish the task, clear the session, start fresh","detail":"Wipes the entire prefix. The next task starts at zero context cost."}
 ]'
-    layout="vertical"
+  layout="vertical"
 />
 
 A related move is batching. If you know you need three small changes in the same area, ask for all three in one prompt instead of three sequential ones. The model loads the relevant files once instead of three times, and you avoid two full prefix re-reads. I've seen this drop the cost of a multi-step task by roughly 3x in my own logs.
@@ -202,19 +202,23 @@ This is the easiest one to get wrong because it feels like more context equals b
 `CLAUDE.md` (or `AGENTS.md`, or whatever your tool calls it) is injected into the system prompt on every single turn. A 4,000-token CLAUDE.md isn't a one-time cost. It's a 4,000-token tax on message one, message two, and message two hundred. Even with caching it's still 10% of full price, every turn, for the life of the session.
 
 <Callout type="tradeoff">
-    Anthropic's own guidance is to keep CLAUDE.md under about 200 lines. Treat
-    it like a phonebook, not a manual. Build commands, file layout, naming
-    conventions, the three things that aren't obvious from a quick `ls`. Not
-    your whole style guide.
+  Anthropic's own guidance is to keep CLAUDE.md under about 200 lines. Treat it like a phonebook, not a manual. Build
+  commands, file layout, naming conventions, the three things that aren't obvious from a quick `ls`. Not your whole
+  style guide.
 </Callout>
 
 If you want detailed conventions documented somewhere, put them in normal docs and let the agent read those files on demand. That way you pay for them in the sessions where they matter and not in the sessions where they don't.
 
+<BuyMeCoffee
+  username="saadh393"
+  message="If the tip alone saves you a few bucks a day, a small coffee keeps the next post coming."
+/>
+
 <ReferenceLink
-    url="https://www.analyticsvidhya.com/blog/2026/05/tips-for-claude-code-token-saving/"
-    title="23 tips for Claude Code token saving"
-    source="Analytics Vidhya"
-    note="The section on global instruction limits and path-scoped CLAUDE.md rules is the part worth reading."
+  url="https://www.analyticsvidhya.com/blog/2026/05/tips-for-claude-code-token-saving/"
+  title="23 tips for Claude Code token saving"
+  source="Analytics Vidhya"
+  note="The section on global instruction limits and path-scoped CLAUDE.md rules is the part worth reading."
 />
 
 ## What actually moves the number
@@ -224,42 +228,42 @@ I ran a comparison on the same task two weekends in a row. Same feature, same st
 First weekend: $74. Second weekend: $11. The output was, if anything, slightly better, mostly because the shorter sessions kept the model from getting confused by its own earlier mistakes.
 
 <BarChart
-    title="Same task, two weekends, four small changes"
-    unit="$"
-    orientation="vertical"
-    data='[
+  title="Same task, two weekends, four small changes"
+  unit="$"
+  orientation="vertical"
+  data='[
   {"label":"Before","value":74},
   {"label":"After","value":11}
 ]'
-    caption="Same starting commit, same scope, same model. Difference is a leaner CLAUDE.md, a stable prefix, terse output, and clearing sessions between tasks."
+  caption="Same starting commit, same scope, same model. Difference is a leaner CLAUDE.md, a stable prefix, terse output, and clearing sessions between tasks."
 />
 
 <BarChart
-    title="Roughly how much each lever pulled, on its own"
-    unit="%"
-    data='[
+  title="Roughly how much each lever pulled, on its own"
+  unit="%"
+  data='[
   {"label":"Cache-stable prefix","value":35},
   {"label":"Clear between tasks","value":22},
   {"label":"Terse output instruction","value":15},
   {"label":"Leaner CLAUDE.md","value":10}
 ]'
-    caption="Approximate share of savings, isolated. They overlap, so the combined effect is less than the sum but still close to an 80% reduction in my logs."
+  caption="Approximate share of savings, isolated. They overlap, so the combined effect is less than the sum but still close to an 80% reduction in my logs."
 />
 
 The interesting part isn't that any one of those changes is magic. None of them are. Caching alone saves you maybe 30%. Terse output alone saves you maybe 15%. The reason the combined effect is closer to 80% is that these costs multiply rather than add. A short prompt that hits the cache and produces short output is paying a small fraction of the price on three different axes at once.
 
 <ReferenceLink
-    url="https://branch8.com/posts/claude-code-token-limits-cost-optimization-apac-teams"
-    title="From $13 to $4 per session, on a real team"
-    source="Branch8"
-    note="Case study with billing screenshots — a different team hitting roughly the same 70% reduction with overlapping techniques."
+  url="https://branch8.com/posts/claude-code-token-limits-cost-optimization-apac-teams"
+  title="From $13 to $4 per session, on a real team"
+  source="Branch8"
+  note="Case study with billing screenshots — a different team hitting roughly the same 70% reduction with overlapping techniques."
 />
 
 <ReferenceLink
-    url="https://ost.agency/blog/ai-api-cost-optimization/"
-    title="Stop overpaying for AI APIs"
-    source="OpenSource Technologies"
-    note="Useful section on model-routing middleware — sending easy turns to a small model behind the same interface."
+  url="https://ost.agency/blog/ai-api-cost-optimization/"
+  title="Stop overpaying for AI APIs"
+  source="OpenSource Technologies"
+  note="Useful section on model-routing middleware — sending easy turns to a small model behind the same interface."
 />
 
 ## A note on what's still open
@@ -270,66 +274,61 @@ So the playbook above is what's working in May 2026. The underlying principles, 
 
 If you've only got time to do one thing this week, log your cache hit rate. Everything else flows from knowing that number.
 
-<BuyMeCoffee
-    username="saadh393"
-    message="If this saved you a $50 API bill, the math is in your favor. A small coffee keeps the next post coming."
-/>
-
 ## References and further reading
 
 <ReferenceList>
-    <ReferenceLink
-        url="https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
-        title="Prompt caching"
-        source="Anthropic Docs"
-        note="Cache read/write pricing, TTL options, breakpoint mechanics."
-    />
-    <ReferenceLink
-        url="https://www.metacto.com/blogs/unlocking-the-true-cost-of-openai-api-a-deep-dive-into-usage-integration-and-maintenance"
-        title="The true cost of the OpenAI API"
-        source="MetaCTO"
-        note="Flagship model pricing tables, GPT-5.5 tier breakdown."
-    />
-    <ReferenceLink
-        url="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
-        title="LLM wiki pattern"
-        source="Andrej Karpathy"
-        note="The persistent index.md/CLAUDE.md idea, from the source."
-    />
-    <ReferenceLink
-        url="https://arxiv.org/html/2603.00578v1"
-        title="Draft-thinking and reasoning budget cuts"
-        source="arXiv"
-        note="The 82.6% reasoning-budget reduction figure, with the methodology."
-    />
-    <ReferenceLink
-        url="https://redis.io/blog/llm-token-optimization-speed-up-apps/"
-        title="LLM token optimization, in practice"
-        source="Redis Blog"
-        note="Semantic caching, measured latency reductions."
-    />
-    <ReferenceLink
-        url="https://www.analyticsvidhya.com/blog/2026/05/tips-for-claude-code-token-saving/"
-        title="23 tips for Claude Code token saving"
-        source="Analytics Vidhya"
-        note="Global instruction limits, path-scoped rules."
-    />
-    <ReferenceLink
-        url="https://www.reddit.com/r/whaaat_ai/comments/1sscrs1/8_tokensaving_hacks_for_claude_code_ranked_by/"
-        title="Eight token-saving hacks, ranked"
-        source="r/whaaat_ai"
-        note="Caveman prompt technique, batching tricks."
-    />
-    <ReferenceLink
-        url="https://branch8.com/posts/claude-code-token-limits-cost-optimization-apac-teams"
-        title="From $13 to $4 per session"
-        source="Branch8"
-        note="Team-level case study, 70% reduction."
-    />
-    <ReferenceLink
-        url="https://ost.agency/blog/ai-api-cost-optimization/"
-        title="Stop overpaying for AI APIs"
-        source="OpenSource Technologies"
-        note="Model-routing middleware, projected 60% savings."
-    />
+  <ReferenceLink
+    url="https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    title="Prompt caching"
+    source="Anthropic Docs"
+    note="Cache read/write pricing, TTL options, breakpoint mechanics."
+  />
+  <ReferenceLink
+    url="https://www.metacto.com/blogs/unlocking-the-true-cost-of-openai-api-a-deep-dive-into-usage-integration-and-maintenance"
+    title="The true cost of the OpenAI API"
+    source="MetaCTO"
+    note="Flagship model pricing tables, GPT-5.5 tier breakdown."
+  />
+  <ReferenceLink
+    url="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
+    title="LLM wiki pattern"
+    source="Andrej Karpathy"
+    note="The persistent index.md/CLAUDE.md idea, from the source."
+  />
+  <ReferenceLink
+    url="https://arxiv.org/html/2603.00578v1"
+    title="Draft-thinking and reasoning budget cuts"
+    source="arXiv"
+    note="The 82.6% reasoning-budget reduction figure, with the methodology."
+  />
+  <ReferenceLink
+    url="https://redis.io/blog/llm-token-optimization-speed-up-apps/"
+    title="LLM token optimization, in practice"
+    source="Redis Blog"
+    note="Semantic caching, measured latency reductions."
+  />
+  <ReferenceLink
+    url="https://www.analyticsvidhya.com/blog/2026/05/tips-for-claude-code-token-saving/"
+    title="23 tips for Claude Code token saving"
+    source="Analytics Vidhya"
+    note="Global instruction limits, path-scoped rules."
+  />
+  <ReferenceLink
+    url="https://www.reddit.com/r/whaaat_ai/comments/1sscrs1/8_tokensaving_hacks_for_claude_code_ranked_by/"
+    title="Eight token-saving hacks, ranked"
+    source="r/whaaat_ai"
+    note="Caveman prompt technique, batching tricks."
+  />
+  <ReferenceLink
+    url="https://branch8.com/posts/claude-code-token-limits-cost-optimization-apac-teams"
+    title="From $13 to $4 per session"
+    source="Branch8"
+    note="Team-level case study, 70% reduction."
+  />
+  <ReferenceLink
+    url="https://ost.agency/blog/ai-api-cost-optimization/"
+    title="Stop overpaying for AI APIs"
+    source="OpenSource Technologies"
+    note="Model-routing middleware, projected 60% savings."
+  />
 </ReferenceList>
