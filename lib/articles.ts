@@ -61,6 +61,33 @@ export const articles: Article[] = [
     link: "/blog/http-caching-nodejs-undici",
   },
   {
+    title: "The Node.js Event Loop, Explained Properly",
+    date: "May 23, 2025",
+    readTime: "16 min",
+    tag: "Node.js",
+    description:
+      "The async flow, the thread pool, and the V8 phases — what actually runs, in what order, and why your setTimeout fires when it does.",
+    link: "https://medium.com/@saadh393/the-event-loop-explained-like-youre-a-top-1-node-js-engineer-f9fea55b00f9",
+  },
+  {
+    title: "Understanding Idempotency to Build Trustworthy Systems",
+    date: "Sep 6, 2025",
+    readTime: "7 min",
+    tag: "Backend",
+    description:
+      "Retries are inevitable. Idempotency is what stops a retry from charging a customer twice.",
+    link: "https://saadh393.medium.com/understand-idempotency-to-build-trustworthy-systems-44010cd98a9a",
+  },
+  {
+    title: "Concurrency, Parallelism, and Sequential Execution",
+    date: "May 15, 2025",
+    readTime: "4 min",
+    tag: "Node.js",
+    description:
+      "Three execution models people use interchangeably and shouldn't, compared side by side with visual walkthroughs.",
+    link: "https://medium.com/@saadh393/understanding-concurrency-parallelism-and-sequential-execution-46f30c55ca07",
+  },
+  {
     title: "React useMemo Hook",
     date: "Sep 7, 2023",
     readTime: "5 min",

@@ -5,7 +5,7 @@ import {DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_TITLE, SITE_URL, absoluteUrl} f
 
 export const metadata: Metadata = {
   title: "Writing",
-  description: "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+  description: "Articles on JavaScript, React, Node.js, and engineering depth — by Md Nasimul Hasan.",
   alternates: {
     canonical: "/blog",
   },
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     type: "website",
     url: absoluteUrl("/blog"),
     title: `Writing — ${SITE_TITLE}`,
-    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Md Nasimul Hasan.",
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: `Writing — ${SITE_TITLE}`,
-    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Md Nasimul Hasan.",
     images: [DEFAULT_OG_IMAGE.url],
   },
 };
@@ -30,7 +30,7 @@ export default function BlogPage() {
     "@type": "CollectionPage",
     name: "Writing",
     url: absoluteUrl("/blog"),
-    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Saad Hasan.",
+    description: "Articles on JavaScript, React, Node.js, and engineering depth — by Md Nasimul Hasan.",
     isPartOf: {
       "@type": "WebSite",
       name: SITE_TITLE,

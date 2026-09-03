@@ -9,7 +9,7 @@ export function HeroAvatar({ entered }: HeroAvatarProps) {
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
             src="/nasimul-hasan-1.png"
-            alt="Saad Hasan"
+            alt="Md Nasimul Hasan"
             className={`hero-avatar hero-reveal ${entered ? "hero-revealed" : ""}`}
             style={{ transitionDelay: "0s" }}
         />

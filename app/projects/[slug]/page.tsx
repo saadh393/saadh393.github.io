@@ -243,7 +243,7 @@ export default async function CaseStudyPage({params}: {params: Promise<{slug: st
             })}
           </span>
           <span>·</span>
-          <span>Saad Hasan</span>
+          <span>Md Nasimul Hasan</span>
         </div>
         {/* Divider */}
         <div

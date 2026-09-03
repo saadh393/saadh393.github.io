@@ -73,7 +73,7 @@ export default function Hero() {
                     className={`hero-reveal hero-name-centered ${entered ? "hero-revealed" : ""}`}
                     style={{ transitionDelay: "0.12s" }}
                 >
-                    Saad Hasan
+                    Md Nasimul Hasan
                 </h1>
 
                 <HeroRoleCycler

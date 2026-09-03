@@ -5,28 +5,53 @@ import { useEffect, useRef, useState } from "react";
 const JOBS = [
     {
         company: "Learn with Sumit",
-        role: "Software Engineer & Product Lead",
-        period: "2021 — Present",
+        role: "Jr. Software Engineer",
+        period: "April 2021 - Present",
+        location: "Remote",
+        href: "https://learnwithsumit.com/",
         current: true,
         logoPath: "/learn-with-sumit.png",
         logoFallback: "L",
         bullets: [
-            "End-to-end ownership of an LMS platform serving 10,000+ students and processing 1 Cr+ BDT/year in revenue — every feature decision had direct financial implications",
-            "Built core frontend infrastructure: watch-time tracking, DRM-protected HLS streaming, passkey auth, quiz flows, CV generator — deployed on AWS with Cloudflare edge",
-            "Scoped and shipped features across the full stack while coordinating content, design, and engineering timelines across multiple product roadmaps",
+            "Own and evolve the core learning management platform built with Next.js, Node.js, and MongoDB, serving 10,000+ learners and supporting more than 2 crore BDT in annual revenue",
+            "Designed and deployed a device-bound authentication system using non-exportable ECDSA keys, signed requests, replay protection, device-slot enforcement, token rotation, and session revocation",
+            "Built the registration and payment workflow for DevConf, reliably processing ~68 payment requests per second during peak registration",
+            "Delivered HLS video streaming and playback-based watch-time tracking, so course progress is measured from actual viewing activity",
+            "Deploy and operate the production platform on AWS using Docker, Nginx, Cloudflare, and Sentry",
         ],
     },
     {
         company: "Analyzen",
-        role: "Software Engineer",
-        period: "2022 — 2024",
+        role: "Jr. Software Engineer (Aug 2022 - Jan 2025), Jr. Frontend Developer (Aug 2021 - Jul 2022)",
+        period: "August 2021 - January 2025",
+        location: "Dhaka, Bangladesh",
+        href: "https://www.analyzen.com/",
         current: false,
         logoPath: "/analyzen.png",
         logoFallback: "A",
         bullets: [
-            "Built and shipped production React interfaces for enterprise clients — translating high-fidelity Figma specs into pixel-accurate, accessible components across devices",
-            "Developed interactive dashboards with REST API integration and complex frontend state management for digital marketing and consulting engagements",
-            "Promoted from Jr. Front End Developer (Aug 2021) to Software Engineer based on delivery consistency and technical ownership",
+            "Delivered production React and Next.js applications for enterprise clients including Unilever, Evercare, AKASH, Bengal Meat, and Berger",
+            "Modernized the frontend of MICROZEN, an enterprise microcredit automation platform, improving interface consistency, usability, application structure, and runtime performance",
+            "Supported MICROZEN's production infrastructure through application deployment, cross-server backups, and server-to-server communication",
+            "Developed backend integrations for LISTENYZEN, an omnichannel social-media servicing platform, implementing Facebook SDK-based messaging and SMS communication workflows",
+            "Promoted from Jr. Frontend Developer to Jr. Software Engineer based on delivery performance and expanded ownership across frontend, backend, and infrastructure",
+        ],
+    },
+    {
+        company: "Independent Contract",
+        role: "Frontend & Platform Engineer",
+        period: "2025 - Present",
+        location: "Remote",
+        href: "https://offer-finder.com/",
+        current: true,
+        logoPath: "",
+        logoFallback: "O",
+        bullets: [
+            "Built the Next.js 16 server-rendered platform behind Offer Finder, bKash's campaign and merchant discovery product, which reached approximately 2.2 million active users in Bangladesh within one month",
+            "Achieved verified Lighthouse scores of 100 performance, 99 accessibility, 100 best practices, and 100 SEO through server rendering, streaming, caching, and frontend optimization",
+            "Eliminated oversized client payloads by moving filtering to the server, cutting merchant-search transfers from over 15 MB and replacing approximately 12 MB campaign responses with bounded queries, field selection, and pagination",
+            "Designed a cost-efficient production architecture running critical application and backend workloads on a two-vCPU origin, using Cloudflare caching and clustered Node.js workers",
+            "Implemented a zero-downtime blue-green deployment with Docker, Nginx, and health checks, eliminating the previous two-to-four-minute outage during releases",
         ],
     },
 ];
@@ -108,9 +133,14 @@ export default function Experience() {
                                         fallback={job.logoFallback}
                                         alt={job.company}
                                     />
-                                    <span className="exp-company">
+                                    <a
+                                        className="exp-company"
+                                        href={job.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
                                         {job.company}
-                                    </span>
+                                    </a>
                                     {job.current && (
                                         <span className="exp-current-badge">
                                             Current
@@ -118,7 +148,9 @@ export default function Experience() {
                                     )}
                                 </div>
 
-                                <span className="exp-period">{job.period}</span>
+                                <span className="exp-period">
+                                    {job.period} &middot; {job.location}
+                                </span>
                             </div>
 
                             <span className="exp-role">{job.role}</span>
@@ -151,7 +183,7 @@ function LogoMark({
 }) {
     const [failed, setFailed] = useState(false);
 
-    if (failed) {
+    if (!src || failed) {
         return (
             <span className="exp-logo-fallback" aria-label={alt}>
                 {fallback}

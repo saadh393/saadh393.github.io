@@ -175,7 +175,7 @@ export function CaseStudyFooter({
                             fontFamily: "var(--font-geist-mono), monospace",
                         }}
                     >
-                        Saad Hasan
+                        Md Nasimul Hasan
                     </span>
                     <span style={{ color: "#e5e5e5" }}>·</span>
                     <a

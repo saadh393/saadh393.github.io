@@ -394,7 +394,7 @@ export default async function BlogPostPage({
                         )}
                     </span>
                     <span>·</span>
-                    <span>Saad Hasan</span>
+                    <span>Md Nasimul Hasan</span>
                 </div>
 
                 {/* Divider */}

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const ROLES = [
-    "Frontend Engineer",
-    "React Specialist",
-    "Next.js Developer",
-    "JavaScript Engineer",
+    "Jr. Software Engineer",
+    "Full Stack Developer",
+    "React & Next.js Engineer",
+    "Node.js & AWS",
 ];
 
 export function useRoleCycle() {

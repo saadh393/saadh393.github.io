@@ -27,8 +27,9 @@ export default function Home() {
       {
         "@type": "Person",
         name: SITE_NAME,
+        alternateName: "Saad Hasan",
         url: SITE_URL,
-        jobTitle: "Frontend Engineer",
+        jobTitle: "Jr. Software Engineer",
         description: SITE_DESCRIPTION,
         image: absoluteUrl("/nasimul-hasan-1.png"),
       },

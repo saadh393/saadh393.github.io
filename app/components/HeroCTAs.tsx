@@ -39,7 +39,7 @@ export function HeroCTAs({ entered }: HeroCTAsProps) {
                 Get in Touch
             </a>
             <a
-                href="/cv.pdf"
+                href="/md-nasimul-hasan-cv.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hero-btn-secondary"

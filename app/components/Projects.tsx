@@ -6,13 +6,24 @@ import Link from "next/link";
 /* ─── Data ─── */
 const projects = [
     {
+        id: "offer-finder",
+        title: "Offer Finder — bKash",
+        category: "Fintech · Scale",
+        year: "2026",
+        description:
+            "bKash's campaign and merchant discovery product, built on Next.js 16 with server rendering, streaming, and caching. It reached approximately 2.2 million active users in Bangladesh within one month, scores 100/99/100/100 on Lighthouse, and runs on a two-vCPU origin behind Cloudflare with zero-downtime blue-green deploys.",
+        stack: ["Next.js 16", "TypeScript", "Cloudflare", "Docker", "Nginx", "Sentry"],
+        link: "https://offer-finder.com/",
+        linkLabel: "Live →",
+    },
+    {
         id: "lws",
         title: "Learn with Sumit — LMS",
         category: "Enterprise · Scale",
         year: "2025",
         description:
-            "10,000 students couldn't afford broken video or a quiz that lost their progress. Built the full frontend infrastructure — watch-time tracking, DRM-protected HLS streaming, passkey auth, quiz flows, CV generator — deployed on AWS with Cloudflare edge. It handles 1 Cr+ BDT/year in revenue. It has to work.",
-        stack: ["Next.js", "Node.js", "MongoDB", "Stripe", "AWS", "Cloudflare"],
+            "10,000 learners couldn't afford broken video or a quiz that lost their progress. Own the platform end to end — HLS video streaming, playback-based watch-time tracking, device-bound ECDSA authentication, quiz and assignment flows, payment gateways — running on AWS with Docker, Nginx, Cloudflare, and Sentry. It supports more than 2 crore BDT in annual revenue.",
+        stack: ["Next.js", "Node.js", "MongoDB", "AWS", "Docker", "Cloudflare"],
         image: "/lws-thumbnail.png",
         link: "https://learnwithsumit.com/",
         linkLabel: "Live →",

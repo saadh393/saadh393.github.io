@@ -424,7 +424,7 @@ export default function Contact() {
               fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
             }}
           >
-            Saad Hasan &middot; 2026
+            Md Nasimul Hasan &middot; 2026
           </span>
           <span
             style={{
@@ -437,7 +437,7 @@ export default function Contact() {
             Built with Next.js &middot; Designed with precision
           </span>
           <a
-            href="https://github.com/saadh393/saadh393/blob/main/Jr-Software-Engineer-Nasimul-Hasan.pdf"
+            href="/md-nasimul-hasan-cv.pdf"
             target="_blank"
             rel="noopener noreferrer"
             style={{

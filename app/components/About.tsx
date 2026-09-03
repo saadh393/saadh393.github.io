@@ -4,24 +4,34 @@ import { useEffect, useRef, useState } from "react";
 
 const STACK = [
   {
+    category: "Languages",
+    note: "Day to day",
+    items: ["JavaScript", "TypeScript", "Python", "PHP"],
+  },
+  {
     category: "Frontend",
-    note: "Primary domain -- 4 production apps",
-    items: ["React", "Next.js", "TypeScript", "Redux", "Tailwind CSS", "Shadcn/ui"],
+    note: "Primary domain",
+    items: ["React", "Next.js (App Router)", "Redux", "Tailwind CSS", "Sass", "React Native"],
   },
   {
     category: "Backend",
-    note: "APIs, services, and data layers",
-    items: ["Node.js", "Express", "REST APIs", "MongoDB", "PostgreSQL", "BullMQ"],
+    note: "APIs, services, and job queues",
+    items: ["Node.js", "Express", "FastAPI", "REST API design", "Socket.io", "Prisma", "Mongoose", "BullMQ"],
   },
   {
-    category: "Infrastructure",
-    note: "Deployment and distributed systems",
-    items: ["AWS", "Cloudflare Workers", "Docker", "Redis", "MinIO", "FFmpeg"],
+    category: "Data",
+    note: "Storage, cache, and vector search",
+    items: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Pinecone"],
   },
   {
-    category: "Tooling",
-    note: "Daily workflow",
-    items: ["Git", "Figma", "Stripe", "Pinecone", "Google Gemini", "Vite"],
+    category: "Cloud & Ops",
+    note: "Deployment and production operations",
+    items: ["AWS (EC2, S3)", "GCP", "Cloudflare", "Docker", "Nginx", "MinIO"],
+  },
+  {
+    category: "Observability & Testing",
+    note: "Knowing what production is doing",
+    items: ["Sentry", "Grafana", "Prometheus", "Loki", "Jest"],
   },
 ];
 
