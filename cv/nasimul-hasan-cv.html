@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Md Nasimul Hasan - Jr. Software Engineer</title>
+    <style>
+      :root {
+        --ink: #12161c;
+        --body: #2f3742;
+        --muted: #6b7683;
+        --rule: #dfe4ea;
+        --accent: #0a4fa0;
+        --accent-soft: #eef4fb;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body {
+        font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+        font-size: 9.6pt;
+        line-height: 1.42;
+        color: var(--body);
+        background: #6b7280;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 288mm;
+        margin: 0 auto;
+        padding: 11mm 15mm 6mm;
+        background: #fff;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .page + .page {
+        margin-top: 8mm;
+      }
+
+      /* ---------- header ---------- */
+      .masthead {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 8mm;
+        padding-bottom: 7px;
+        border-bottom: 2.5px solid var(--ink);
+      }
+
+      .name {
+        font-family: Georgia, "Times New Roman", serif;
+        white-space: nowrap;
+        font-size: 24pt;
+        line-height: 1;
+        letter-spacing: -0.015em;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .role {
+        margin-top: 5px;
+        font-size: 10.2pt;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .contact {
+        text-align: right;
+        font-size: 8.5pt;
+        line-height: 1.7;
+        color: var(--body);
+        white-space: nowrap;
+      }
+
+      .contact a {
+        color: var(--body);
+        text-decoration: none;
+      }
+      .contact .sep {
+        color: var(--rule);
+        padding: 0 4px;
+      }
+      .contact .row-links a {
+        color: var(--accent);
+      }
+
+      .tagline {
+        margin-top: 9px;
+        font-size: 9.4pt;
+        color: var(--body);
+        line-height: 1.5;
+      }
+
+      .tagline strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* ---------- sections ---------- */
+      section {
+        margin-top: 11px;
+      }
+
+      h2 {
+        font-size: 8.4pt;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+        color: var(--ink);
+        font-weight: 700;
+        padding-bottom: 3px;
+        border-bottom: 1px solid var(--rule);
+        margin-bottom: 8px;
+      }
+
+      /* ---------- experience ---------- */
+      .job {
+        margin-bottom: 10px;
+      }
+      .job:last-child {
+        margin-bottom: 0;
+      }
+
+      .job-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .job-title {
+        font-size: 10.4pt;
+        color: var(--ink);
+        font-weight: 700;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+
+      .job-meta {
+        font-size: 8.5pt;
+        color: var(--muted);
+        white-space: nowrap;
+        text-align: right;
+      }
+
+      .job-sub {
+        margin-top: 1px;
+        font-size: 9.2pt;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .job-sub .second {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 8.4pt;
+      }
+
+      .job-context {
+        margin-top: 3px;
+        font-size: 8.9pt;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      ul.bullets {
+        list-style: none;
+        margin-top: 5px;
+      }
+
+      ul.bullets li {
+        position: relative;
+        padding-left: 11px;
+        margin-bottom: 2.8px;
+      }
+
+      ul.bullets li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 5.2px;
+        width: 4px;
+        height: 4px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+
+      ul.bullets b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* ---------- metric chips ---------- */
+      .chips {
+        display: flex;
+        gap: 5px;
+        margin-top: 9px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        background: var(--accent-soft);
+        border: 1px solid #d5e3f4;
+        border-radius: 2px;
+        padding: 3px 8px;
+        font-size: 8.1pt;
+        color: var(--accent);
+      }
+
+      .chip b {
+        font-weight: 700;
+      }
+
+      /* ---------- skills ---------- */
+      .skills {
+        display: grid;
+        grid-template-columns: 82px 1fr;
+        row-gap: 3.5px;
+        column-gap: 12px;
+      }
+      .skills dt {
+        font-size: 8.4pt;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding-top: 0.5px;
+      }
+      .skills dd {
+        font-size: 9.2pt;
+        color: var(--ink);
+      }
+
+      /* ---------- projects ---------- */
+      .proj {
+        margin-bottom: 11px;
+      }
+      .proj:last-child {
+        margin-bottom: 0;
+      }
+
+      .proj-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .proj-name {
+        font-size: 9.8pt;
+        font-weight: 700;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      .proj-links {
+        font-size: 8.2pt;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .proj-links a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .proj-body {
+        margin-top: 2.5px;
+      }
+      .stack {
+        margin-top: 4px;
+        font-size: 8.3pt;
+        color: var(--muted);
+      }
+      .stack span {
+        color: var(--body);
+      }
+
+      /* ---------- writing ---------- */
+      .writing {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 16px;
+        row-gap: 5px;
+      }
+      .article {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        align-items: baseline;
+      }
+      .article .t {
+        color: var(--ink);
+        font-size: 9pt;
+      }
+      .article .p {
+        color: var(--muted);
+        font-size: 8pt;
+        white-space: nowrap;
+      }
+
+      .note {
+        font-size: 8.8pt;
+        color: var(--muted);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      .note b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .foot {
+        position: absolute;
+        left: 15mm;
+        right: 15mm;
+        bottom: 4mm;
+        padding-top: 5px;
+        font-size: 7.6pt;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--rule);
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          height: 288mm;
+          page-break-after: always;
+        }
+        .page:last-child {
+          page-break-after: auto;
+        }
+        .job,
+        .proj {
+          break-inside: avoid;
+        }
+      }
+
+      @media screen {
+        body {
+          padding: 8mm 0;
+        }
+        .page {
+          box-shadow: 0 2px 14px rgba(0, 0, 0, 0.25);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ PAGE 1 ============ -->
+    <div class="page">
+      <header class="masthead">
+        <div>
+          <div class="name">Md Nasimul Hasan</div>
+          <div class="role">Jr. Software Engineer</div>
+        </div>
+        <div class="contact">
+          <div>
+            <a href="mailto:saadh393@gmail.com">saadh393@gmail.com</a><span class="sep">|</span>+880 1759 229111
+          </div>
+          <div class="row-links">
+            <a href="https://saadh393.github.io">saadh393.github.io</a><span class="sep">|</span
+            ><a href="https://github.com/saadh393">github.com/saadh393</a><span class="sep">|</span
+            ><a href="https://linkedin.com/in/saadh393">linkedin.com/in/saadh393</a>
+          </div>
+        </div>
+      </header>
+
+      <p class="tagline">
+        Software engineer with <strong>five years of professional experience</strong>
+        building production web products, backed by
+        <strong>12 years of hands-on programming</strong>. I work across the full delivery lifecycle, from user-facing
+        applications and backend APIs to cloud deployment and production operations. I specialize in building
+        <strong>reliable, scalable, and cost-efficient systems</strong>, with strong expertise in
+        <strong>JavaScript, React, Next.js, Node.js, and AWS</strong>.
+      </p>
+
+      <div class="chips">
+        <span class="chip"><b>10,000+</b> students served</span>
+        <span class="chip"><b>2 Cr+ BDT</b> annual revenue</span>
+        <span class="chip"><b>2.2M</b> active users reached</span>
+        <span class="chip"><b>0s</b> deploy downtime</span>
+      </div>
+
+      <section>
+        <h2>Technical Skills</h2>
+        <dl class="skills">
+          <dt>Languages</dt>
+          <dd>JavaScript, TypeScript, Python, PHP</dd>
+          <dt>Frontend</dt>
+          <dd>React, Next.js (App Router), Redux, Tailwind CSS, Sass, React Native</dd>
+          <dt>Backend</dt>
+          <dd>Node.js, Express, FastAPI, REST API design, Socket.io, Prisma, Mongoose, BullMQ</dd>
+          <dt>Data</dt>
+          <dd>MongoDB, PostgreSQL, MySQL, Redis, Pinecone (vector search)</dd>
+          <dt>Cloud &amp; Ops</dt>
+          <dd>AWS (EC2, S3), GCP, Cloudflare (Workers, CDN, D1), Docker, Nginx, MinIO</dd>
+          <dt>Reliability</dt>
+          <dd>Sentry, Grafana, Prometheus, Loki, Jest, Git</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+
+        <div class="job">
+          <div class="job-head">
+            <div class="job-title">Learn with Sumit</div>
+            <div class="job-meta">April 2021 - Present &nbsp;&middot;&nbsp; Remote</div>
+          </div>
+
+          <div class="job-sub">Jr. Software Engineer</div>
+
+          <div class="job-context">
+            Ed-tech company building learning and event platforms for the Bangladeshi developer community.
+          </div>
+
+          <ul class="bullets">
+            <li>
+              Own and evolve the core learning management platform built with Next.js, Node.js, and MongoDB, serving
+              <b>10,000+ learners</b> and supporting more than <b>2 crore BDT in annual revenue</b>, while contributing
+              to product decisions, system design, and production delivery.
+            </li>
+
+            <li>
+              Designed and deployed a production-grade, device-bound authentication system using non-exportable ECDSA
+              keys, signed requests, replay protection, device-slot enforcement, token rotation, and session revocation,
+              preventing stolen or shared cookies from being used on unregistered devices
+            </li>
+
+            <li>
+              Built the registration and payment workflow for
+              <b>DevConf</b>, reliably processing <b>~68 payment requests per second</b> during peak registration
+              periods.
+            </li>
+
+            <li>
+              Delivered <b>DRM-protected HLS video delivery</b> and playback-based watch-time tracking, enabling course
+              progress and completion to be measured from actual viewing activity.
+            </li>
+
+            <li>
+              Delivered payment gateway integrations, multi-course enrollment, quizzes, assignments, and other
+              business-critical workflows across the frontend, backend, and data layers.
+            </li>
+
+            <li>
+              Deploy and operate the production platform on
+              <b>AWS using Docker, Nginx, Cloudflare, and Sentry</b>, supporting reliable releases, traffic monitoring,
+              and production troubleshooting.
+            </li>
+          </ul>
+        </div>
+
+        <div class="job">
+          <div class="job-head">
+            <div class="job-title">Independent Contract</div>
+            <div class="job-meta">2025 - Present &nbsp;&middot;&nbsp; Remote</div>
+          </div>
+
+          <div class="job-sub">Frontend &amp; Platform Engineer</div>
+
+          <div class="job-context">
+            Offer Finder, a campaign and merchant discovery platform for bKash, Bangladesh's largest mobile financial
+            service.
+          </div>
+
+          <ul class="bullets">
+            <li>
+              Built the <b>Next.js 16 server-rendered platform</b> that reached approximately
+              <b>2.2 million active users in Bangladesh</b> within one month.
+            </li>
+
+            <li>
+              Achieved <b>near-perfect Chrome Lighthouse scores</b> across performance, accessibility, best practices,
+              and SEO through server rendering, streaming, caching, and frontend optimization.
+            </li>
+
+            <li>
+              Eliminated oversized client payloads by moving filtering to the server, reducing merchant-search transfers
+              from over <b>15 MB</b> and replacing approximately <b>12 MB</b> campaign responses with bounded queries,
+              field selection, request cancellation, and pagination.
+            </li>
+
+            <li>
+              Designed a <b>cost-efficient production architecture</b> that runs critical application and backend
+              workloads on a two-vCPU origin, using Cloudflare caching and clustered Node.js workers to reduce origin
+              traffic and resource consumption.
+            </li>
+
+            <li>
+              Kept the <b>backend and database isolated from the public internet</b>, exposing only controlled
+              application entry points through Cloudflare and Nginx.
+            </li>
+
+            <li>
+              Implemented a <b>zero-downtime blue-green deployment</b> with Docker, Nginx, and health checks,
+              eliminating the previous two-to-four-minute outage during releases without increasing infrastructure cost.
+            </li>
+
+            <li>
+              Added <b>Sentry observability</b> across browser, server, and edge runtimes to monitor production errors,
+              latency, and resource usage.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="foot">
+        <span>Md Nasimul Hasan &nbsp;&middot;&nbsp; Jr. Software Engineer</span>
+        <span>Page 1 of 2</span>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 2 ============ -->
+    <div class="page">
+      <section style="margin-top: 0">
+        <h2>Experience (continued)</h2>
+
+        <div class="job">
+          <div class="job-head">
+            <div class="job-title">Analyzen</div>
+            <div class="job-meta">August 2021 - January 2025 &nbsp;&middot;&nbsp; Dhaka, Bangladesh</div>
+          </div>
+
+          <div class="job-sub">
+            Jr. Software Engineer
+            <span class="second">
+              (Aug 2022 - Jan 2025) &nbsp;&middot;&nbsp; Jr. Frontend Developer (Aug 2021 - Oct 2022)
+            </span>
+          </div>
+
+          <div class="job-context">
+            Digital solutions agency building enterprise web, mobile, fintech, and social-media platforms for leading
+            brands.
+          </div>
+
+          <ul class="bullets">
+            <li>
+              Delivered production <b>React and Next.js applications</b> for enterprise clients including Unilever,
+              Evercare, AKASH, Bengal Meat, and Berger, working across frontend development, API integration, and
+              deployment.
+            </li>
+
+            <li>
+              Modernized the frontend of <b>MICROZEN</b>, an enterprise microcredit automation platform, improving
+              interface consistency, usability, application structure, and runtime performance.
+            </li>
+
+            <li>
+              Supported MICROZEN's production infrastructure through
+              <b>application deployment, cross-server backups, and server-to-server communication</b>.
+            </li>
+
+            <li>
+              Developed backend integrations for <b>LISTENYZEN</b>, an omnichannel social-media servicing platform,
+              implementing Facebook SDK-based messaging and SMS communication workflows.
+            </li>
+
+            <li>
+              Delivered <b>Unilever Frontline Academy</b>, a learning platform for Unilever's frontline workforce across
+              Bangladesh, alongside additional enterprise dashboards and digital products.
+            </li>
+
+            <li>
+              Promoted from Jr. Frontend Developer to Jr. Software Engineer based on delivery performance and expanded
+              ownership across frontend, backend, and infrastructure responsibilities.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Selected Projects</h2>
+
+        <div class="proj">
+  <div class="proj-head">
+    <div class="proj-name">
+      Distributed HLS Streaming Platform
+      <span class="second">Independent Systems Engineering Project</span>
+    </div>
+
+    <div class="proj-links">
+      <a href="https://github.com/saadh393/distributed-hls-streaming-platform">
+        github.com/saadh393/distributed-hls-streaming-platform
+      </a>
+    </div>
+  </div>
+
+  <div class="proj-body">
+    Designed a five-service video pipeline to explore how large-scale
+    streaming systems separate ingestion, CPU-intensive processing,
+    storage, metadata, and playback. BullMQ and Redis move FFmpeg
+    transcoding off the request path, producing four adaptive HLS
+    renditions with AES-128 encrypted segments stored in MinIO and
+    streamed through HLS.js. Documented the remaining production-hardening
+    work, including retries, dead-letter handling, observability, testing,
+    and CI/CD.
+  </div>
+
+  <div class="stack">
+    Stack:
+    <span>
+      Node.js, TypeScript, Express, FFmpeg, BullMQ, Redis, MinIO,
+      PostgreSQL, HLS.js, Docker Compose
+    </span>
+  </div>
+</div>
+
+      <div class="proj">
+  <div class="proj-head">
+    <div class="proj-name">
+      Semantic Product Search API
+      <span class="second">Independent AI/Search Engineering Project</span>
+    </div>
+
+    <div class="proj-links">
+      <a href="https://github.com/saadh393/Semantic-Search">
+        github.com/saadh393/Semantic-Search
+      </a>
+    </div>
+  </div>
+
+  <div class="proj-body">
+    Built a semantic search API over 12,000 Amazon product records that
+    retrieves products by user intent rather than exact keywords. Pinecone
+    performs vector similarity search, while an optional second stage uses
+    Gemini to rerank 20 candidates and return the five most relevant results.
+    Added metadata filtering, SHA-256-keyed LRU caching, rate limiting, and
+    asynchronous FastAPI execution, with observed response times of roughly
+    20ms for cached queries and 300–500ms for direct search.
+  </div>
+
+  <div class="stack">
+    Stack:
+    <span>
+      Python, FastAPI, Pinecone, Google Gemini, Pandas, Docker
+    </span>
+  </div>
+</div>
+
+        <div class="proj">
+          <div class="proj-head">
+            <div class="proj-name">SSHM, terminal SSH connection manager</div>
+            <div class="proj-links"><a href="https://github.com/saadh393/sshm">github.com/saadh393/sshm</a></div>
+          </div>
+          <div class="proj-body">
+            Go CLI that stores SSH hosts by alias and connects through a fuzzy-searchable terminal UI, so IP addresses
+            and long ssh invocations no longer have to be remembered. Also published <b>env-example-gen</b> on npm,
+            which generates .env.example files from an existing environment config.
+          </div>
+          <div class="stack">Stack: <span>Go, Cobra, Bubble Tea, Lip Gloss</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Writing &amp; Open Source</h2>
+        <div class="writing">
+          <div class="article">
+            <span class="t">Adapter and Port Architecture in Two Real Codebases</span
+            ><span class="p">saadh393.github.io</span>
+          </div>
+          <div class="article">
+            <span class="t">The Node.js Event Loop, Explained Properly</span><span class="p">Medium</span>
+          </div>
+          <div class="article">
+            <span class="t">HTTP Caching in Node.js with Undici v7</span><span class="p">saadh393.github.io</span>
+          </div>
+          <div class="article">
+            <span class="t">How Diffie-Hellman Became the Backbone of Encryption</span
+            ><span class="p">Stackademic</span>
+          </div>
+          <div class="article">
+            <span class="t">Why AI Coding Agents Cost So Much</span><span class="p">saadh393.github.io</span>
+          </div>
+          <div class="article">
+            <span class="t">Understanding Idempotency in Distributed Systems</span><span class="p">Medium</span>
+          </div>
+          <div class="article">
+            <span class="t">JavaScript Execution Context</span><span class="p">saadh393.github.io</span>
+          </div>
+          <div class="article">
+            <span class="t">Concurrency, Parallelism, and Sequential Execution</span><span class="p">Medium</span>
+          </div>
+        </div>
+        <p class="note">
+          <b>Open source:</b> contributed to
+          <a
+            href="https://github.com/DavidHDev/react-bits/issues/278"
+            style="color: var(--accent); text-decoration: none"
+            >react-bits</a
+          >
+          (issue #278), diagnosing a broken search interface in a widely used React pattern library.
+          <b>Mentoring:</b> one-to-one React and Next.js instruction, project-based, with code review on every
+          submission. Full archive and interactive case studies at
+          <a href="https://saadh393.github.io" style="color: var(--accent); text-decoration: none">saadh393.github.io</a
+          >.
+        </p>
+      </section>
+
+      <div class="foot">
+        <span>References and detailed case studies available on request</span>
+        <span>Page 2 of 2</span>
+      </div>
+    </div>
+  </body>
+</html>
