@@ -27,7 +27,7 @@
       body {
         font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
         font-size: 9.6pt;
-        line-height: 1.42;
+        line-height: 1.36;
         color: var(--body);
         background: #6b7280;
       }
@@ -96,6 +96,15 @@
         color: var(--accent);
       }
 
+      .ico {
+        width: 9px;
+        height: 9px;
+        fill: currentColor;
+        vertical-align: -0.8px;
+        margin-right: 3.5px;
+        flex-shrink: 0;
+      }
+
       .tagline {
         margin-top: 9px;
         font-size: 9.4pt;
@@ -110,7 +119,7 @@
 
       /* ---------- sections ---------- */
       section {
-        margin-top: 11px;
+        margin-top: 10px;
       }
 
       h2 {
@@ -126,7 +135,7 @@
 
       /* ---------- experience ---------- */
       .job {
-        margin-bottom: 10px;
+        margin-bottom: 9px;
       }
       .job:last-child {
         margin-bottom: 0;
@@ -167,7 +176,7 @@
       }
 
       .job-context {
-        margin-top: 3px;
+        margin-top: 2px;
         font-size: 8.9pt;
         color: var(--muted);
         line-height: 1.45;
@@ -175,20 +184,20 @@
 
       ul.bullets {
         list-style: none;
-        margin-top: 5px;
+        margin-top: 4px;
       }
 
       ul.bullets li {
         position: relative;
         padding-left: 11px;
-        margin-bottom: 2.8px;
+        margin-bottom: 2.2px;
       }
 
       ul.bullets li::before {
         content: "";
         position: absolute;
         left: 0;
-        top: 5.2px;
+        top: 5px;
         width: 4px;
         height: 4px;
         background: var(--accent);
@@ -204,7 +213,7 @@
       .chips {
         display: flex;
         gap: 5px;
-        margin-top: 9px;
+        margin-top: 8px;
         flex-wrap: wrap;
       }
 
@@ -225,7 +234,7 @@
       .skills {
         display: grid;
         grid-template-columns: 82px 1fr;
-        row-gap: 3.5px;
+        row-gap: 2.6px;
         column-gap: 12px;
       }
       .skills dt {
@@ -242,7 +251,7 @@
 
       /* ---------- projects ---------- */
       .proj {
-        margin-bottom: 11px;
+        margin-bottom: 10px;
       }
       .proj:last-child {
         margin-bottom: 0;
@@ -259,6 +268,16 @@
         font-weight: 700;
         color: var(--ink);
         font-family: Georgia, "Times New Roman", serif;
+      }
+
+      .proj-name .second {
+        display: block;
+        margin-top: 1px;
+        font-family: inherit;
+        font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+        font-size: 8.3pt;
+        font-weight: 400;
+        color: var(--muted);
       }
       .proj-links {
         font-size: 8.2pt;
@@ -289,19 +308,40 @@
         row-gap: 5px;
       }
       .article {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        align-items: baseline;
-      }
-      .article .t {
-        color: var(--ink);
         font-size: 9pt;
+        line-height: 1.35;
       }
-      .article .p {
-        color: var(--muted);
-        font-size: 8pt;
-        white-space: nowrap;
+      .article a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .article .ext {
+        width: 7.5px;
+        height: 7.5px;
+        fill: var(--accent);
+        margin-left: 4px;
+        vertical-align: 0.5px;
+      }
+
+      .ext {
+        width: 7.5px;
+        height: 7.5px;
+        fill: var(--accent);
+        margin-left: 4px;
+        vertical-align: 0.5px;
+      }
+
+      .job-title a,
+      .job-context a,
+      ul.bullets a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .job-title .ext {
+        width: 8.5px;
+        height: 8.5px;
+        vertical-align: 1px;
       }
 
       .note {
@@ -372,22 +412,48 @@
         </div>
         <div class="contact">
           <div>
-            <a href="mailto:saadh393@gmail.com">saadh393@gmail.com</a><span class="sep">|</span>+880 1759 229111
+            <a href="mailto:saadh393@gmail.com"
+              ><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 4h20v16H2V4zm2 2v.4l8 5 8-5V6H4zm16 2.75-8 5-8-5V18h16V8.75z" /></svg
+              >saadh393@gmail.com</a
+            ><span class="sep">|</span
+            ><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"
+              /></svg
+            >+880 1759 229111
           </div>
           <div class="row-links">
-            <a href="https://saadh393.github.io">saadh393.github.io</a><span class="sep">|</span
-            ><a href="https://github.com/saadh393">github.com/saadh393</a><span class="sep">|</span
-            ><a href="https://linkedin.com/in/saadh393">linkedin.com/in/saadh393</a>
+            <a href="https://saadh393.github.io"
+              ><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7.93 9h-3.02a15.6 15.6 0 0 0-1.2-5.42A8.02 8.02 0 0 1 19.93 11zM12 4.04c.83 1.2 1.63 3.3 1.86 6.96h-3.72c.23-3.66 1.03-5.76 1.86-6.96zM4.07 13h3.02c.13 2.1.53 3.94 1.2 5.42A8.02 8.02 0 0 1 4.07 13zm3.02-2H4.07a8.02 8.02 0 0 1 4.22-5.42A15.6 15.6 0 0 0 7.09 11zM12 19.96c-.83-1.2-1.63-3.3-1.86-6.96h3.72c-.23 3.66-1.03 5.76-1.86 6.96zm2.71-1.54c.67-1.48 1.07-3.32 1.2-5.42h3.02a8.02 8.02 0 0 1-4.22 5.42z"
+                /></svg
+              >Portfolio</a
+            ><span class="sep">|</span
+            ><a href="https://github.com/saadh393"
+              ><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"
+                /></svg
+              >saadh393</a
+            ><span class="sep">|</span
+            ><a href="https://linkedin.com/in/saadh393"
+              ><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"
+                /></svg
+              >saadh393</a
+            >
           </div>
         </div>
       </header>
 
       <p class="tagline">
-        Software engineer with <strong>five years of professional experience</strong>
-        building production web products, backed by
-        <strong>12 years of hands-on programming</strong>. I work across the full delivery lifecycle, from user-facing
-        applications and backend APIs to cloud deployment and production operations. I specialize in building
-        <strong>reliable, scalable, and cost-efficient systems</strong>, with strong expertise in
+        Software engineer with <strong>five years of professional experience</strong> building production web products,
+        backed by <strong>12 years of hands-on programming</strong>. I work across the full delivery lifecycle, from
+        user-facing applications and backend APIs to cloud deployment and production operations, building
+        <strong>reliable, scalable, and cost-efficient systems</strong> in
         <strong>JavaScript, React, Next.js, Node.js, and AWS</strong>.
       </p>
 
@@ -395,7 +461,7 @@
         <span class="chip"><b>10,000+</b> students served</span>
         <span class="chip"><b>2 Cr+ BDT</b> annual revenue</span>
         <span class="chip"><b>2.2M</b> active users reached</span>
-        <span class="chip"><b>0s</b> deploy downtime</span>
+        <span class="chip"><b>Zero-downtime</b> deployments</span>
       </div>
 
       <section>
@@ -411,8 +477,8 @@
           <dd>MongoDB, PostgreSQL, MySQL, Redis, Pinecone (vector search)</dd>
           <dt>Cloud &amp; Ops</dt>
           <dd>AWS (EC2, S3), GCP, Cloudflare (Workers, CDN, D1), Docker, Nginx, MinIO</dd>
-          <dt>Reliability</dt>
-          <dd>Sentry, Grafana, Prometheus, Loki, Jest, Git</dd>
+          <dt>Observability &amp; Testing</dt>
+          <dd>Sentry, Grafana, Prometheus, Loki, Jest</dd>
         </dl>
       </section>
 
@@ -421,7 +487,7 @@
 
         <div class="job">
           <div class="job-head">
-            <div class="job-title">Learn with Sumit</div>
+            <div class="job-title"><a href="https://learnwithsumit.com/">Learn with Sumit<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
             <div class="job-meta">April 2021 - Present &nbsp;&middot;&nbsp; Remote</div>
           </div>
 
@@ -441,7 +507,7 @@
             <li>
               Designed and deployed a production-grade, device-bound authentication system using non-exportable ECDSA
               keys, signed requests, replay protection, device-slot enforcement, token rotation, and session revocation,
-              preventing stolen or shared cookies from being used on unregistered devices
+              preventing stolen or shared cookies from being used on unregistered devices.
             </li>
 
             <li>
@@ -451,13 +517,13 @@
             </li>
 
             <li>
-              Delivered <b>DRM-protected HLS video delivery</b> and playback-based watch-time tracking, enabling course
+              Delivered <b>HLS video streaming</b> and playback-based watch-time tracking, enabling course
               progress and completion to be measured from actual viewing activity.
             </li>
 
             <li>
-              Delivered payment gateway integrations, multi-course enrollment, quizzes, assignments, and other
-              business-critical workflows across the frontend, backend, and data layers.
+              Delivered payment gateway integrations, multi-course enrollment, quizzes, and assignments across the
+              frontend, backend, and data layers.
             </li>
 
             <li>
@@ -470,53 +536,53 @@
 
         <div class="job">
           <div class="job-head">
-            <div class="job-title">Independent Contract</div>
-            <div class="job-meta">2025 - Present &nbsp;&middot;&nbsp; Remote</div>
+            <div class="job-title"><a href="https://www.analyzen.com/">Analyzen<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+            <div class="job-meta">August 2021 - January 2025 &nbsp;&middot;&nbsp; Dhaka, Bangladesh</div>
           </div>
 
-          <div class="job-sub">Frontend &amp; Platform Engineer</div>
+          <div class="job-sub">
+            Jr. Software Engineer
+            <span class="second">
+              (Aug 2022 - Jan 2025) &nbsp;&middot;&nbsp; Jr. Frontend Developer (Aug 2021 - Jul 2022)
+            </span>
+          </div>
 
           <div class="job-context">
-            Offer Finder, a campaign and merchant discovery platform for bKash, Bangladesh's largest mobile financial
-            service.
+            Digital solutions agency building enterprise web, mobile, fintech, and social-media platforms for leading
+            brands.
           </div>
 
           <ul class="bullets">
             <li>
-              Built the <b>Next.js 16 server-rendered platform</b> that reached approximately
-              <b>2.2 million active users in Bangladesh</b> within one month.
+              Delivered production <b>React and Next.js applications</b> for enterprise clients including Unilever,
+              Evercare, AKASH, Bengal Meat, and Berger, working across frontend development, API integration, and
+              deployment.
             </li>
 
             <li>
-              Achieved <b>near-perfect Chrome Lighthouse scores</b> across performance, accessibility, best practices,
-              and SEO through server rendering, streaming, caching, and frontend optimization.
+              Modernized the frontend of <a href="https://www.analyzen.com/products#microzen"><b>MICROZEN</b><svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a>,
+              an enterprise microcredit automation platform, improving interface consistency, usability, application structure, and runtime performance.
             </li>
 
             <li>
-              Eliminated oversized client payloads by moving filtering to the server, reducing merchant-search transfers
-              from over <b>15 MB</b> and replacing approximately <b>12 MB</b> campaign responses with bounded queries,
-              field selection, request cancellation, and pagination.
+              Supported MICROZEN's production infrastructure through
+              <b>application deployment, cross-server backups, and server-to-server communication</b>.
             </li>
 
             <li>
-              Designed a <b>cost-efficient production architecture</b> that runs critical application and backend
-              workloads on a two-vCPU origin, using Cloudflare caching and clustered Node.js workers to reduce origin
-              traffic and resource consumption.
+              Developed backend integrations for
+              <a href="https://www.analyzen.com/products#listenyzen"><b>LISTENYZEN</b><svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a>, an omnichannel
+              social-media servicing platform, implementing Facebook SDK-based messaging and SMS communication workflows.
             </li>
 
             <li>
-              Kept the <b>backend and database isolated from the public internet</b>, exposing only controlled
-              application entry points through Cloudflare and Nginx.
+              Delivered <b>Unilever Frontline Academy</b>, a learning platform for Unilever's frontline workforce across
+              Bangladesh, alongside additional enterprise dashboards and digital products.
             </li>
 
             <li>
-              Implemented a <b>zero-downtime blue-green deployment</b> with Docker, Nginx, and health checks,
-              eliminating the previous two-to-four-minute outage during releases without increasing infrastructure cost.
-            </li>
-
-            <li>
-              Added <b>Sentry observability</b> across browser, server, and edge runtimes to monitor production errors,
-              latency, and resource usage.
+              Promoted from Jr. Frontend Developer to Jr. Software Engineer based on delivery performance and expanded
+              ownership across frontend, backend, and infrastructure responsibilities.
             </li>
           </ul>
         </div>
@@ -535,52 +601,53 @@
 
         <div class="job">
           <div class="job-head">
-            <div class="job-title">Analyzen</div>
-            <div class="job-meta">August 2021 - January 2025 &nbsp;&middot;&nbsp; Dhaka, Bangladesh</div>
+            <div class="job-title">Independent Contract</div>
+            <div class="job-meta">2025 - Present &nbsp;&middot;&nbsp; Remote</div>
           </div>
 
-          <div class="job-sub">
-            Jr. Software Engineer
-            <span class="second">
-              (Aug 2022 - Jan 2025) &nbsp;&middot;&nbsp; Jr. Frontend Developer (Aug 2021 - Oct 2022)
-            </span>
-          </div>
+          <div class="job-sub">Frontend &amp; Platform Engineer</div>
 
           <div class="job-context">
-            Digital solutions agency building enterprise web, mobile, fintech, and social-media platforms for leading
-            brands.
+            <a href="https://offer-finder.com/">Offer Finder<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a>, a campaign and merchant discovery platform for
+            bKash, Bangladesh's largest mobile financial service.
           </div>
 
           <ul class="bullets">
             <li>
-              Delivered production <b>React and Next.js applications</b> for enterprise clients including Unilever,
-              Evercare, AKASH, Bengal Meat, and Berger, working across frontend development, API integration, and
-              deployment.
+              Built the <b>Next.js 16 server-rendered platform</b> that reached approximately
+              <b>2.2 million active users in Bangladesh</b> within one month.
             </li>
 
             <li>
-              Modernized the frontend of <b>MICROZEN</b>, an enterprise microcredit automation platform, improving
-              interface consistency, usability, application structure, and runtime performance.
+              Achieved verified Lighthouse scores of <b>100 performance, 99 accessibility, 100 best practices, and 100
+              SEO</b> through server rendering, streaming, caching, and frontend optimization.
             </li>
 
             <li>
-              Supported MICROZEN's production infrastructure through
-              <b>application deployment, cross-server backups, and server-to-server communication</b>.
+              Eliminated oversized client payloads by moving filtering to the server, reducing merchant-search transfers
+              from over <b>15 MB</b> and replacing approximately <b>12 MB</b> campaign responses with bounded queries,
+              field selection, request cancellation, and pagination.
             </li>
 
             <li>
-              Developed backend integrations for <b>LISTENYZEN</b>, an omnichannel social-media servicing platform,
-              implementing Facebook SDK-based messaging and SMS communication workflows.
+              Designed a <b>cost-efficient production architecture</b> running critical application and backend
+              workloads on a two-vCPU origin, using Cloudflare caching and clustered Node.js workers to cut origin
+              traffic and resource use.
             </li>
 
             <li>
-              Delivered <b>Unilever Frontline Academy</b>, a learning platform for Unilever's frontline workforce across
-              Bangladesh, alongside additional enterprise dashboards and digital products.
+              Kept the <b>backend and database isolated from the public internet</b>, exposing only controlled
+              application entry points through Cloudflare and Nginx.
             </li>
 
             <li>
-              Promoted from Jr. Frontend Developer to Jr. Software Engineer based on delivery performance and expanded
-              ownership across frontend, backend, and infrastructure responsibilities.
+              Implemented a <b>zero-downtime blue-green deployment</b> with Docker, Nginx, and health checks,
+              eliminating the previous two-to-four-minute outage during releases without increasing infrastructure cost.
+            </li>
+
+            <li>
+              Added <b>Sentry observability</b> across browser, server, and edge runtimes to monitor production errors
+              and latency.
             </li>
           </ul>
         </div>
@@ -596,11 +663,7 @@
       <span class="second">Independent Systems Engineering Project</span>
     </div>
 
-    <div class="proj-links">
-      <a href="https://github.com/saadh393/distributed-hls-streaming-platform">
-        github.com/saadh393/distributed-hls-streaming-platform
-      </a>
-    </div>
+    <div class="proj-links"><a href="https://github.com/saadh393/distributed-hls-streaming-platform"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>Repository</a></div>
   </div>
 
   <div class="proj-body">
@@ -630,11 +693,7 @@
       <span class="second">Independent AI/Search Engineering Project</span>
     </div>
 
-    <div class="proj-links">
-      <a href="https://github.com/saadh393/Semantic-Search">
-        github.com/saadh393/Semantic-Search
-      </a>
-    </div>
+    <div class="proj-links"><a href="https://github.com/saadh393/Semantic-Search"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>Repository</a></div>
   </div>
 
   <div class="proj-body">
@@ -644,7 +703,7 @@
     Gemini to rerank 20 candidates and return the five most relevant results.
     Added metadata filtering, SHA-256-keyed LRU caching, rate limiting, and
     asynchronous FastAPI execution, with observed response times of roughly
-    20ms for cached queries and 300–500ms for direct search.
+    20ms for cached queries and 300 to 500ms for direct search.
   </div>
 
   <div class="stack">
@@ -658,12 +717,11 @@
         <div class="proj">
           <div class="proj-head">
             <div class="proj-name">SSHM, terminal SSH connection manager</div>
-            <div class="proj-links"><a href="https://github.com/saadh393/sshm">github.com/saadh393/sshm</a></div>
+            <div class="proj-links"><a href="https://github.com/saadh393/sshm"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>Repository</a></div>
           </div>
           <div class="proj-body">
             Go CLI that stores SSH hosts by alias and connects through a fuzzy-searchable terminal UI, so IP addresses
-            and long ssh invocations no longer have to be remembered. Also published <b>env-example-gen</b> on npm,
-            which generates .env.example files from an existing environment config.
+            and long ssh invocations no longer have to be remembered.
           </div>
           <div class="stack">Stack: <span>Go, Cobra, Bubble Tea, Lip Gloss</span></div>
         </div>
@@ -672,32 +730,14 @@
       <section>
         <h2>Writing &amp; Open Source</h2>
         <div class="writing">
-          <div class="article">
-            <span class="t">Adapter and Port Architecture in Two Real Codebases</span
-            ><span class="p">saadh393.github.io</span>
-          </div>
-          <div class="article">
-            <span class="t">The Node.js Event Loop, Explained Properly</span><span class="p">Medium</span>
-          </div>
-          <div class="article">
-            <span class="t">HTTP Caching in Node.js with Undici v7</span><span class="p">saadh393.github.io</span>
-          </div>
-          <div class="article">
-            <span class="t">How Diffie-Hellman Became the Backbone of Encryption</span
-            ><span class="p">Stackademic</span>
-          </div>
-          <div class="article">
-            <span class="t">Why AI Coding Agents Cost So Much</span><span class="p">saadh393.github.io</span>
-          </div>
-          <div class="article">
-            <span class="t">Understanding Idempotency in Distributed Systems</span><span class="p">Medium</span>
-          </div>
-          <div class="article">
-            <span class="t">JavaScript Execution Context</span><span class="p">saadh393.github.io</span>
-          </div>
-          <div class="article">
-            <span class="t">Concurrency, Parallelism, and Sequential Execution</span><span class="p">Medium</span>
-          </div>
+          <div class="article"><a href="https://saadh393.github.io/blog/adapter-port-architecture-two-cases">Adapter and Port Architecture in Two Real Codebases<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://medium.com/@saadh393/the-event-loop-explained-like-youre-a-top-1-node-js-engineer-f9fea55b00f9">The Node.js Event Loop, Explained Properly<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://saadh393.github.io/blog/http-caching-nodejs-undici">HTTP Caching in Node.js with Undici v7<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://blog.stackademic.com/how-diffie-hellman-became-the-backbone-of-modern-encryption-5a9d210dca3b">How Diffie-Hellman Became the Backbone of Encryption<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://saadh393.github.io/blog/balance-ai-optimize-token-usage">Why AI Coding Agents Cost So Much<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://saadh393.medium.com/understand-idempotency-to-build-trustworthy-systems-44010cd98a9a">Understanding Idempotency in Distributed Systems<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://saadh393.github.io/blog/javascript-execution-context">JavaScript Execution Context<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
+          <div class="article"><a href="https://saadh393.medium.com/understanding-concurrency-parallelism-and-sequential-execution-46f30c55ca07">Concurrency, Parallelism, and Sequential Execution<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h4v2H5v12h12v-4h2v6H3V5h2z"/></svg></a></div>
         </div>
         <p class="note">
           <b>Open source:</b> contributed to
@@ -707,15 +747,11 @@
             >react-bits</a
           >
           (issue #278), diagnosing a broken search interface in a widely used React pattern library.
-          <b>Mentoring:</b> one-to-one React and Next.js instruction, project-based, with code review on every
-          submission. Full archive and interactive case studies at
-          <a href="https://saadh393.github.io" style="color: var(--accent); text-decoration: none">saadh393.github.io</a
-          >.
         </p>
       </section>
 
       <div class="foot">
-        <span>References and detailed case studies available on request</span>
+        <span>Md Nasimul Hasan &nbsp;&middot;&nbsp; Jr. Software Engineer</span>
         <span>Page 2 of 2</span>
       </div>
     </div>
