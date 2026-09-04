@@ -758,6 +758,15 @@ a.exp-company:hover {
     font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+.exp-context {
+    display: block;
+    font-size: 13px;
+    color: #999;
+    line-height: 1.5;
+    margin-top: 6px;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
 .exp-bullets {
     list-style: none;
     margin: 16px 0 0;

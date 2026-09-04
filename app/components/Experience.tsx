@@ -4,26 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 const JOBS = [
     {
-        company: "Freelance / Contract",
-        role: "Frontend & Platform Engineer",
-        period: "2025 - Present",
-        location: "Remote",
-        href: "https://offer-finder.com/",
-        current: true,
-        logoPath: "",
-        logoFallback: "O",
-        bullets: [
-            "~2.2M active users in one month on Offer Finder, the Next.js 16 server-rendered platform I built for bKash, Bangladesh's largest mobile financial service",
-            "Lighthouse 100 / 99 / 100 / 100 for performance, accessibility, best practices, and SEO",
-            "Cut 15 MB+ search and ~12 MB campaign payloads to paginated server-side queries",
-            "Cut the 2-4 min release outage to zero with blue-green deploys on Docker, Nginx, and health checks",
-            "Ran the full app and backend on a 2-vCPU origin via Cloudflare caching and clustered Node workers, database off the public internet",
-            "Instrumented Sentry across browser, server, and edge runtimes for error and latency monitoring",
-        ],
-    },
-    {
         company: "Learn with Sumit",
-        role: "Full-Stack Developer (Full-time, Jan 2025 - Present), Part-time / Contract (Apr 2021 - Jan 2025)",
+        role: "Full Stack Developer (Full-time, Jan 2025 - Present), Part-time / Contract (Apr 2021 - Jan 2025)",
+        context: "Ed-tech company building learning and event platforms for the Bangladeshi developer community.",
         period: "April 2021 - Present",
         location: "Remote",
         href: "https://learnwithsumit.com/",
@@ -42,6 +25,7 @@ const JOBS = [
     {
         company: "Analyzen",
         role: "Jr. Software Engineer (Aug 2022 - Jan 2025), Jr. Frontend Developer (Aug 2021 - Jul 2022)",
+        context: "Digital solutions agency building enterprise web, mobile, fintech, and social-media platforms for leading brands.",
         period: "August 2021 - January 2025",
         location: "Dhaka, Bangladesh",
         href: "https://www.analyzen.com/",
@@ -54,6 +38,25 @@ const JOBS = [
             "Built LISTENYZEN backend integrations for Facebook SDK messaging and SMS workflows",
             "Delivered Unilever Frontline Academy, a nationwide platform for Unilever's frontline workforce",
             "Promoted in 12 months, expanding from frontend into backend and production infrastructure ownership",
+        ],
+    },
+    {
+        company: "Freelance / Contract",
+        role: "Frontend & Platform Engineer",
+        context: "Offer Finder, a campaign and merchant discovery platform for bKash, Bangladesh's largest mobile financial service.",
+        period: "2025 - Present",
+        location: "Remote",
+        href: "https://offer-finder.com/",
+        current: true,
+        logoPath: "",
+        logoFallback: "O",
+        bullets: [
+            "~2.2M active users in one month on the Next.js 16 server-rendered platform I built",
+            "Lighthouse 100 / 99 / 100 / 100 for performance, accessibility, best practices, and SEO",
+            "Cut 15 MB+ search and ~12 MB campaign payloads to paginated server-side queries",
+            "Cut the 2-4 min release outage to zero with blue-green deploys on Docker, Nginx, and health checks",
+            "Ran the full app and backend on a 2-vCPU origin via Cloudflare caching and clustered Node workers, database off the public internet",
+            "Instrumented Sentry across browser, server, and edge runtimes for error and latency monitoring",
         ],
     },
 ];
@@ -156,6 +159,7 @@ export default function Experience() {
                             </div>
 
                             <span className="exp-role">{job.role}</span>
+                            <span className="exp-context">{job.context}</span>
 
                             {/* Bullets */}
                             <ul className="exp-bullets">

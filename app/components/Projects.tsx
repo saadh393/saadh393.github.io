@@ -22,7 +22,7 @@ const projects = [
         category: "Enterprise · Scale",
         year: "2025",
         description:
-            "10,000 learners couldn't afford broken video or a quiz that lost their progress. Own the platform end to end — HLS video streaming, playback-based watch-time tracking, device-bound ECDSA authentication, quiz and assignment flows, payment gateways — running on AWS with Docker, Nginx, Cloudflare, and Sentry. It supports more than 2 crore BDT in annual revenue.",
+            "10,000 learners couldn't afford broken video or a quiz that lost their progress. Own the platform end to end — HLS video streaming, playback-based watch-time tracking, device-bound ECDSA authentication, quiz and assignment flows, payment gateways — running on AWS with Docker, Nginx, Cloudflare, and Sentry. It supports more than $165K in annual revenue.",
         stack: ["Next.js", "Node.js", "MongoDB", "AWS", "Docker", "Cloudflare"],
         image: "/lws-thumbnail.png",
         link: "https://learnwithsumit.com/",
@@ -48,14 +48,7 @@ const projects = [
         year: "2026",
         description:
             "Keyword search fails when users describe what they want instead of naming it. Built a semantic product search engine using Pinecone vector embeddings and Google Gemini — understands 'something warm for winter' as intent, not just tokens.",
-        stack: [
-            "Python",
-            "FastAPI",
-            "Pinecone",
-            "Gemini",
-            "React",
-            "TypeScript",
-        ],
+        stack: ["Python", "FastAPI", "Pinecone", "Gemini", "Pandas", "Docker"],
         github: "https://github.com/saadh393/Semantic-Search",
         caseStudy: "/projects/semantic-search",
         linkLabel: "Case Study →",

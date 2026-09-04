@@ -2,9 +2,9 @@ export const DEFAULT_SITE_URL = "https://saadh393.github.io";
 export const SITE_URL = DEFAULT_SITE_URL;
 
 export const SITE_NAME = "Md Nasimul Hasan";
-export const SITE_TITLE = "Md Nasimul Hasan - Jr. Software Engineer";
+export const SITE_TITLE = "Md Nasimul Hasan - Full Stack Developer";
 export const SITE_DESCRIPTION =
-    "Jr. Software Engineer with five years building production web products in React, Next.js, Node.js, and AWS. LMS for 10,000+ students, a discovery platform serving 2.2M users, distributed streaming, and semantic search.";
+    "Full Stack Developer with five years building production web products in React, Next.js, Node.js, and AWS. LMS for 10,000+ learners, a discovery platform serving 2.2M users, distributed streaming, and semantic search.";
 export const SITE_LOCALE = "en_US";
 export const GOOGLE_SITE_VERIFICATION =
     "BMgNbZRStRHN4TUmmVil85q_zc9EwRyI_aMTamtwnHY";

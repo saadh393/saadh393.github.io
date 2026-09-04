@@ -5,8 +5,8 @@ interface HeroStatStripProps {
 }
 
 const STATS = [
-    { value: "10,000+", label: "Students Served" },
-    { value: "2 Cr+", label: "BDT Revenue" },
+    { value: "10,000+", label: "Learners Served" },
+    { value: "$165K+", label: "Annual Revenue" },
     { value: "2.2M", label: "Active Users" },
     { value: "100", label: "Lighthouse Score" },
 ];

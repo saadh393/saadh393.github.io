@@ -29,7 +29,7 @@ export default function Home() {
         name: SITE_NAME,
         alternateName: "Saad Hasan",
         url: SITE_URL,
-        jobTitle: "Jr. Software Engineer",
+        jobTitle: "Full Stack Developer",
         description: SITE_DESCRIPTION,
         image: absoluteUrl("/nasimul-hasan-1.png"),
       },
