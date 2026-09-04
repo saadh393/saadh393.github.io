@@ -131,20 +131,6 @@ body {
 }
 
 /* Available badge */
-.hero-available-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 14px 5px 10px;
-    background: rgba(34, 197, 94, 0.06);
-    border: 1px solid rgba(34, 197, 94, 0.18);
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #15803d;
-    letter-spacing: 0.01em;
-}
-
 /* Stats centered */
 .hero-stats-row.hero-stats-centered {
     display: flex;
@@ -179,28 +165,6 @@ body {
 }
 
 /* Status dot */
-.hero-status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #22c55e;
-    display: inline-block;
-    flex-shrink: 0;
-    animation: hero-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes hero-pulse {
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.35);
-        opacity: 0.55;
-    }
-}
-
 /* Role cycling */
 .hero-role-in {
     animation: hero-role-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -523,35 +487,6 @@ body {
     color: #0070f3 !important;
 }
 
-.navbar-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: 28px;
-    padding: 5px 12px;
-    border-radius: 9999px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    background: rgba(0, 0, 0, 0.02);
-    flex-shrink: 0;
-}
-
-.navbar-status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #22c55e;
-    flex-shrink: 0;
-    animation: hero-pulse 2.4s ease-in-out infinite;
-}
-
-.navbar-status-text {
-    font-size: 12px;
-    font-weight: 500;
-    color: #666;
-    white-space: nowrap;
-    letter-spacing: 0.01em;
-}
-
 .navbar-hamburger {
     display: none;
     align-items: center;
@@ -621,16 +556,8 @@ body {
     opacity: 0.6;
 }
 
-.navbar-drawer-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 24px;
-}
-
 @media (max-width: 768px) {
-    .navbar-links,
-    .navbar-status {
+    .navbar-links {
         display: none;
     }
     .navbar-hamburger {
@@ -1229,6 +1156,18 @@ a.exp-company:hover {
     transform: none;
 }
 
+@keyframes hero-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.35);
+        opacity: 0.55;
+    }
+}
+
 .contact-time-dot {
     animation: hero-pulse 2.4s ease-in-out infinite;
 }
@@ -1265,9 +1204,6 @@ a.exp-company:hover {
         opacity: 1;
         transform: none;
     }
-    .hero-status-dot {
-        animation: none;
-    }
     .hero-role-in,
     .hero-role-out {
         animation: none;
@@ -1291,9 +1227,6 @@ a.exp-company:hover {
     }
     .navbar-drawer {
         transition: none;
-    }
-    .navbar-status-dot {
-        animation: none;
     }
     .about-reveal,
     .stack-reveal {

@@ -178,7 +178,7 @@ export default function Contact() {
                   fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
                 }}
               >
-                Open to remote worldwide. Response time: usually within 24 hours.
+                Response time: usually within 24 hours.
               </p>
             </div>
 
@@ -258,40 +258,6 @@ export default function Contact() {
               ))}
             </div>
 
-            {/* Availability badge */}
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "5px 14px",
-                borderRadius: 9999,
-                border: "1px solid rgba(34,197,94,0.25)",
-                background: "rgba(34,197,94,0.04)",
-                width: "fit-content",
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: "#22c55e",
-                  letterSpacing: "0.02em",
-                  fontFamily: "var(--font-geist-mono), monospace",
-                }}
-              >
-                Open to remote worldwide
-              </span>
-            </div>
           </div>
 
           {/* Right: form */}

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { useCursorGlow } from "../hooks/useCursorGlow";
 import { useRoleCycle } from "../hooks/useRoleCycle";
 import { HeroAvatar } from "./HeroAvatar";
-import { HeroBadge } from "./HeroBadge";
 import { HeroBio } from "./HeroBio";
 import { HeroCTAs } from "./HeroCTAs";
 import { HeroHandle } from "./HeroHandle";
@@ -66,7 +65,6 @@ export default function Hero() {
             {/* Main centered content */}
             <div className="hero-centered-content">
                 <HeroAvatar entered={entered} />
-                <HeroBadge entered={entered} />
                 <HeroHandle entered={entered} />
 
                 <h1

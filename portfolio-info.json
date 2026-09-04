@@ -22,31 +22,33 @@
             "JavaScript Engineer",
             "Frontend Developer & Educator"
         ],
-        "availability": {
-            "status": "Available for Work",
-            "remote": "Open to remote worldwide"
-        },
-        "summary": "Full Stack Developer with 4+ years of experience building and shipping modern web applications using React, Next.js, and Node.js. Experienced in delivering features end-to-end from translating design ideas into functional interfaces to developing backend services and deploying production applications. Familiar with cloud deployments on AWS and GCP, containerization with Docker, and edge deployments using Cloudflare Workers and D1. Focused on writing clean, maintainable code, improving performance, and building practical solutions that provide a smooth user experience.",
+        "summary": "Full Stack Developer with 5 years of experience building and shipping modern web applications using React, Next.js, and Node.js. Experienced in delivering features end-to-end from translating design ideas into functional interfaces to developing backend services and deploying production applications. Familiar with cloud deployments on AWS and GCP, containerization with Docker, and edge deployments using Cloudflare Workers and D1. Focused on writing clean, maintainable code, improving performance, and building practical solutions that provide a smooth user experience.",
         "philosophy": "Your Creative Call"
     },
     "career": {
         "experience_claims": {
-            "coding_years": "10+ years",
+            "coding_years": "12 years",
             "journey_started": "2011",
-            "llms_claim": "12+ years software experience, 4 years professional engineering work"
+            "llms_claim": "12 years hands-on programming, 5 years professional engineering work"
         },
         "work_experience": [
             {
-                "role": "Jr. Software Engineer",
-                "company": "Analyzen Innovation Lab",
-                "period": "2024 — Present",
-                "description": "Develop and deploy front-end components for web applications within the company's innovation lab."
+                "role": "Frontend & Platform Engineer",
+                "company": "Freelance / Contract",
+                "period": "2025 — Present",
+                "description": "Built Offer Finder, bKash's campaign and merchant discovery platform on Next.js 16, which reached ~2.2M active users in one month at Lighthouse 100/99/100/100."
             },
             {
-                "role": "Product Manager",
+                "role": "Full-Stack Developer",
                 "company": "Learn with Sumit",
-                "period": "2023 — 2024",
-                "description": "Oversee planning, organizing, and directing product development across the company's portfolio."
+                "period": "April 2021 — Present (full-time since Jan 2025, part-time/contract before)",
+                "description": "Build and operate the Next.js, Node.js, and MongoDB learning platform serving 10,000+ learners and ~$165K/yr revenue, plus device-bound auth, HLS streaming, and AWS production operations."
+            },
+            {
+                "role": "Jr. Software Engineer",
+                "company": "Analyzen",
+                "period": "August 2021 — January 2025 (Jr. Frontend Developer until Jul 2022)",
+                "description": "Shipped React and Next.js applications for Unilever, Evercare, AKASH, Bengal Meat, and Berger, and built MICROZEN and LISTENYZEN frontend and backend work."
             }
         ],
         "strengths": [

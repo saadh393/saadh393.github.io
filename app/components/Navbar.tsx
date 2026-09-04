@@ -119,12 +119,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Available badge */}
-          <div className="navbar-status">
-            <span className="navbar-status-dot" />
-            <span className="navbar-status-text">Available for work</span>
-          </div>
-
           {/* Hamburger */}
           <button
             className="navbar-hamburger"
@@ -176,10 +170,6 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <div className="navbar-drawer-status">
-            <span className="navbar-status-dot" />
-            <span className="navbar-status-text">Available for work</span>
-          </div>
         </div>
       </div>
     </>
