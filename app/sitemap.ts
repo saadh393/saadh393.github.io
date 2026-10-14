@@ -27,6 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
             images: [DEFAULT_OG_IMAGE.url],
         },
         {
+            url: absoluteUrl("/projekt"),
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.8,
+            images: [absoluteUrl("/projekt/projects-list.webp")],
+        },
+        {
             url: absoluteUrl("/blog"),
             lastModified: latestBlogDate ? new Date(latestBlogDate) : new Date(),
             changeFrequency: "weekly",

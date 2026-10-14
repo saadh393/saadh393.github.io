@@ -30,6 +30,17 @@ const projects = [
         highlight: true,
     },
     {
+        id: "projekt",
+        title: "Projekt",
+        category: "Desktop App · Open Source",
+        year: "2026",
+        description:
+            "I kept losing time finding project folders and retyping the same terminal commands. So I built a desktop app for macOS and Windows that keeps every project in one list, opens it in VS Code or the terminal with one click and runs saved commands like npm run dev in a built-in terminal.",
+        stack: ["Tauri 2", "Rust", "React 19", "TypeScript", "SQLite"],
+        caseStudy: "/projekt",
+        linkLabel: "Product page →",
+    },
+    {
         id: "distributed-hls",
         title: "Distributed Video Streaming",
         category: "Systems · Architecture",
