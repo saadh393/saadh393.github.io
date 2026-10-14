@@ -16,7 +16,7 @@ import {
 } from "@/lib/projekt";
 
 const title = "Projekt: open any coding project in one click";
-const ogImage = { url: absoluteUrl("/projekt/projects-list.webp"), width: 1400, height: 1048 };
+const ogImage = { url: absoluteUrl("/projekt/og.jpg"), width: 2400, height: 1254 };
 
 export const metadata: Metadata = {
     title,
@@ -59,7 +59,7 @@ const structuredData = {
             url: absoluteUrl("/projekt"),
             downloadUrl: PROJEKT_RELEASES_URL,
             codeRepository: PROJEKT_REPO_URL,
-            screenshot: ogImage.url,
+            screenshot: absoluteUrl("/projekt/projects-list.webp"),
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
             author: { "@type": "Person", name: "Md Nasimul Hasan", url: absoluteUrl("/") },
         },
