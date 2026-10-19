@@ -43,5 +43,14 @@ export function projectSocialImage(slug: string) {
         } as const;
     }
 
+    if (slug === "clip-zero-shot-image-classification") {
+        return {
+            url: `${SITE_URL}/clip-zero-shot.png`,
+            width: 1920,
+            height: 1080,
+            alt: "Zero-shot image classification with CLIP on a laptop CPU",
+        } as const;
+    }
+
     return DEFAULT_OG_IMAGE;
 }

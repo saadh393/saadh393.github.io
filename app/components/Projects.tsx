@@ -53,6 +53,18 @@ const projects = [
         linkLabel: "Case Study →",
     },
     {
+        id: "clip-zero-shot",
+        title: "Zero-Shot Image Classifier with CLIP",
+        category: "AI Engineering · Computer Vision",
+        year: "2026",
+        description:
+            "Thousands of screenshots, receipts and photographed notes were buried in my photo folders. Built a local app that uses OpenAI's CLIP to compare every image against plain-English labels and flag the junk for review, with no training data. It scanned 5,175 images on a laptop CPU at about 57 ms of model time per image.",
+        stack: ["Python", "PyTorch", "CLIP", "Hugging Face", "Flask"],
+        github: "https://github.com/saadh393/Zero-Shot-CLIP-Classifier",
+        caseStudy: "/projects/clip-zero-shot-image-classification",
+        linkLabel: "Case Study →",
+    },
+    {
         id: "semantic-search",
         title: "Semantic Search Engine",
         category: "AI Engineering",
