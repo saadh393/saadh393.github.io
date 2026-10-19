@@ -36,6 +36,8 @@ import {
   BuyMeCoffeeDynamic as BuyMeCoffee,
   ShareArticleDynamic as ShareArticle,
   GuestPassDynamic as GuestPass,
+  ZeroShotPlaygroundDynamic as ZeroShotPlayground,
+  ClipEncodersDynamic as ClipEncoders,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -315,4 +317,6 @@ export const mdxComponents: MDXComponents = {
   ShareArticle: withArtifactTracking("ShareArticle", ShareArticle),
   // NEW: Claude Code guest pass referral
   GuestPass: withArtifactTracking("GuestPass", GuestPass),
+  ZeroShotPlayground: withArtifactTracking("ZeroShotPlayground", ZeroShotPlayground),
+  ClipEncoders: withArtifactTracking("ClipEncoders", ClipEncoders),
 };

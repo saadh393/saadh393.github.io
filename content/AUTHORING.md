@@ -126,6 +126,8 @@ All components are globally available in MDX. No import is needed.
 | `<UserJourneySimulator>`          | Use for multi-step user flows where each step picks an adapter and animates the call through business logic, port, adapter, and provider. | [User Journey Simulator](./artifacts/user-journey-simulator.md) |
 | `<CodeEditor>`                    | Use when several related files need an IDE-style view with a sidebar tree, tabs, line numbers, and a status bar instead of stacked code blocks. | [Code Editor](./artifacts/code-editor.md) |
 | `<GuestPass>`                     | Use mid-article in Claude Code writeups to offer the reader a 7-day Claude Code trial via a referral link, placed where they're already getting value. | [Guest Pass](./artifacts/guest-pass.md) |
+| `<ZeroShotPlayground>`            | Use in zero-shot classification writeups so the reader can toggle labels and see softmax move probability between them.            | [Zero-Shot Playground](./artifacts/zero-shot-playground.md) |
+| `<ClipEncoders>`                  | Use when introducing CLIP so the reader sees an image and captions land in one shared vector space.                               | [Clip Encoders](./artifacts/clip-encoders.md) |
 
 If you create a new artifact, add a row here and create a matching file in `content/artifacts/`.
 

@@ -1,0 +1,224 @@
+---
+title: "Zero-shot image classification with CLIP on a laptop CPU"
+date: "2026-10-19"
+description: "How CLIP matches images to plain-English labels, why I picked it over OCR and trained classifiers, and what scanning 5,175 images on a CPU taught me."
+tags: ["Python", "CLIP", "Hugging Face", "PyTorch", "Computer Vision", "Flask"]
+status: "published"
+type: "case-study"
+github: "https://github.com/saadh393/Zero-Shot-CLIP-Classifier"
+---
+
+My drives were full of images that weren't really photos. Chat screenshots, lecture slides, receipts, and pages of notes I'd photographed in 2019 and never opened again, all mixed in with photos I care about.
+
+I wanted them gone, but I also wanted an excuse to put an image model inside a real application for the first time. I ended up using OpenAI's [CLIP](https://openai.com/index/clip/), loaded from [Hugging Face](https://huggingface.co/openai/clip-vit-base-patch32), running entirely on my laptop's CPU. This post is about CLIP. The [cleanup tool](https://github.com/saadh393/Zero-Shot-CLIP-Classifier) is the example that keeps it honest.
+
+<MetricStrip>
+    <Metric label="Images scanned in two runs" value="5,175" />
+    <Metric label="CLIP time per image, CPU" value="~57 ms" />
+    <Metric label="Flagged in the notes folder" value="580 · 1.40 GB" />
+    <Metric label="Labelled training images" value="0" />
+</MetricStrip>
+
+---
+
+## How CLIP compares images and text
+
+CLIP has two networks. An image encoder turns a picture into a vector, and a text encoder turns a sentence into a vector of the same size. In `openai/clip-vit-base-patch32` both vectors have 512 numbers, and the image side is a [Vision Transformer](https://arxiv.org/abs/2010.11929) that reads a 224×224 image as 32×32 pixel patches.
+
+OpenAI trained the two together on about 400 million image and caption pairs from the internet ([the paper](https://arxiv.org/abs/2103.00020)). In each step the model compares every image in a batch with every caption and learns to make the real pairs similar and the rest dissimilar. Afterwards, a photo of a receipt and the sentence "a receipt" point in roughly the same direction. Pick an image below to see it.
+
+<ClipEncoders />
+
+Similarity is the [cosine](https://en.wikipedia.org/wiki/Cosine_similarity) of the angle between two vectors. If you've worked with text embeddings, it's the same idea I used in my [semantic search project](/projects/semantic-search), with images on one side.
+
+## Why zero-shot fit this problem
+
+A normal classifier has a fixed output layer. Adding a category means collecting labelled examples and training again. With CLIP you write categories as sentences and compare the image against each one. Change the sentences and you've changed the classifier.
+
+<Comparison beforeLabel="Trained classifier" afterLabel="CLIP zero-shot" language="text">
+
+```text
+1. Pick categories up front
+2. Label examples for each one
+3. Train a model
+4. New category? Back to step 2
+```
+
+```text
+1. Write categories as sentences
+2. Encode them once
+3. Compare each image to every sentence
+4. New category? Add a sentence
+```
+
+</Comparison>
+
+That mattered here because "junk" is personal and my categories kept changing. The paper reports that zero-shot CLIP matched the original ResNet-50 on [ImageNet](https://www.image-net.org/) without using any of its training images, though that's the largest CLIP model. The small one I used is weaker.
+
+## What else I considered
+
+Filename and [EXIF](https://en.wikipedia.org/wiki/Exif) rules catch screenshots cheaply, but my notes were camera photos named `20190417_102040.jpg` with the same metadata as a family photo. [OCR](https://github.com/tesseract-ocr/tesseract) finds documents and also flags memes and street signs. A fine-tuned CNN needs a labelled dataset. A vision-language model like [LLaVA](https://llava-vl.github.io/) understands nuance but generates text token by token, which is slow on a CPU, and a hosted API would mean uploading my photos.
+
+<DecisionMatrix
+    title="Finding non-photos in a personal library"
+    options='[
+    {"id":"rules","name":"Filenames + EXIF","verdict":"Worth running first, but blind to anything taken with the camera."},
+    {"id":"ocr","name":"OCR","verdict":"Sees text, not intent. Text in an image does not make it junk."},
+    {"id":"cnn","name":"Trained classifier","verdict":"Accurate once trained, but needs labels and a retrain per category."},
+    {"id":"clip","name":"CLIP zero-shot","chosen":true,"verdict":"No labels, no training, offline on a CPU, and categories are editable text. A human reviews everything before deletion, which covers its mistakes."},
+    {"id":"vlm","name":"Vision-language model","verdict":"Best at nuance, but slow locally and hosted means uploading private photos."}
+  ]'
+    criteria='[
+    {"label":"Catches camera photos of notes","scores":{
+      "rules":{"rating":"bad"},"ocr":{"rating":"ok","note":"Handwriting is unreliable."},"cnn":{"rating":"good"},"clip":{"rating":"good"},"vlm":{"rating":"good"}}},
+    {"label":"No labelled dataset","scores":{
+      "rules":{"rating":"good"},"ocr":{"rating":"good"},"cnn":{"rating":"bad"},"clip":{"rating":"good"},"vlm":{"rating":"good"}}},
+    {"label":"New category without retraining","scores":{
+      "rules":{"rating":"ok"},"ocr":{"rating":"bad"},"cnn":{"rating":"bad"},"clip":{"rating":"good"},"vlm":{"rating":"good"}}},
+    {"label":"Fast and offline on a laptop CPU","scores":{
+      "rules":{"rating":"good"},"ocr":{"rating":"ok"},"cnn":{"rating":"good"},"clip":{"rating":"good","note":"About 57 ms per image here."},"vlm":{"rating":"bad"}}}
+  ]'
+/>
+
+---
+
+## The labels are the model
+
+The tool keeps two editable lists: 10 "find" labels like "a receipt" and "a presentation slide", and 17 "never touch" labels like "a selfie" and "a photo of nature". For each image it computes the cosine similarity to all 27 labels, multiplies by CLIP's learned logit scale (100), and runs [softmax](https://en.wikipedia.org/wiki/Softmax_function) to get probabilities. The find probabilities add up to a junk score. An image is flagged only if that score passes the strictness slider (0.6 by default) and the single best label is a find label.
+
+The scale matters because raw similarities sit in a narrow band around 0.15 to 0.3. Without it, softmax gives every label about the same share. Drag the slider below to 1 and you'll see it.
+
+<ZeroShotPlayground
+    title="Scoring an abstract blue wallpaper"
+    image="wallpaper.jpg"
+    threshold={0.6}
+    labels='[
+    {"text":"a screenshot of a phone screen","kind":"find","similarity":0.262},
+    {"text":"a screenshot of a computer screen","kind":"find","similarity":0.248},
+    {"text":"a presentation slide","kind":"find","similarity":0.236},
+    {"text":"a chart or a graph","kind":"find","similarity":0.226},
+    {"text":"a page of text","kind":"find","similarity":0.205},
+    {"text":"a photo of nature","kind":"keep","similarity":0.240},
+    {"text":"a sunset","kind":"keep","similarity":0.232},
+    {"text":"a photo of people","kind":"keep","similarity":0.182},
+    {"text":"abstract art","kind":"keep","similarity":0.262,"on":false},
+    {"text":"a colorful wallpaper","kind":"keep","similarity":0.271,"on":false}
+  ]'
+/>
+
+The similarities above are illustrative, tuned to match a real result. An abstract wallpaper scored 0.87 as "a screenshot of a phone screen" because no label described it, and softmax has to give the probability to something. After I added "abstract art" and "a colorful wallpaper", it dropped to 0.29. Turn those two on to see the flip.
+
+<Callout type="insight">
+    CLIP never says "I don't know". It picks the closest label, however poor the match. Every label you add also takes probability away from the others.
+</Callout>
+
+The top-label rule came from a worse bug. The first version only checked the junk score, and a few family photos got flagged because ten small find probabilities added up. Making the best match win gave the keep list a veto.
+
+## How a scan runs
+
+The app is a small [Flask](https://flask.palletsprojects.com/) server with a plain JavaScript page. The model is loaded through [Transformers](https://huggingface.co/docs/transformers/model_doc/clip) on [PyTorch](https://pytorch.org/).
+
+<StepThrough
+    title="One scan, from folder to review grid"
+    nodes='[
+    {"id":"labels","label":"Labels","x":0,"y":0},
+    {"id":"text","label":"Text encoder (once)","x":230,"y":0},
+    {"id":"folder","label":"Image folder","x":0,"y":170,"type":"store"},
+    {"id":"read","label":"8 reader threads","x":230,"y":170},
+    {"id":"image","label":"Image encoder (batch 32)","x":460,"y":170},
+    {"id":"score","label":"Similarity + softmax","x":460,"y":0},
+    {"id":"grid","label":"Review grid","x":690,"y":85,"type":"client"}
+  ]'
+    edges='[
+    {"from":"labels","to":"text"},
+    {"from":"text","to":"score"},
+    {"from":"folder","to":"read"},
+    {"from":"read","to":"image"},
+    {"from":"image","to":"score"},
+    {"from":"score","to":"grid"}
+  ]'
+    steps='[
+    {"label":"Encode the labels","description":"All 27 sentences go through the text encoder once per scan and are reused for every batch.","active":["labels","text"],"activeEdges":["labels→text"]},
+    {"label":"Read and encode images","description":"Eight threads open 32 files at a time. The processor resizes and center-crops each to 224×224, and the batch runs through the image encoder under torch.no_grad().","active":["folder","read","image"],"activeEdges":["folder→read","read→image"]},
+    {"label":"Score","description":"One matrix multiply compares every image with every label, then softmax gives 27 probabilities per image.","active":["image","text","score"],"activeEdges":["image→score","text→score"]},
+    {"label":"Review","description":"Results stream into the grid while the scan runs. Nothing is deleted automatically, and deletes go to the Recycle Bin through Send2Trash.","active":["score","grid"],"activeEdges":["score→grid"]}
+  ]'
+/>
+
+The scoring is a few lines in `clip_filter.py`:
+
+```python
+similarity = model.logit_scale.exp() * image_features @ text_features.T
+probs = similarity.softmax(dim=1).cpu()
+
+junk_score = probs[i][:junk_count].sum().item()
+best = probs[i].argmax().item()
+```
+
+<Figure
+    src="/clip/scan-progress.png"
+    alt="The scan screen with editable find and never-touch label chips, a progress bar, and live speed stats."
+    caption="Label lists, live progress, and the reading versus CLIP time split."
+/>
+
+---
+
+## CPU performance
+
+My GTX 1050 Ti's driver was too old for the CUDA 12.6 build of PyTorch, so everything ran on an Intel i7-8750H. Both test folders sat on a spinning laptop hard drive.
+
+| | Phone backup | "Others" folder |
+| --- | --- | --- |
+| Images | 2,329 | 2,846 |
+| Total time | 5m 28s | 4m 28s |
+| Time per image | 141 ms | 94 ms |
+| Flagged | 55 (202 MB) | 580 (1.40 GB) |
+
+The phone backup was slower, but not because of the model. Splitting each run's time showed CLIP at about 57 ms per image in both. The larger phone photos (3.8 MB on average) just took longer to read off the disk.
+
+<BarChart
+    title="Milliseconds per image, by where the time went"
+    data='[
+    {"label":"Phone backup · reading files","value":85},
+    {"label":"Phone backup · CLIP","value":56},
+    {"label":"Others · reading files","value":35},
+    {"label":"Others · CLIP","value":59}
+  ]'
+    caption="Derived from each run's time per image and its reading/CLIP split."
+/>
+
+What kept the CPU path fast: labels encoded once, batches of 32, eight threads for file reads, and Pillow's JPEG [`draft()`](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.draft) mode, which decodes a downscaled image directly instead of a full 12 MP photo. The model is about 600 MB to download once, then it works offline.
+
+## Where it falls short
+
+I didn't hand-label a test set, so I don't have an accuracy number. What I saw in review:
+
+- CLIP judges the whole image. A screenshot with a small profile photo is still a screenshot.
+- The default processor center-crops to a square, so tall phone screenshots lose their top and bottom.
+- CLIP partly reads text in images. OpenAI's [multimodal neurons research](https://distill.pub/2021/multimodal-neurons/) showed an apple with a paper note saying "iPod" getting classified as an iPod. That helps with documents and can misfire on memes.
+- It knows there's a person in a photo, not who.
+
+<Figure
+    src="/clip/results.png"
+    alt="Review grid of flagged images filtered to 'a page of text', showing photographed handwritten and printed pages."
+    caption="The review grid filtered to 'a page of text'. Handwritten notes landed here too."
+/>
+
+None of this was a dealbreaker because nothing gets deleted without me looking first. The app also isn't ready to share: `/image` serves any path you give it, results live in memory, and "Show in Explorer" is Windows only.
+
+## What I'd tell someone trying this
+
+Treat the label list like code. Every classification bug I hit was fixed by changing labels, so I'd keep a folder of tricky images and rerun it whenever the labels change.
+
+Time the pipeline before you blame the model. I assumed the CPU was the bottleneck, and on the phone backup it was the disk.
+
+Softmax scores aren't confidence. A 0.87 for a wallpaper only meant the screenshot labels were the least bad of the options I gave it.
+
+Zero-shot models work best with a person reviewing the output. CLIP got thousands of images down to a few hundred worth looking at, and I still made the final call on each one.
+
+<ReferenceList>
+    <ReferenceLink url="https://github.com/saadh393/Zero-Shot-CLIP-Classifier" title="Zero-Shot CLIP Classifier" source="GitHub" note="The code behind this post" />
+    <ReferenceLink url="https://arxiv.org/abs/2103.00020" title="Learning Transferable Visual Models From Natural Language Supervision" source="arXiv" note="Radford et al., 2021" />
+    <ReferenceLink url="https://huggingface.co/openai/clip-vit-base-patch32" title="openai/clip-vit-base-patch32" source="Hugging Face" note="The checkpoint used here" />
+    <ReferenceLink url="https://distill.pub/2021/multimodal-neurons/" title="Multimodal Neurons in Artificial Neural Networks" source="Distill" note="Typographic attacks on CLIP" />
+</ReferenceList>

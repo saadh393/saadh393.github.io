@@ -2289,3 +2289,43 @@ a.exp-company:hover {
         animation-duration: 0s, 1.6s;
     }
 }
+
+.zs-row {
+    transition: opacity 0.15s;
+}
+
+.zs-bar {
+    transition: transform 0.25s ease-out;
+}
+
+.clip-iso-dot {
+    opacity: 0.15;
+    animation: clip-iso-march 1.6s linear infinite;
+}
+
+.clip-iso-match {
+    animation: clip-iso-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes clip-iso-march {
+    0%, 40%, 100% { opacity: 0.15; }
+    20% { opacity: 1; }
+}
+
+@keyframes clip-iso-pulse {
+    50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .clip-iso-dot {
+        animation: none;
+        opacity: 0.6;
+    }
+    .clip-iso-match {
+        animation: none;
+    }
+    .zs-row,
+    .zs-bar {
+        transition: none;
+    }
+}

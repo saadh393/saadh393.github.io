@@ -175,3 +175,13 @@ export const GuestPassDynamic = dynamic(
   () => import("./GuestPass").then((m) => ({ default: m.GuestPass })),
   { ssr: false, loading: placeholder(220) }
 );
+
+export const ZeroShotPlaygroundDynamic = dynamic(
+  () => import("./ZeroShotPlayground").then((m) => ({ default: m.ZeroShotPlayground })),
+  { ssr: false, loading: placeholder(520) }
+);
+
+export const ClipEncodersDynamic = dynamic(
+  () => import("./ClipEncoders").then((m) => ({ default: m.ClipEncoders })),
+  { ssr: false, loading: placeholder(420) }
+);
