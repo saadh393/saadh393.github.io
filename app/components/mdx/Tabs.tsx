@@ -80,12 +80,7 @@ export function Tabs({ children, defaultTab = 0 }: TabsProps) {
       </div>
 
       {/* Active panel */}
-      <div
-        style={{
-          padding: "20px 24px",
-          background: "#fff",
-        }}
-      >
+      <div className="mdx-tab-panel" style={{ background: "#fff" }}>
         {tabs[safeActive]}
       </div>
     </div>

@@ -32,3 +32,9 @@ export const PALETTE: PaletteEntry[] = [
 export function paletteAt(i: number): PaletteEntry {
   return PALETTE[i % PALETTE.length];
 }
+
+const SERIES_ORDER = [3, 2, 0, 4, 1, 5];
+
+export function seriesAt(i: number): PaletteEntry {
+  return PALETTE[SERIES_ORDER[i % SERIES_ORDER.length]];
+}

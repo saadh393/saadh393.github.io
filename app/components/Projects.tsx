@@ -53,6 +53,17 @@ const projects = [
         linkLabel: "Case Study →",
     },
     {
+        id: "prompt-technique-cost",
+        title: "Prompt Technique Cost Study",
+        category: "AI Engineering · LLM Cost",
+        year: "2026",
+        description:
+            "Teams add examples or \"think step by step\" to prompts without checking the bill. Tested Zero-shot, Few-shot and Chain-of-Thought on 80 support tickets and product listings with Gemini 3.5 Flash Lite. Chain-of-Thought got every ticket right at 4x the cost of Few-shot, then came last on product tags while costing 6x more.",
+        stack: ["Python", "OpenRouter", "Gemini", "Rich", "Matplotlib"],
+        caseStudy: "/projects/prompt-technique-cost",
+        linkLabel: "Case Study →",
+    },
+    {
         id: "clip-zero-shot",
         title: "Zero-Shot Image Classifier with CLIP",
         category: "AI Engineering · Computer Vision",

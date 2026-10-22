@@ -185,3 +185,13 @@ export const ClipEncodersDynamic = dynamic(
   () => import("./ClipEncoders").then((m) => ({ default: m.ClipEncoders })),
   { ssr: false, loading: placeholder(420) }
 );
+
+export const PromptCostChartDynamic = dynamic(
+  () => import("./PromptCostChart").then((m) => ({ default: m.PromptCostChart })),
+  { ssr: false, loading: placeholder(420) }
+);
+
+export const PromptTradeCalculatorDynamic = dynamic(
+  () => import("./PromptTradeCalculator").then((m) => ({ default: m.PromptTradeCalculator })),
+  { ssr: false, loading: placeholder(420) }
+);

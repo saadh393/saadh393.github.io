@@ -2329,3 +2329,33 @@ a.exp-company:hover {
         transition: none;
     }
 }
+
+.mdx-tab-panel figure,
+.mdx-tab-panel div:has(> pre) {
+  margin: 0 !important;
+}
+
+.mdx-tab-panel pre {
+  padding: 16px 20px !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.mdx-tab-panel > :not(figure):not(div:has(pre)) {
+  padding: 0 20px;
+}
+
+.mdx-tab-panel > :is(figure, div:has(pre)) + * {
+  margin-top: 16px !important;
+}
+
+.iso-bar {
+  transition: opacity 0.2s ease;
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iso-bar {
+    transition: none;
+  }
+}

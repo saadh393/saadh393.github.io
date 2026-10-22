@@ -57,7 +57,7 @@ Every piece of content must follow these rules:
 2. No adjectives without proof — not "scalable" unless you show the scale.
 3. Real numbers only — never placeholder metrics. If a real number isn't known, describe the constraint instead.
 4. Clarity over cleverness — plain language. Assume the reader is a smart developer who hasn't seen this problem before.
-5. Interactive over static — prefer `<StepThrough>` over a diagram, `<Quiz>` over a summary paragraph, `<Tabs>` over code blocks with a note saying "here's the alternative".
+5. Interactive over static — prefer `<StepThrough>` over a diagram, `<Tabs>` over code blocks with a note saying "here's the alternative".
 6. Visual components break walls of text — aim for at most 3 consecutive prose paragraphs before a component.
 
 ---
@@ -121,13 +121,14 @@ All components are globally available in MDX. No import is needed.
 | `<Tabs>` + `<Tab>`                | Use when the same idea has multiple code, config, or framework variants and the reader only needs one view at a time.             | [Tabs](./artifacts/tabs.md)                       |
 | `<Comparison>`                    | Use for before and after code, old and new APIs, or wrong and right implementations where a direct contrast teaches the point.    | [Comparison](./artifacts/comparison.md)           |
 | `<Accordion>` + `<AccordionItem>` | Use for FAQs, objections, or side context that is useful but would slow down the main story if always expanded.                   | [Accordion](./artifacts/accordion.md)             |
-| `<Quiz>`                          | Use after a dense explanation when you want the reader to check whether they actually understood the mechanism.                   | [Quiz](./artifacts/quiz.md)                       |
 | `<HexagonalPlayground>`           | Use when introducing ports-and-adapters or hexagonal architecture so the reader can swap adapters live and see the registry update. | [Hexagonal Playground](./artifacts/hexagonal-playground.md) |
 | `<UserJourneySimulator>`          | Use for multi-step user flows where each step picks an adapter and animates the call through business logic, port, adapter, and provider. | [User Journey Simulator](./artifacts/user-journey-simulator.md) |
 | `<CodeEditor>`                    | Use when several related files need an IDE-style view with a sidebar tree, tabs, line numbers, and a status bar instead of stacked code blocks. | [Code Editor](./artifacts/code-editor.md) |
 | `<GuestPass>`                     | Use mid-article in Claude Code writeups to offer the reader a 7-day Claude Code trial via a referral link, placed where they're already getting value. | [Guest Pass](./artifacts/guest-pass.md) |
 | `<ZeroShotPlayground>`            | Use in zero-shot classification writeups so the reader can toggle labels and see softmax move probability between them.            | [Zero-Shot Playground](./artifacts/zero-shot-playground.md) |
 | `<ClipEncoders>`                  | Use when introducing CLIP so the reader sees an image and captions land in one shared vector space.                               | [Clip Encoders](./artifacts/clip-encoders.md) |
+| `<PromptCostChart>`               | Use in LLM cost writeups to show accuracy and cost per technique as interactive isometric bars, one color per technique. | [Prompt Cost Chart](./artifacts/prompt-cost-chart.md) |
+| `<PromptTradeCalculator>`         | Use when the reader should set what one wrong answer costs them and see which technique has the lowest total bill.                 | [Prompt Trade Calculator](./artifacts/prompt-trade-calculator.md) |
 
 If you create a new artifact, add a row here and create a matching file in `content/artifacts/`.
 

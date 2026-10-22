@@ -52,5 +52,14 @@ export function projectSocialImage(slug: string) {
         } as const;
     }
 
+    if (slug === "prompt-technique-cost") {
+        return {
+            url: `${SITE_URL}/prompt-technique-cost.png`,
+            width: 1920,
+            height: 1080,
+            alt: "Paid 6x more for worse answers: cost and accuracy of Zero-shot, Few-shot and Chain-of-Thought prompts",
+        } as const;
+    }
+
     return DEFAULT_OG_IMAGE;
 }

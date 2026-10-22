@@ -38,6 +38,8 @@ import {
   GuestPassDynamic as GuestPass,
   ZeroShotPlaygroundDynamic as ZeroShotPlayground,
   ClipEncodersDynamic as ClipEncoders,
+  PromptCostChartDynamic as PromptCostChart,
+  PromptTradeCalculatorDynamic as PromptTradeCalculator,
 } from "./ClientComponents";
 
 /* ─── Prose element overrides ─── */
@@ -319,4 +321,6 @@ export const mdxComponents: MDXComponents = {
   GuestPass: withArtifactTracking("GuestPass", GuestPass),
   ZeroShotPlayground: withArtifactTracking("ZeroShotPlayground", ZeroShotPlayground),
   ClipEncoders: withArtifactTracking("ClipEncoders", ClipEncoders),
+  PromptCostChart: withArtifactTracking("PromptCostChart", PromptCostChart),
+  PromptTradeCalculator: withArtifactTracking("PromptTradeCalculator", PromptTradeCalculator),
 };
