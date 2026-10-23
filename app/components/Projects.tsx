@@ -60,6 +60,7 @@ const projects = [
         description:
             "Teams add examples or \"think step by step\" to prompts without checking the bill. Tested Zero-shot, Few-shot and Chain-of-Thought on 80 support tickets and product listings with Gemini 3.5 Flash Lite. Chain-of-Thought got every ticket right at 4x the cost of Few-shot, then came last on product tags while costing 6x more.",
         stack: ["Python", "OpenRouter", "Gemini", "Rich", "Matplotlib"],
+        github: "https://github.com/saadh393/Prompt-Engineering-Case-Study",
         caseStudy: "/projects/prompt-technique-cost",
         linkLabel: "Case Study →",
     },
